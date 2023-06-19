@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1017465245574",
+    "project_id": "parkin-app-b4244",
+    "storage_bucket": "parkin-app-b4244.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1017465245574:android:d99fada23a296c5897e607",
+        "android_client_info": {
+          "package_name": "com.example.learn01"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1017465245574-83u3boeckpdk9dfb2fpho6ij2k1pqjlh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDZ-wZki0j4oQyaAnMEJ6CWA4FuVptYnKI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1017465245574-83u3boeckpdk9dfb2fpho6ij2k1pqjlh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
