@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:learn01/src/constants/sizes.dart';
 import 'package:learn01/src/constants/text_strings.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -16,6 +17,7 @@ class SignUpFormWidget extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpFormWidget> {
   final _formKey = GlobalKey<FormState>();
+  String? _emailError;
 
   //textcontroller
   final _emailController = TextEditingController();
@@ -76,24 +78,49 @@ class _SignUpScreenState extends State<SignUpFormWidget> {
 
   @override
   void dispose() {
+    _emailController.removeListener(_validateEmailOnChange);
+
     _emailController.dispose();
     _passwordController.dispose();
     _usernameController.dispose();
     super.dispose();
   }
 
-  String? _validateNull(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'This field is required';
+  @override
+  void initState() {
+    super.initState();
+    _emailController.addListener(_validateEmailOnChange);
+  }
+
+  void _validateEmailOnChange() {
+    final email = _emailController.text.trim();
+
+    if (email.isEmpty) {
+      setState(() {
+        _emailError = 'Please enter your email';
+      });
+    } else {
+      final emailRegExp = RegExp(
+        r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$',
+      );
+
+      if (!emailRegExp.hasMatch(email)) {
+        setState(() {
+          _emailError = 'Please enter a valid email address';
+        });
+      } else {
+        setState(() {
+          _emailError = null;
+        });
+      }
     }
-    // Additional email validation logic can be implemented here
-    return null;
   }
 
   String? _validatePassword(String? value) {
     if (value == null || value.isEmpty) {
       return 'Please enter your password';
     }
+
     // Additional password validation logic can be implemented here
     return null;
   }
@@ -113,7 +140,18 @@ class _SignUpScreenState extends State<SignUpFormWidget> {
                   label: Text(tFullName),
                   prefixIcon: Icon(Icons.person_outline_rounded),
                 ),
-                validator: _validateNull,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'Please enter your username';
+                  }
+
+                  if (value.trim() == value) {
+                    // No spaces found, valid username
+                    return null;
+                  } else {
+                    return 'Username cannot contain only spaces';
+                  }
+                },
               ),
               SizedBox(
                 height: tFormHeight - 20,
@@ -124,7 +162,14 @@ class _SignUpScreenState extends State<SignUpFormWidget> {
                   label: Text(tEmail),
                   prefixIcon: Icon(Icons.email_outlined),
                 ),
-                validator: _validateNull,
+                validator: (value) {
+                  if (_emailError != null) {
+                    return _emailError;
+                  }
+                  return null;
+                },
+
+                // validator: _validateNull,
               ),
               SizedBox(
                 height: tFormHeight - 20,
@@ -135,7 +180,18 @@ class _SignUpScreenState extends State<SignUpFormWidget> {
                   label: Text(tPhoneNo),
                   prefixIcon: Icon(Icons.numbers),
                 ),
-                validator: _validateNull,
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                ],
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your phone number';
+                  }
+                  if (value.length < 10 || value.length > 10) {
+                    return 'Phone number must be exactly 10 digits';
+                  }
+                  return null; // Return null to indicate the input is valid
+                },
               ),
               SizedBox(
                 height: tFormHeight - 20,
@@ -146,7 +202,19 @@ class _SignUpScreenState extends State<SignUpFormWidget> {
                   label: Text(tPassword),
                   prefixIcon: Icon(Icons.fingerprint),
                 ),
-                validator: _validateNull,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your password';
+                  }
+
+                  if (value.length < 8) {
+                    return 'Password must be at least 8 characters';
+                  }
+
+                  // Additional password validation logic can be implemented here
+
+                  return null; // Return null to indicate the input is valid
+                },
               ),
               SizedBox(
                 height: tFormHeight - 10,

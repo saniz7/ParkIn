@@ -33,9 +33,15 @@ class _LoginFormState extends State<LoginForm> {
     super.dispose();
   }
 
-  String? _validateNull(String? value) {
+  String? _validateEmail(String? value) {
     if (value == null || value.isEmpty) {
       return 'This field is required';
+    }
+    final emailRegExp = RegExp(
+      r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$',
+    );
+    if (!emailRegExp.hasMatch(value)) {
+      return 'Please enter a valid email address';
     }
     // Additional email validation logic can be implemented here
     return null;
@@ -59,7 +65,7 @@ class _LoginFormState extends State<LoginForm> {
                       hintText: tEmail,
                       border: OutlineInputBorder(),
                     ),
-                    validator: _validateNull,
+                    validator: _validateEmail,
                   ),
                   const SizedBox(
                     height: tFormHeight - 20,
@@ -77,7 +83,19 @@ class _LoginFormState extends State<LoginForm> {
                         icon: Icon(Icons.remove_red_eye_sharp),
                       ),
                     ),
-                    validator: _validateNull,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your password';
+                      }
+
+                      if (value.length < 8) {
+                        return 'Password must be at least 8 characters';
+                      }
+
+                      // Additional password validation logic can be implemented here
+
+                      return null; // Return null to indicate the input is valid
+                    },
                   ),
                   const SizedBox(
                     height: tFormHeight - 20,
