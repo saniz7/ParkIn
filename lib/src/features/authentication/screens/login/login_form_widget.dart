@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../../../constants/sizes.dart';
 import '../../../../constants/text_strings.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({
@@ -20,10 +21,55 @@ class _LoginFormState extends State<LoginForm> {
   final _passwordController = TextEditingController();
 
   Future signIn() async {
-    await FirebaseAuth.instance.signInWithEmailAndPassword(
-      email: _emailController.text.trim(),
-      password: _passwordController.text.trim(),
-    );
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+    } catch (e) {
+      if (e is FirebaseAuthException) {
+        print('Error: ${e.code} - ${e.message}');
+
+        // Display error message to the user
+        // You can show the error message using a toast, snackbar, dialog, or any other UI element
+        String errorMessage = 'An error occurred';
+
+        switch (e.code) {
+          case 'email-already-in-use':
+            errorMessage =
+                'The email address is already in use by another account';
+            break;
+          case 'invalid-email':
+            errorMessage = 'Invalid email address';
+            break;
+          case 'user-disabled':
+            errorMessage = 'This user account has been disabled';
+            break;
+          case 'user-not-found':
+            errorMessage = 'User not found';
+            break;
+          case 'wrong-password':
+            errorMessage = 'Invalid password';
+            break;
+          // Add more cases for other error codes as needed
+          // You can find the list of error codes in the FirebaseAuthException documentation
+        }
+
+        // Show error message to the user using a toast, snackbar, dialog, etc.
+        // For example, using the fluttertoast package:
+        Fluttertoast.showToast(
+          msg: errorMessage,
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+        );
+      } else {
+        print('Error: $e');
+        // Handle other non-authentication related errors
+      }
+    }
   }
 
   @override
