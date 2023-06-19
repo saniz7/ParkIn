@@ -15,6 +15,8 @@ class SignUpFormWidget extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpFormWidget> {
+  final _formKey = GlobalKey<FormState>();
+
   //textcontroller
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -22,21 +24,44 @@ class _SignUpScreenState extends State<SignUpFormWidget> {
   final _phonenoController = TextEditingController();
 
   Future signUp() async {
-    await FirebaseAuth.instance.createUserWithEmailAndPassword(
-      email: _emailController.text.trim(),
-      password: _passwordController.text.trim(),
-    );
-    Fluttertoast.showToast(msg: 'Signup successful');
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => LoginScreen()),
-    );
-    addUserDetails(
-      _usernameController.text.trim(),
-      _emailController.text.trim(),
-      _passwordController.text.trim(),
-      int.parse(_phonenoController.text.trim()),
-    );
+    try {
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+      Fluttertoast.showToast(
+        msg: 'Signup successful',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
+      );
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => LoginScreen()),
+      );
+      addUserDetails(
+        _usernameController.text.trim(),
+        _emailController.text.trim(),
+        _passwordController.text.trim(),
+        int.parse(_phonenoController.text.trim()),
+      );
+    } catch (e) {
+      // Handle signup errors
+      if (e is FirebaseAuthException) {
+        print('Error: ${e.code} - ${e.message}');
+      } else {
+        print('Error: $e');
+      } // Show an error toast message
+      Fluttertoast.showToast(
+          msg: "Signup failed",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
+    }
   }
 
   Future addUserDetails(
@@ -57,74 +82,102 @@ class _SignUpScreenState extends State<SignUpFormWidget> {
     super.dispose();
   }
 
+  String? _validateNull(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'This field is required';
+    }
+    // Additional email validation logic can be implemented here
+    return null;
+  }
+
+  String? _validatePassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your password';
+    }
+    // Additional password validation logic can be implemented here
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: tFormHeight - 10),
       child: Form(
+          key: _formKey,
           child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          TextFormField(
-            controller: _usernameController,
-            decoration: const InputDecoration(
-              label: Text(tFullName),
-              prefixIcon: Icon(Icons.person_outline_rounded),
-            ),
-          ),
-          SizedBox(
-            height: tFormHeight - 20,
-          ),
-          TextFormField(
-            controller: _emailController,
-            decoration: const InputDecoration(
-              label: Text(tEmail),
-              prefixIcon: Icon(Icons.email_outlined),
-            ),
-          ),
-          SizedBox(
-            height: tFormHeight - 20,
-          ),
-          TextFormField(
-            controller: _phonenoController,
-            decoration: const InputDecoration(
-              label: Text(tPhoneNo),
-              prefixIcon: Icon(Icons.numbers),
-            ),
-          ),
-          SizedBox(
-            height: tFormHeight - 20,
-          ),
-          TextFormField(
-            controller: _passwordController,
-            decoration: const InputDecoration(
-              label: Text(tPassword),
-              prefixIcon: Icon(Icons.fingerprint),
-            ),
-          ),
-          SizedBox(
-            height: tFormHeight - 10,
-          ),
-          Padding(
-            padding: const EdgeInsets.all(25.0),
-            child: GestureDetector(
-              onTap: signUp,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.green,
-                  borderRadius: BorderRadius.circular(12),
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextFormField(
+                controller: _usernameController,
+                decoration: const InputDecoration(
+                  label: Text(tFullName),
+                  prefixIcon: Icon(Icons.person_outline_rounded),
                 ),
-                child: const Center(
-                  child: Padding(
-                    padding: EdgeInsets.all(10.0),
-                    child: Text('Sign Up'),
+                validator: _validateNull,
+              ),
+              SizedBox(
+                height: tFormHeight - 20,
+              ),
+              TextFormField(
+                controller: _emailController,
+                decoration: const InputDecoration(
+                  label: Text(tEmail),
+                  prefixIcon: Icon(Icons.email_outlined),
+                ),
+                validator: _validateNull,
+              ),
+              SizedBox(
+                height: tFormHeight - 20,
+              ),
+              TextFormField(
+                controller: _phonenoController,
+                decoration: const InputDecoration(
+                  label: Text(tPhoneNo),
+                  prefixIcon: Icon(Icons.numbers),
+                ),
+                validator: _validateNull,
+              ),
+              SizedBox(
+                height: tFormHeight - 20,
+              ),
+              TextFormField(
+                controller: _passwordController,
+                decoration: const InputDecoration(
+                  label: Text(tPassword),
+                  prefixIcon: Icon(Icons.fingerprint),
+                ),
+                validator: _validateNull,
+              ),
+              SizedBox(
+                height: tFormHeight - 10,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(25.0),
+                child: GestureDetector(
+                  onTap: () {
+                    if (_formKey.currentState?.validate() == true) {
+                      signUp();
+                    }
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.green,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(14.0),
+                        child: Text('Sign Up',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white)),
+                      ),
+                    ),
                   ),
                 ),
               ),
-            ),
-          ),
-        ],
-      )),
+            ],
+          )),
     );
   }
 }
