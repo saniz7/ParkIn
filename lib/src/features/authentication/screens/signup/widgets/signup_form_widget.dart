@@ -17,13 +17,13 @@ class SignUpFormWidget extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpFormWidget> {
   final _formKey = GlobalKey<FormState>();
-  String? _emailError;
 
   //textcontroller
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _usernameController = TextEditingController();
   final _phonenoController = TextEditingController();
+  final RegExp _onlyAlphabetsRegExp = RegExp(r'[a-zA-Z]+');
 
   Future signUp() async {
     try {
@@ -52,8 +52,6 @@ class _SignUpScreenState extends State<SignUpFormWidget> {
       if (e is FirebaseAuthException) {
         print('Error: ${e.code} - ${e.message}');
 
-        // Display error message to the user
-        // You can show the error message using a toast, snackbar, dialog, or any other UI element
         String errorMessage = 'An error occurred';
 
         switch (e.code) {
@@ -106,7 +104,7 @@ class _SignUpScreenState extends State<SignUpFormWidget> {
 
   @override
   void dispose() {
-    _emailController.removeListener(_validateEmailOnChange);
+    // _emailController.removeListener(_validateEmailOnChange);
 
     _emailController.dispose();
     _passwordController.dispose();
@@ -114,44 +112,35 @@ class _SignUpScreenState extends State<SignUpFormWidget> {
     super.dispose();
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _emailController.addListener(_validateEmailOnChange);
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   _emailController.addListener(_validateEmailOnChange);
+  // }
 
-  void _validateEmailOnChange() {
-    final email = _emailController.text.trim();
+  // void _validateEmailOnChange() {
+  //   final email = _emailController.text.trim();
 
-    if (email.isEmpty) {
-      setState(() {
-        _emailError = 'Please enter your email';
-      });
-    } else {
-      final emailRegExp = RegExp(
-        r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$',
-      );
+  //   if (email.isEmpty) {
+  //     setState(() {
+  //       _emailError = 'Please enter your email';
+  //     });
+  //   } else {
+  //     final emailRegExp = RegExp(
+  //       r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$',
+  //     );
 
-      if (!emailRegExp.hasMatch(email)) {
-        setState(() {
-          _emailError = 'Please enter a valid email address';
-        });
-      } else {
-        setState(() {
-          _emailError = null;
-        });
-      }
-    }
-  }
-
-  String? _validatePassword(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Please enter your password';
-    }
-
-    // Additional password validation logic can be implemented here
-    return null;
-  }
+  //     if (!emailRegExp.hasMatch(email)) {
+  //       setState(() {
+  //         _emailError = 'Please enter a valid email address';
+  //       });
+  //     } else {
+  //       setState(() {
+  //         _emailError = null;
+  //       });
+  //     }
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -168,6 +157,9 @@ class _SignUpScreenState extends State<SignUpFormWidget> {
                   label: Text(tFullName),
                   prefixIcon: Icon(Icons.person_outline_rounded),
                 ),
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(_onlyAlphabetsRegExp),
+                ],
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
                     return 'Please enter your username';
@@ -191,10 +183,18 @@ class _SignUpScreenState extends State<SignUpFormWidget> {
                   prefixIcon: Icon(Icons.email_outlined),
                 ),
                 validator: (value) {
-                  if (_emailError != null) {
-                    return _emailError;
+                  if (value == null || value.trim().isEmpty) {
+                    return 'Please enter your email';
                   }
-                  return null;
+                  final email = _emailController.text.trim();
+
+                  final emailRegExp = RegExp(
+                    r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$',
+                  );
+                  if (!emailRegExp.hasMatch(email)) {
+                    return 'Please enter a valid email address';
+                  }
+                  return null; // Return null to indicate the input is valid
                 },
 
                 // validator: _validateNull,
@@ -215,6 +215,7 @@ class _SignUpScreenState extends State<SignUpFormWidget> {
                   if (value == null || value.isEmpty) {
                     return 'Please enter your phone number';
                   }
+
                   if (value.length < 10 || value.length > 10) {
                     return 'Phone number must be exactly 10 digits';
                   }

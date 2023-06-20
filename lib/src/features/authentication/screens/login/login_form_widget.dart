@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../../../../../auth/home.dart';
 import '../../../../constants/sizes.dart';
 import '../../../../constants/text_strings.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -26,12 +27,14 @@ class _LoginFormState extends State<LoginForm> {
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => MainPage()),
+      );
     } catch (e) {
       if (e is FirebaseAuthException) {
         print('Error: ${e.code} - ${e.message}');
 
-        // Display error message to the user
-        // You can show the error message using a toast, snackbar, dialog, or any other UI element
         String errorMessage = 'An error occurred';
 
         switch (e.code) {
@@ -51,12 +54,8 @@ class _LoginFormState extends State<LoginForm> {
           case 'wrong-password':
             errorMessage = 'Invalid password';
             break;
-          // Add more cases for other error codes as needed
-          // You can find the list of error codes in the FirebaseAuthException documentation
         }
 
-        // Show error message to the user using a toast, snackbar, dialog, etc.
-        // For example, using the fluttertoast package:
         Fluttertoast.showToast(
           msg: errorMessage,
           toastLength: Toast.LENGTH_SHORT,
