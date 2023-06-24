@@ -50,3 +50,26 @@ const String tsignUpSubTitle =
 const String tAlreadyHaveAnAccount = "Already Have an Account?";
 const tFullName = "Full Name";
 const tPhoneNo = "Phone No";
+const tReEnterPassword = "Re Enter ";
+
+//Profile screen Text
+const String tProfile = "Profile";
+const String tEditProfile = "Edit Profile";
+const String tLogoutDialogHeading = "Logout";
+const String tProfileHeading = "User Name";
+const String tProfileSubheading = "user_name@gmail.com";
+
+//Menu
+const String tLogOut = "Logout";
+const String tMenu5 = tLogOut;
+const String tMenu2 = "Rent out your Space";
+const String tMenu1 = "Add Additional Details";
+const String tMenu3 = "Manage Parking Space";
+const String tMenu4 = "About";
+
+//--Update Profile Screen
+
+const String tDelete = "Delete";
+const String tJoined = "Joined--";
+const String tJoinedAt = "jun-21,2023";
+const String tUpdateProfile = "Update Profile";
