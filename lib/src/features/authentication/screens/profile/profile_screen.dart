@@ -5,6 +5,7 @@ import 'package:learn01/src/constants/sizes.dart';
 import 'package:learn01/src/constants/text_strings.dart';
 import 'package:learn01/src/features/authentication/screens/additional_details/additional_details.dart';
 import 'package:learn01/src/features/authentication/screens/profile/widgets/profile_menu.dart';
+import 'package:learn01/src/features/authentication/screens/rent_out_your_space/rent_out-your_space.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
 import 'update_profile_screen.dart';
@@ -101,9 +102,15 @@ class ProfileScreen extends StatelessWidget {
                               builder: (context) => const AdditionalDetails()));
                     }),
                 ProfileMenuWidget(
-                    title: tMenu2,
-                    icon: LineAwesomeIcons.alternate_map_marked,
-                    onPress: () {}),
+                  title: tMenu2,
+                  icon: LineAwesomeIcons.alternate_map_marked,
+                  onPress: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const RentSpace()));
+                  },
+                ),
                 ProfileMenuWidget(
                     title: tMenu3, icon: LineAwesomeIcons.edit, onPress: () {}),
                 const Divider(

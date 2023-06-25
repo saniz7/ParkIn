@@ -88,10 +88,22 @@ const String tAdditionalDetailsTitle = "Add  Details";
 const String tAdditionalDetailsSubTitle =
     "Add extra details to get verified and rent your space !";
 
-//Citizenship no
+//add details
 
 const String tCitizenShipNo = "Citizenship-No";
 const String tSecondaryPhoneNo = "Secondary Phone-No";
 const String tUploadDocument = "Citizenship in Pdf form";
 const String tUplaodImage = "Upload your Image";
 const String tAddDetails = "Add Details";
+
+//rent your space
+
+const String tRentYourSpace = "Rent your Space";
+const String tRentYourSpaceSubTitle =
+    "Add your parking area so other's can find";
+const String tLocation = "Location";
+const String tType = "Parking Type";
+const String tRate = "Rate";
+const String tCapacity = "Capacity";
+const String tParkingPlaceImage = "Upload Parking Place Image";
+const String tAddDescription = "Add Description";

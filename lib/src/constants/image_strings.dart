@@ -37,6 +37,12 @@ const String tForgetPasswordImage =
 
 //additional details image
 
-const String tExtraDetailsImage = "assets/images/profile/extra-details-image.png";
+const String tExtraDetailsImage =
+    "assets/images/profile/extra-details-image.png";
 //alternate option
-const String tExtraDetails1Image = "assets/images/profile/extra-details-image1.png";
+const String tExtraDetails1Image =
+    "assets/images/profile/extra-details-image1.png";
+
+//rent your space image
+const String tRentYourSpaceImage =
+    "assets/images/profile/parking-place-image.png";
