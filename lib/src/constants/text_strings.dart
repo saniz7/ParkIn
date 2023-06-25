@@ -81,3 +81,17 @@ const String tUpdatePassword = "Update Password";
 const String tOldPassword = "Old Password";
 const String tNewPassword = "New Password";
 const String tConfirmNewPassword = "Confirm New Password";
+
+//--add additional details
+
+const String tAdditionalDetailsTitle = "Add  Details";
+const String tAdditionalDetailsSubTitle =
+    "Add extra details to get verified and rent your space !";
+
+//Citizenship no
+
+const String tCitizenShipNo = "Citizenship-No";
+const String tSecondaryPhoneNo = "Secondary Phone-No";
+const String tUploadDocument = "Citizenship in Pdf form";
+const String tUplaodImage = "Upload your Image";
+const String tAddDetails = "Add Details";

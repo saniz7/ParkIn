@@ -3,6 +3,7 @@ import 'package:learn01/src/constants/colors.dart';
 import 'package:learn01/src/constants/image_strings.dart';
 import 'package:learn01/src/constants/sizes.dart';
 import 'package:learn01/src/constants/text_strings.dart';
+import 'package:learn01/src/features/authentication/screens/additional_details/additional_details.dart';
 import 'package:learn01/src/features/authentication/screens/profile/widgets/profile_menu.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
@@ -93,7 +94,12 @@ class ProfileScreen extends StatelessWidget {
                 ProfileMenuWidget(
                     title: tMenu1,
                     icon: LineAwesomeIcons.user_plus,
-                    onPress: () {}),
+                    onPress: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const AdditionalDetails()));
+                    }),
                 ProfileMenuWidget(
                     title: tMenu2,
                     icon: LineAwesomeIcons.alternate_map_marked,

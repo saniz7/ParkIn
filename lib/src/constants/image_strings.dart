@@ -34,3 +34,9 @@ const String tProfileImage = "assets/images/profile/profile-pic.jpg";
 //foget password image
 const String tForgetPasswordImage =
     "assets/images/profile/forget-password-image.png";
+
+//additional details image
+
+const String tExtraDetailsImage = "assets/images/profile/extra-details-image.png";
+//alternate option
+const String tExtraDetails1Image = "assets/images/profile/extra-details-image1.png";
