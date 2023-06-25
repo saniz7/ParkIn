@@ -27,10 +27,13 @@ class _SignUpScreenState extends State<SignUpFormWidget> {
 
   Future signUp() async {
     try {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      UserCredential userCredential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
+      String uid = userCredential.user!.uid;
+
       Fluttertoast.showToast(
         msg: 'Signup successful',
         toastLength: Toast.LENGTH_SHORT,
@@ -43,6 +46,7 @@ class _SignUpScreenState extends State<SignUpFormWidget> {
         MaterialPageRoute(builder: (context) => LoginScreen()),
       );
       addUserDetails(
+        uid,
         _usernameController.text.trim(),
         _emailController.text.trim(),
         _passwordController.text.trim(),
@@ -92,14 +96,26 @@ class _SignUpScreenState extends State<SignUpFormWidget> {
     }
   }
 
-  Future addUserDetails(
-      String username, String email, String password, int phoneno) async {
-    await FirebaseFirestore.instance.collection('users').add({
-      'email': email,
-      'password': password,
-      'phoneno': phoneno,
-      'username': username,
-    });
+  Future addUserDetails(String uid, String username, String email,
+      String password, int phoneno) async {
+    try {
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+      // Create a reference to the user document using the UID as the document ID
+      DocumentReference userRef = firestore.collection('users').doc(uid);
+
+      // Store the user details in the document
+      await userRef.set({
+        'uid': uid,
+        'username': username,
+        'email': email,
+        'password': password,
+        'phoneno': phoneno,
+      });
+    } catch (e) {
+      // Handle any errors that occurred during data storage
+      print('Error storing user details: $e');
+    }
   }
 
   @override

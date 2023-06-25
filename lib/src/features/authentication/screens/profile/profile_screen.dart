@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:learn01/src/constants/colors.dart';
 import 'package:learn01/src/constants/image_strings.dart';
@@ -8,6 +10,7 @@ import 'package:learn01/src/features/authentication/screens/profile/widgets/prof
 import 'package:learn01/src/features/authentication/screens/rent_out_your_space/rent_out-your_space.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
+import '../login/login_screen.dart';
 import 'update_profile_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -64,10 +67,36 @@ class ProfileScreen extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 10),
-                Text(tProfileHeading,
-                    style: Theme.of(context).textTheme.bodyLarge),
-                Text(tProfileSubheading,
-                    style: Theme.of(context).textTheme.bodyMedium),
+                FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+                  future: FirebaseFirestore.instance
+                      .collection('users')
+                      .doc(FirebaseAuth.instance.currentUser?.uid)
+                      .get(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      // Data is still loading
+                      return CircularProgressIndicator();
+                    } else if (snapshot.hasData &&
+                        snapshot.data?.exists == true) {
+                      // User data is available
+                      Map<String, dynamic>? userData = snapshot.data?.data();
+                      if (userData != null) {
+                        // Display the user data
+                        return Column(
+                          children: [
+                            Text(userData['username'],
+                                style: Theme.of(context).textTheme.bodyLarge),
+                            Text(userData['email'],
+                                style: Theme.of(context).textTheme.bodyMedium),
+                            // Add the remaining form fields or widgets to display the user data
+                          ],
+                        );
+                      }
+                    }
+                    // User data not found
+                    return Text('User data not found');
+                  },
+                ),
                 const SizedBox(height: 20),
                 SizedBox(
                   width: 200,
@@ -124,7 +153,47 @@ class ProfileScreen extends StatelessWidget {
                   icon: LineAwesomeIcons.alternate_sign_out,
                   textColor: Colors.red,
                   endIcon: false,
-                  onPress: () {},
+                  onPress: () {
+                    try {
+                      FirebaseAuth.instance.signOut();
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => LoginScreen()),
+                      );
+                    } catch (e) {
+                      print('Error during sign-out: $e');
+                    }
+                  },
+                ),
+                const Divider(),
+                const SizedBox(height: 30),
+
+                // View user data
+                FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+                  future: FirebaseFirestore.instance
+                      .collection('users')
+                      .doc(FirebaseAuth.instance.currentUser?.uid)
+                      .get(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      // Data is still loading
+                      return CircularProgressIndicator();
+                    } else if (snapshot.hasData) {
+                      // User data is available
+                      Map<String, dynamic>? userData = snapshot.data?.data();
+                      if (userData != null) {
+                        return Column(
+                          children: [
+                            Text('Username: ${userData['username']}'),
+                            Text('Email: ${userData['email']}'),
+                            // Display other fields as needed
+                          ],
+                        );
+                      }
+                    }
+                    // User data not found
+                    return Text('User data not found');
+                  },
                 ),
               ],
             ),

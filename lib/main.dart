@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:learn01/src/features/authentication/screens/welcome/welcome_screen.dart';
 import 'package:learn01/src/utils/theme/theme.dart';
 
 import 'src/features/authentication/screens/profile/profile_screen.dart';
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
       theme: TAppTheme.lightTheme,
       darkTheme: TAppTheme.darkTheme,
       themeMode: ThemeMode.system,
-      home: const ProfileScreen(),
+      home: const WelcomeScreen(),
     );
   }
 }

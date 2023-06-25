@@ -6,6 +6,8 @@ import '../../../../constants/sizes.dart';
 import '../../../../constants/text_strings.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+import '../profile/profile_screen.dart';
+
 class LoginForm extends StatefulWidget {
   const LoginForm({
     super.key,
@@ -22,6 +24,7 @@ class _LoginFormState extends State<LoginForm> {
   final _passwordController = TextEditingController();
 
   Future signIn() async {
+    
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: _emailController.text.trim(),
@@ -29,7 +32,7 @@ class _LoginFormState extends State<LoginForm> {
       );
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => MainPage()),
+        MaterialPageRoute(builder: (context) => ProfileScreen()),
       );
     } catch (e) {
       if (e is FirebaseAuthException) {
