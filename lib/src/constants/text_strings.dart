@@ -73,3 +73,11 @@ const String tDelete = "Delete";
 const String tJoined = "Joined--";
 const String tJoinedAt = "jun-21,2023";
 const String tUpdateProfile = "Update Profile";
+
+//--change password
+
+const String tChangePassword = "Change Password";
+const String tUpdatePassword = "Update Password";
+const String tOldPassword = "Old Password";
+const String tNewPassword = "New Password";
+const String tConfirmNewPassword = "Confirm New Password";

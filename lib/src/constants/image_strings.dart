@@ -28,5 +28,9 @@ const String tGoogleLogoImage = "assets/images/logo/google-logo.png";
 const String tSignUpImage = "assets/images/welcome_images/sign-up-image.png";
 
 //profile image
- 
+
 const String tProfileImage = "assets/images/profile/profile-pic.jpg";
+
+//foget password image
+const String tForgetPasswordImage =
+    "assets/images/profile/forget-password-image.png";
