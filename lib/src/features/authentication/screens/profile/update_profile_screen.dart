@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:learn01/src/constants/colors.dart';
 import 'package:learn01/src/constants/image_strings.dart';
 import 'package:learn01/src/constants/sizes.dart';
@@ -9,8 +10,27 @@ import 'package:learn01/src/features/authentication/screens/profile/change_passw
 import 'package:learn01/src/features/authentication/screens/profile/profile_screen.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
-class UpdateProfileScreen extends StatelessWidget {
+class UpdateProfileScreen extends StatefulWidget {
   const UpdateProfileScreen({Key? key}) : super(key: key);
+
+  @override
+  _UpdateProfileScreenState createState() => _UpdateProfileScreenState();
+}
+
+class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
+  final _formKey = GlobalKey<FormState>();
+  final _emailController = TextEditingController();
+  final _usernameController = TextEditingController();
+  final _phonenoController = TextEditingController();
+  final RegExp _onlyAlphabetsRegExp = RegExp(r'[a-zA-Z]+');
+
+  void dispose() {
+    // _emailController.removeListener(_validateEmailOnChange);
+
+    _emailController.dispose();
+    _usernameController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -83,44 +103,153 @@ class UpdateProfileScreen extends StatelessWidget {
                       // User data is available
                       Map<String, dynamic>? userData = snapshot.data?.data();
                       if (userData != null) {
+                        _usernameController.text = userData['username'];
+                        _emailController.text = userData['email'];
+                        _phonenoController.text =
+                            userData['phoneno'].toString();
                         return Form(
+                          key: _formKey,
                           child: Column(
                             children: [
                               TextFormField(
-                                initialValue: userData['username'],
+                                controller: _usernameController,
                                 decoration: InputDecoration(
                                   labelText: tFullName,
                                   prefixIcon: Icon(LineAwesomeIcons.user),
                                 ),
+                                // onChanged: (value) {
+                                //   // Update the 'username' field value in the 'users' collection
+                                //   FirebaseFirestore.instance
+                                //       .collection('users')
+                                //       .doc(FirebaseAuth
+                                //           .instance.currentUser?.uid)
+                                //       .update({'username': value});
+                                // },
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                      _onlyAlphabetsRegExp),
+                                ],
+                                validator: (value) {
+                                  if (value == null || value.trim().isEmpty) {
+                                    return 'Please enter your username';
+                                  }
+
+                                  if (value.trim() == value) {
+                                    // No spaces found, valid username
+                                    return null;
+                                  } else {
+                                    return 'Username cannot contain only spaces';
+                                  }
+                                },
                               ),
                               const SizedBox(height: tFormHeight - 20),
                               TextFormField(
-                                initialValue: userData['email'],
+                                controller: _emailController,
+                                // initialValue: userData['email'],
                                 decoration: InputDecoration(
                                   labelText: tEmail,
                                   prefixIcon: Icon(LineAwesomeIcons.envelope_1),
                                 ),
+                                // onChanged: (value) {
+                                //   // Update the 'email' field value in the 'users' collection
+                                //   FirebaseFirestore.instance
+                                //       .collection('users')
+                                //       .doc(FirebaseAuth
+                                //           .instance.currentUser?.uid)
+                                //       .update({'email': value});
+                                // },
+                                validator: (value) {
+                                  if (value == null || value.trim().isEmpty) {
+                                    return 'Please enter your email';
+                                  }
+                                  final email = _emailController.text.trim();
+
+                                  final emailRegExp = RegExp(
+                                    r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$',
+                                  );
+                                  if (!emailRegExp.hasMatch(email)) {
+                                    return 'Please enter a valid email address';
+                                  }
+                                },
                               ),
                               const SizedBox(height: tFormHeight - 20),
                               TextFormField(
-                                initialValue: userData['phoneno'].toString(),
+                                controller: _phonenoController,
+
+                                // initialValue: userData['phoneno'].toString(),
                                 decoration: InputDecoration(
                                   labelText: tPhoneNo,
                                   prefixIcon: Icon(LineAwesomeIcons.phone),
                                 ),
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly,
+                                ],
+                                // onChanged: (value) {
+                                //   // Update the 'phoneno' field value in the 'users' collection
+                                //   FirebaseFirestore.instance
+                                //       .collection('users')
+                                //       .doc(FirebaseAuth
+                                //           .instance.currentUser?.uid)
+                                //       .update({'phoneno': value});
+                                // },
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter your phone number';
+                                  }
+
+                                  if (value.length < 10 || value.length > 10) {
+                                    return 'Phone number must be exactly 10 digits';
+                                  }
+                                  return null; // Return null to indicate the input is valid
+                                },
                               ),
                               const SizedBox(height: tFormHeight - 20),
                               SizedBox(
                                 width: double.infinity,
                                 child: ElevatedButton(
                                   onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            const ProfileScreen(),
-                                      ),
-                                    );
+                                    if (_formKey.currentState?.validate() ==
+                                        true) {
+                                      // Form is valid, update user data
+                                      FirebaseFirestore.instance
+                                          .collection('users')
+                                          .doc(FirebaseAuth
+                                              .instance.currentUser?.uid)
+                                          .update({
+                                        'username': _usernameController.text,
+                                        'email': _emailController.text,
+                                        'phoneno': _phonenoController.text,
+                                      }).then((_) {
+                                        // Successfully updated user data
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                const ProfileScreen(),
+                                          ),
+                                        );
+                                      }).catchError((error) {
+                                        // Error occurred while updating user data
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              title: const Text('Error'),
+                                              content: Text(
+                                                  'Failed to update user data: $error'),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                  child: const Text('OK'),
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        );
+                                      });
+                                    }
                                   },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: tPrimaryColor,

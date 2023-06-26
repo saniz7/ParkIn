@@ -167,34 +167,6 @@ class ProfileScreen extends StatelessWidget {
                 ),
                 const Divider(),
                 const SizedBox(height: 30),
-
-                // View user data
-                FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-                  future: FirebaseFirestore.instance
-                      .collection('users')
-                      .doc(FirebaseAuth.instance.currentUser?.uid)
-                      .get(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      // Data is still loading
-                      return CircularProgressIndicator();
-                    } else if (snapshot.hasData) {
-                      // User data is available
-                      Map<String, dynamic>? userData = snapshot.data?.data();
-                      if (userData != null) {
-                        return Column(
-                          children: [
-                            Text('Username: ${userData['username']}'),
-                            Text('Email: ${userData['email']}'),
-                            // Display other fields as needed
-                          ],
-                        );
-                      }
-                    }
-                    // User data not found
-                    return Text('User data not found');
-                  },
-                ),
               ],
             ),
           ),
