@@ -62,6 +62,7 @@ class _LoginFormState extends State<LoginForm> {
         backgroundColor: Colors.red,
         textColor: Colors.white,
       );
+      dismissProgressDialog(context);
     } catch (e) {
       print('Error: $e');
       // Handle other non-authentication related errors
@@ -177,10 +178,10 @@ class _LoginFormState extends State<LoginForm> {
             Padding(
               padding: const EdgeInsets.all(25.0),
               child: GestureDetector(
-                onTap: () {
+                onTap: () async {
                   if (_formKey.currentState?.validate() == true) {
-                    signIn();
                     showProgressDialog(context);
+                    await signIn();
                   }
                 },
                 child: Container(
