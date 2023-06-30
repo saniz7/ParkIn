@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:learn01/src/features/authentication/screens/welcome/welcome_screen.dart';
 import 'package:learn01/src/utils/theme/theme.dart';
 
-import 'src/features/authentication/screens/profile/profile_screen.dart';
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
