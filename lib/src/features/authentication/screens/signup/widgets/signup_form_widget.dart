@@ -111,6 +111,7 @@ class _SignUpScreenState extends State<SignUpFormWidget> {
         'email': email,
         'password': password,
         'phoneno': phoneno,
+        'role': 'user',
       });
     } catch (e) {
       print('Error storing user details: $e');
