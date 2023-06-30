@@ -3,8 +3,12 @@ import 'package:flutter/material.dart';
 
 class SingleDashItem extends StatelessWidget {
   final String title, subtitle;
+  final void Function()? onPressed;
   const SingleDashItem(
-      {super.key, required this.subtitle, required this.title});
+      {super.key,
+      required this.subtitle,
+      required this.title,
+      required this.onPressed});
 
   @override
   Widget build(BuildContext context) {

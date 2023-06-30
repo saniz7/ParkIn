@@ -42,20 +42,24 @@ class AdminDashboard extends StatelessWidget {
                     primary: false,
                     padding:
                         const EdgeInsets.only(top: tDefaultSize, bottom: 0),
-                    children: const [
+                    children: [
                       SingleDashItem(
+                        onPressed: () {},
                         subtitle: "Users",
                         title: "400",
                       ),
                       SingleDashItem(
+                        onPressed: () {},
                         subtitle: "Parking Places",
                         title: "35",
                       ),
                       SingleDashItem(
+                        onPressed: () {},
                         subtitle: "Users",
                         title: "Manage",
                       ),
                       SingleDashItem(
+                        onPressed: () {},
                         subtitle: "Places",
                         title: "Manage",
                       ),
