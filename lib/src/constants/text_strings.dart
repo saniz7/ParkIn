@@ -2,12 +2,12 @@
 
 const String tAppName = ".parkin/";
 
-const String tAppTagLine = "Learn to code . \n free for everyone";
+const String tAppTagLine = "find parking ";
 
 //On boarding text
 
-const String tOnBoardingTitle1 = "Build Awesome Apps";
-const String tOnBoardingTitle2 = "Learn form youtube";
+const String tOnBoardingTitle1 = "Find parking places";
+const String tOnBoardingTitle2 = "Rent your space";
 const String tOnBoardingTitle3 = "get codes and Resourses";
 const String tOnBoardingSubTitle1 =
     "Let's Start your journey with us aon this amazing and easy path";
