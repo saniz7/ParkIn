@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../../../constants/sizes.dart';
 import '../../../../constants/text_strings.dart';
 import '../profile/profile_screen.dart';
+import '../admin/admin_screen.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({Key? key}) : super(key: key);
@@ -30,10 +32,43 @@ class _LoginFormState extends State<LoginForm> {
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => ProfileScreen()),
-      );
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        DocumentSnapshot<Map<String, dynamic>> userDataSnapshot =
+            await FirebaseFirestore.instance
+                .collection('users')
+                .doc(user.uid)
+                .get();
+        Map<String, dynamic>? userData = userDataSnapshot.data();
+
+        if (userData != null) {
+          String role = userData['role'];
+
+          if (role == 'admin') {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => AdminScreen()),
+            );
+          } else {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ProfileScreen()),
+            );
+          }
+        }
+      }
+      //   if (user.email == 'hello@gmail.com') {
+      //     Navigator.push(
+      //       context,
+      //       MaterialPageRoute(builder: (context) => AdminScreen()),
+      //     );
+      //   } else {
+      //     Navigator.push(
+      //       context,
+      //       MaterialPageRoute(builder: (context) => ProfileScreen()),
+      //     );
+      //   }
+      // }
     } on FirebaseAuthException catch (e) {
       print('Error: ${e.code} - ${e.message}');
 
