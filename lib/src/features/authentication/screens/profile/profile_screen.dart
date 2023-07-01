@@ -11,6 +11,8 @@ import 'package:learn01/src/features/authentication/screens/rent_out_your_space/
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
 import '../login/login_screen.dart';
+import '../manage_parking_space/Manage_your_Space.dart';
+import '../manage_parking_space/widgets/Manage_your_Space_Widget.dart';
 import 'update_profile_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -88,7 +90,6 @@ class ProfileScreen extends StatelessWidget {
                                 style: Theme.of(context).textTheme.bodyLarge),
                             Text(userData['email'],
                                 style: Theme.of(context).textTheme.bodyMedium),
-                            // Add the remaining form fields or widgets to display the user data
                           ],
                         );
                       }
@@ -141,7 +142,14 @@ class ProfileScreen extends StatelessWidget {
                   },
                 ),
                 ProfileMenuWidget(
-                    title: tMenu3, icon: LineAwesomeIcons.edit, onPress: () {}),
+                    title: tMenu3,
+                    icon: LineAwesomeIcons.edit,
+                    onPress: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const ManageSpaceScreen()));
+                    }),
                 const Divider(
                   color: Colors.grey,
                 ),
