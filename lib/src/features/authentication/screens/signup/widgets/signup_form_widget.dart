@@ -1,9 +1,11 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:learn01/src/constants/sizes.dart';
+import 'package:learn01/src/constants/text_strings.dart';
+
 import '../../login/login_screen.dart';
 
 class SignUpFormWidget extends StatefulWidget {
@@ -165,7 +167,7 @@ class _SignUpScreenState extends State<SignUpFormWidget> {
             TextFormField(
               controller: _usernameController,
               decoration: const InputDecoration(
-                labelText: 'Full Name',
+                labelText: tFullName,
                 prefixIcon: Icon(Icons.person_outline_rounded),
               ),
               inputFormatters: [

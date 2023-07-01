@@ -9,7 +9,7 @@ class UserView extends StatelessWidget {
       appBar: AppBar(
         title: const Text("User View"),
       ),
-      body:Consumer,
+      body:return ListView.builder(itemBuilder: itemBuilder),
     );
   }
 }

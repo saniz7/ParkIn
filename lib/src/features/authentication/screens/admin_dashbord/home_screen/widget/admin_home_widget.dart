@@ -13,7 +13,7 @@ class SingleDashItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CupertinoButton(
-      onPressed: () {},
+      onPressed: onPressed,
       padding: EdgeInsets.zero,
       child: Card(
         child: Container(

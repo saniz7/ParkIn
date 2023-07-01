@@ -48,7 +48,7 @@ const String tSignUpTitle = "Get on Board!";
 const String tsignUpSubTitle =
     "Create your profile to start your journey with us";
 const String tAlreadyHaveAnAccount = "Already Have an Account?";
-const tFullName = "Full Name";
+const tFullName = "UserName";
 const tPhoneNo = "Phone No";
 const tReEnterPassword = "Re Enter ";
 
