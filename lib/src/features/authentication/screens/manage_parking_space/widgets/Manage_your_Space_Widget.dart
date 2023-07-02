@@ -1,8 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
+
+import '../../../../../common_widgets/form/form_header_widget.dart';
+import '../../../../../constants/image_strings.dart';
+import '../../../../../constants/sizes.dart';
+import '../../../../../constants/text_strings.dart';
+import '../../profile/profile_screen.dart';
 
 class ManageSpaceScreen extends StatefulWidget {
   const ManageSpaceScreen({Key? key}) : super(key: key);
@@ -13,16 +18,22 @@ class ManageSpaceScreen extends StatefulWidget {
 
 class _ManageSpaceScreenState extends State<ManageSpaceScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController();
-  final _usernameController = TextEditingController();
-  final _phonenoController = TextEditingController();
-  final RegExp _onlyAlphabetsRegExp = RegExp(r'[a-zA-Z]+');
+  final _typeController = TextEditingController();
+  final _locationController = TextEditingController();
+  final _rateController = TextEditingController();
+  final capacityController = TextEditingController();
+  final descriptionController = TextEditingController();
+  // final parkingPlaceImageController = TextEditingController();
+  late String uid;
 
   @override
   void dispose() {
-    _emailController.dispose();
-    _usernameController.dispose();
-    _phonenoController.dispose();
+    _typeController.dispose();
+    _locationController.dispose();
+    _rateController.dispose();
+    // parkingPlaceImageController.clear();
+    capacityController.dispose();
+    descriptionController.dispose();
     super.dispose();
   }
 
@@ -68,72 +79,103 @@ class _ManageSpaceScreenState extends State<ManageSpaceScreen> {
                         Map<String, dynamic>? userData =
                             documentSnapshot.data();
                         if (userData != null) {
-                          // _usernameController.text = userData['location'];
-                          // _emailController.text = userData['type'];
-                          // _phonenoController.text = userData['rate'].toString();
+                          uid = userData['uid'];
+                          _locationController.text = userData['location'];
+                          _typeController.text = userData['type'];
+                          _rateController.text = userData['rate'].toString();
+                          capacityController.text =
+                              userData['capacity'].toString();
+                          descriptionController.text = userData['description'];
+                          // parkingPlaceImageController.text =
+                          // userData['parkingPlaceImage'];
                           return Form(
                             key: _formKey,
                             child: Column(
                               children: [
-                                TextFormField(
-                                  // controller: _usernameController,
-                                  decoration: InputDecoration(
-                                    labelText: 'Full Name',
-                                    prefixIcon:
-                                        const Icon(LineAwesomeIcons.user),
-                                  ),
-                                  inputFormatters: [
-                                    FilteringTextInputFormatter.allow(
-                                      _onlyAlphabetsRegExp,
-                                    ),
-                                  ],
-                                  validator: (value) {
-                                    if (value == null || value.trim().isEmpty) {
-                                      return 'Please enter your username';
-                                    }
-
-                                    if (value.trim() == value) {
-                                      // No spaces found, valid username
-                                      return null;
-                                    } else {
-                                      return 'Username cannot contain only spaces';
-                                    }
-                                  },
+                                FormHeaderWidget(
+                                  image: tRentYourSpaceImage,
+                                  // title: tAdditionalDetailsTitle,
+                                  subTitle: 'Edit your parking space',
                                 ),
-                                const SizedBox(height: 20),
                                 TextFormField(
-                                  // controller: _emailController,
+                                  controller: _locationController,
                                   decoration: InputDecoration(
-                                    labelText: 'Email',
-                                    prefixIcon:
-                                        const Icon(LineAwesomeIcons.envelope_1),
+                                    labelText:
+                                        tLocation, // Changed label to labelText
+                                    prefixIcon: Icon(Icons.location_city),
                                   ),
                                   validator: (value) {
-                                    if (value == null || value.trim().isEmpty) {
-                                      return 'Please enter your email';
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please enter a location';
                                     }
-
                                     return null;
                                   },
                                 ),
-                                const SizedBox(height: 20),
+                                SizedBox(
+                                  height: tFormHeight - 20,
+                                ),
                                 TextFormField(
-                                  // controller: _phonenoController,
+                                  controller: _typeController,
                                   decoration: InputDecoration(
-                                    labelText: 'Phone Number',
-                                    prefixIcon:
-                                        const Icon(LineAwesomeIcons.phone),
+                                    labelText:
+                                        tType, // Changed label to labelText
+                                    prefixIcon: Icon(Icons.public_sharp),
                                   ),
-                                  inputFormatters: [
-                                    FilteringTextInputFormatter.digitsOnly,
-                                  ],
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
-                                      return 'Please enter your phone number';
+                                      return 'Please enter a type';
                                     }
-
-                                    if (value.length != 10) {
-                                      return 'Phone number must be exactly 10 digits';
+                                    return null;
+                                  },
+                                ),
+                                SizedBox(
+                                  height: tFormHeight - 20,
+                                ),
+                                TextFormField(
+                                  controller: _rateController,
+                                  decoration: InputDecoration(
+                                    labelText:
+                                        tRate, // Changed label to labelText
+                                    prefixIcon:
+                                        Icon(Icons.currency_exchange_sharp),
+                                  ),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please enter a rate';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                                SizedBox(
+                                  height: tFormHeight - 20,
+                                ),
+                                TextFormField(
+                                  controller: capacityController,
+                                  decoration: InputDecoration(
+                                    labelText:
+                                        tCapacity, // Changed label to labelText
+                                    prefixIcon: Icon(Icons.numbers),
+                                  ),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please enter a capacity';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                                SizedBox(
+                                  height: tFormHeight - 20,
+                                ),
+                                TextFormField(
+                                  controller: descriptionController,
+                                  decoration: InputDecoration(
+                                    labelText:
+                                        tAddDescription, // Changed label to labelText
+                                    prefixIcon: Icon(Icons.description),
+                                  ),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please enter a description';
                                     }
                                     return null;
                                   },
@@ -147,15 +189,29 @@ class _ManageSpaceScreenState extends State<ManageSpaceScreen> {
                                         // Form is valid, update user data
                                         FirebaseFirestore.instance
                                             .collection('space')
-                                            .doc(FirebaseAuth
-                                                .instance.currentUser!.uid)
+                                            .doc(documentSnapshot.id)
                                             .update({
-                                          // 'location': _usernameController.text,
-                                          // 'type': _emailController.text,
-                                          // 'rate': int.parse(
-                                          // _phonenoController.text),
+                                          'uid': uid,
+
+                                          'location': _locationController.text,
+                                          'type': _typeController.text,
+                                          'rate':
+                                              int.parse(_rateController.text),
+                                          'capacity': int.parse(
+                                              capacityController.text),
+                                          'description':
+                                              descriptionController.text,
+                                          // 'parkingPlaceImage':
+                                          // parkingPlaceImageController.text,
                                         }).then((_) {
                                           // Successfully updated user data
+                                          Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const ProfileScreen(),
+                                            ),
+                                          );
                                           Navigator.pop(context);
                                         }).catchError((error) {
                                           // Error occurred while updating user data

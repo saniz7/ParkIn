@@ -5,9 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:learn01/src/constants/sizes.dart';
-import '../../login/login_screen.dart';
-import '../../../../../constants/colors.dart';
 import '../../profile/profile_screen.dart';
 
 class RentSpaceWidget extends StatefulWidget {
@@ -67,7 +64,7 @@ class _RentSpaceState extends State<RentSpaceWidget> {
       parkingPlaceImageController.clear();
       descriptionController.clear();
       dismissProgressDialog(context);
-  Navigator.push(
+      Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => ProfileScreen()),
       );
