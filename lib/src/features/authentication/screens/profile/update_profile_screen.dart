@@ -151,14 +151,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                                   labelText: tEmail,
                                   prefixIcon: Icon(LineAwesomeIcons.envelope_1),
                                 ),
-                                // onChanged: (value) {
-                                //   // Update the 'email' field value in the 'users' collection
-                                //   FirebaseFirestore.instance
-                                //       .collection('users')
-                                //       .doc(FirebaseAuth
-                                //           .instance.currentUser?.uid)
-                                //       .update({'email': value});
-                                // },
+
                                 validator: (value) {
                                   if (value == null || value.trim().isEmpty) {
                                     return 'Please enter your email';

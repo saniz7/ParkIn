@@ -56,7 +56,7 @@ class _SignUpScreenState extends State<SignUpFormWidget> {
         _passwordController.text.trim(),
         int.parse(_phonenoController.text.trim()),
       );
-      // dismissProgressDialog(context);
+      dismissProgressDialog(context);
     } catch (e) {
       if (e is FirebaseAuthException) {
         print('Error: ${e.code} - ${e.message}');
