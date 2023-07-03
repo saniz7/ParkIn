@@ -10,7 +10,9 @@ import '../../../../../constants/text_strings.dart';
 import '../../profile/profile_screen.dart';
 
 class ManageScreen extends StatefulWidget {
-  const ManageScreen({Key? key}) : super(key: key);
+  final Map<String, dynamic> spaceData;
+
+  const ManageScreen({Key? key, required this.spaceData}) : super(key: key);
 
   @override
   _ManageSpaceScreenState createState() => _ManageSpaceScreenState();
@@ -23,7 +25,6 @@ class _ManageSpaceScreenState extends State<ManageScreen> {
   final _rateController = TextEditingController();
   final capacityController = TextEditingController();
   final descriptionController = TextEditingController();
-  // final parkingPlaceImageController = TextEditingController();
   late String uid;
 
   @override
@@ -31,7 +32,6 @@ class _ManageSpaceScreenState extends State<ManageScreen> {
     _typeController.dispose();
     _locationController.dispose();
     _rateController.dispose();
-    // parkingPlaceImageController.clear();
     capacityController.dispose();
     descriptionController.dispose();
     super.dispose();
@@ -64,189 +64,186 @@ class _ManageSpaceScreenState extends State<ManageScreen> {
                       .get(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      // Data is still loading
                       return const CircularProgressIndicator();
                     } else if (snapshot.hasData) {
-                      // User data is available
                       QuerySnapshot<Map<String, dynamic>> querySnapshot =
                           snapshot.data!;
                       if (querySnapshot.size > 0) {
-                        // Retrieve the first document from the query result
-                        DocumentSnapshot<Map<String, dynamic>>
-                            documentSnapshot = querySnapshot.docs[0];
-                        Map<String, dynamic>? userData =
-                            documentSnapshot.data();
-                        if (userData != null) {
-                          uid = userData['uid'];
-                          _locationController.text = userData['location'];
-                          _typeController.text = userData['type'];
-                          _rateController.text = userData['rate'].toString();
-                          capacityController.text =
-                              userData['capacity'].toString();
-                          descriptionController.text = userData['description'];
-                          // parkingPlaceImageController.text =
-                          // userData['parkingPlaceImage'];
-                          return Form(
-                            key: _formKey,
-                            child: Column(
-                              children: [
-                                FormHeaderWidget(
-                                  image: tRentYourSpaceImage,
-                                  // title: tAdditionalDetailsTitle,
-                                  subTitle: 'Edit your parking space',
-                                ),
-                                TextFormField(
-                                  controller: _locationController,
-                                  decoration: InputDecoration(
-                                    labelText:
-                                        tLocation, // Changed label to labelText
-                                    prefixIcon: Icon(Icons.location_city),
-                                  ),
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Please enter a location';
-                                    }
-                                    return null;
-                                  },
-                                ),
-                                SizedBox(
-                                  height: tFormHeight - 20,
-                                ),
-                                TextFormField(
-                                  controller: _typeController,
-                                  decoration: InputDecoration(
-                                    labelText:
-                                        tType, // Changed label to labelText
-                                    prefixIcon: Icon(Icons.public_sharp),
-                                  ),
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Please enter a type';
-                                    }
-                                    return null;
-                                  },
-                                ),
-                                SizedBox(
-                                  height: tFormHeight - 20,
-                                ),
-                                TextFormField(
-                                  controller: _rateController,
-                                  decoration: InputDecoration(
-                                    labelText:
-                                        tRate, // Changed label to labelText
-                                    prefixIcon:
-                                        Icon(Icons.currency_exchange_sharp),
-                                  ),
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Please enter a rate';
-                                    }
-                                    return null;
-                                  },
-                                ),
-                                SizedBox(
-                                  height: tFormHeight - 20,
-                                ),
-                                TextFormField(
-                                  controller: capacityController,
-                                  decoration: InputDecoration(
-                                    labelText:
-                                        tCapacity, // Changed label to labelText
-                                    prefixIcon: Icon(Icons.numbers),
-                                  ),
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Please enter a capacity';
-                                    }
-                                    return null;
-                                  },
-                                ),
-                                SizedBox(
-                                  height: tFormHeight - 20,
-                                ),
-                                TextFormField(
-                                  controller: descriptionController,
-                                  decoration: InputDecoration(
-                                    labelText:
-                                        tAddDescription, // Changed label to labelText
-                                    prefixIcon: Icon(Icons.description),
-                                  ),
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Please enter a description';
-                                    }
-                                    return null;
-                                  },
-                                ),
-                                const SizedBox(height: 20),
-                                SizedBox(
-                                  width: double.infinity,
-                                  child: ElevatedButton(
-                                    onPressed: () {
-                                      if (_formKey.currentState!.validate()) {
-                                        // Form is valid, update user data
-                                        FirebaseFirestore.instance
-                                            .collection('space')
-                                            .doc(documentSnapshot.id)
-                                            .update({
-                                          'uid': uid,
-                                          'location': _locationController.text,
-                                          'type': _typeController.text,
-                                          'rate':
-                                              int.parse(_rateController.text),
-                                          'capacity': int.parse(
-                                              capacityController.text),
-                                          'description':
-                                              descriptionController.text,
-                                          // 'parkingPlaceImage':
-                                          // parkingPlaceImageController.text,
-                                        }).then((_) {
-                                          // Successfully updated user data
-                                          Navigator.pushReplacement(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const ProfileScreen(),
-                                            ),
-                                          );
-                                          Navigator.pop(context);
-                                        }).catchError((error) {
-                                          // Error occurred while updating user data
-                                          showDialog(
-                                            context: context,
-                                            builder: (BuildContext context) {
-                                              return AlertDialog(
-                                                title: const Text('Error'),
-                                                content: Text(
-                                                  'Failed to update user data: $error',
-                                                ),
-                                                actions: [
-                                                  TextButton(
-                                                    onPressed: () {
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                    },
-                                                    child: const Text('OK'),
+                        // Display the selected parking space data
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: querySnapshot.size,
+                          itemBuilder: (context, index) {
+                            DocumentSnapshot<Map<String, dynamic>>
+                                documentSnapshot = querySnapshot.docs[index];
+                            Map<String, dynamic>? spaceData =
+                                documentSnapshot.data();
+                            if (spaceData != null) {
+                              // Check if the selected parking space matches the spaceData
+                              if (spaceData['location'] ==
+                                      widget.spaceData['location'] &&
+                                  spaceData['type'] ==
+                                      widget.spaceData['type']) {
+                                uid = spaceData['uid'];
+                                _locationController.text =
+                                    spaceData['location'];
+                                _typeController.text = spaceData['type'];
+                                _rateController.text =
+                                    spaceData['rate'].toString();
+                                capacityController.text =
+                                    spaceData['capacity'].toString();
+                                descriptionController.text =
+                                    spaceData['description'];
+
+                                return Form(
+                                  key: _formKey,
+                                  child: Column(
+                                    children: [
+                                      FormHeaderWidget(
+                                        image: tRentYourSpaceImage,
+                                        subTitle: 'Edit your parking space',
+                                      ),
+                                      TextFormField(
+                                        controller: _locationController,
+                                        decoration: InputDecoration(
+                                          labelText: tLocation,
+                                          prefixIcon: Icon(Icons.location_city),
+                                        ),
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return 'Please enter a location';
+                                          }
+                                          return null;
+                                        },
+                                      ),
+                                      SizedBox(height: tFormHeight - 20),
+                                      TextFormField(
+                                        controller: _typeController,
+                                        decoration: InputDecoration(
+                                          labelText: tType,
+                                          prefixIcon: Icon(Icons.public_sharp),
+                                        ),
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return 'Please enter a type';
+                                          }
+                                          return null;
+                                        },
+                                      ),
+                                      SizedBox(height: tFormHeight - 20),
+                                      TextFormField(
+                                        controller: _rateController,
+                                        decoration: InputDecoration(
+                                          labelText: tRate,
+                                          prefixIcon: Icon(
+                                              Icons.currency_exchange_sharp),
+                                        ),
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return 'Please enter a rate';
+                                          }
+                                          return null;
+                                        },
+                                      ),
+                                      SizedBox(height: tFormHeight - 20),
+                                      TextFormField(
+                                        controller: capacityController,
+                                        decoration: InputDecoration(
+                                          labelText: tCapacity,
+                                          prefixIcon: Icon(Icons.numbers),
+                                        ),
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return 'Please enter a capacity';
+                                          }
+                                          return null;
+                                        },
+                                      ),
+                                      SizedBox(height: tFormHeight - 20),
+                                      TextFormField(
+                                        controller: descriptionController,
+                                        decoration: InputDecoration(
+                                          labelText: tAddDescription,
+                                          prefixIcon: Icon(Icons.description),
+                                        ),
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return 'Please enter a description';
+                                          }
+                                          return null;
+                                        },
+                                      ),
+                                      SizedBox(height: 20),
+                                      SizedBox(
+                                        width: double.infinity,
+                                        child: ElevatedButton(
+                                          onPressed: () {
+                                            if (_formKey.currentState!
+                                                .validate()) {
+                                              FirebaseFirestore.instance
+                                                  .collection('space')
+                                                  .doc(documentSnapshot.id)
+                                                  .update({
+                                                'uid': uid,
+                                                'location':
+                                                    _locationController.text,
+                                                'type': _typeController.text,
+                                                'rate': int.parse(
+                                                    _rateController.text),
+                                                'capacity': int.parse(
+                                                    capacityController.text),
+                                                'description':
+                                                    descriptionController.text,
+                                              }).then((_) {
+                                                Navigator.pushReplacement(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        const ProfileScreen(),
                                                   ),
-                                                ],
-                                              );
-                                            },
-                                          );
-                                        });
-                                      }
-                                    },
-                                    child: const Text(
-                                      'Update Profile',
-                                    ),
+                                                );
+                                                Navigator.pop(context);
+                                              }).catchError((error) {
+                                                showDialog(
+                                                  context: context,
+                                                  builder:
+                                                      (BuildContext context) {
+                                                    return AlertDialog(
+                                                      title:
+                                                          const Text('Error'),
+                                                      content: Text(
+                                                        'Failed to update user data: $error',
+                                                      ),
+                                                      actions: [
+                                                        TextButton(
+                                                          onPressed: () {
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop();
+                                                          },
+                                                          child:
+                                                              const Text('OK'),
+                                                        ),
+                                                      ],
+                                                    );
+                                                  },
+                                                );
+                                              });
+                                            }
+                                          },
+                                          child: const Text('Update Profile'),
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ),
-                              ],
-                            ),
-                          );
-                        }
+                                );
+                              }
+                            }
+                            return const SizedBox.shrink();
+                          },
+                        );
                       }
                     }
-                    // User data not found
                     return const Text('User data not found');
                   },
                 ),

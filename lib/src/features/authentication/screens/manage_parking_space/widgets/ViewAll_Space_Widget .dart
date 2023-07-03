@@ -7,14 +7,14 @@ import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 class ViewSpaceScreen extends StatelessWidget {
   const ViewSpaceScreen({Key? key}) : super(key: key);
 
-  void navigateToSpaceDetails(BuildContext context,
+  void navigateToManageScreen(BuildContext context,
       DocumentSnapshot<Map<String, dynamic>> documentSnapshot) {
     final spaceData = documentSnapshot.data();
     if (spaceData != null) {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => SpaceDetailsScreen(spaceData: spaceData),
+          builder: (context) => ManageScreen(spaceData: spaceData),
         ),
       );
     }
@@ -67,10 +67,10 @@ class ViewSpaceScreen extends StatelessWidget {
                               return ListTile(
                                 title: Text(spaceData['location']),
                                 subtitle: Text(spaceData['type']),
-                                onTap: () {
-                                  navigateToSpaceDetails(
-                                      context, documentSnapshot);
-                                },
+                                onTap: () => navigateToManageScreen(
+                                  context,
+                                  documentSnapshot,
+                                ),
                               );
                             } else {
                               return const SizedBox();
@@ -86,34 +86,6 @@ class ViewSpaceScreen extends StatelessWidget {
               ],
             ),
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class SpaceDetailsScreen extends StatelessWidget {
-  final Map<String, dynamic> spaceData;
-
-  const SpaceDetailsScreen({required this.spaceData});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Parking Space Details'),
-      ),
-      body: Container(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Location: ${spaceData['location']}'),
-            Text('Type: ${spaceData['type']}'),
-            Text('Rate: ${spaceData['rate']}'),
-            Text('Capacity: ${spaceData['capacity']}'),
-            Text('Description: ${spaceData['description']}'),
-          ],
         ),
       ),
     );
