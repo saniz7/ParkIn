@@ -9,14 +9,14 @@ import '../../../../../constants/sizes.dart';
 import '../../../../../constants/text_strings.dart';
 import '../../profile/profile_screen.dart';
 
-class ManageSpaceScreen extends StatefulWidget {
-  const ManageSpaceScreen({Key? key}) : super(key: key);
+class ManageScreen extends StatefulWidget {
+  const ManageScreen({Key? key}) : super(key: key);
 
   @override
   _ManageSpaceScreenState createState() => _ManageSpaceScreenState();
 }
 
-class _ManageSpaceScreenState extends State<ManageSpaceScreen> {
+class _ManageSpaceScreenState extends State<ManageScreen> {
   final _formKey = GlobalKey<FormState>();
   final _typeController = TextEditingController();
   final _locationController = TextEditingController();
@@ -48,9 +48,7 @@ class _ManageSpaceScreenState extends State<ManageSpaceScreen> {
             },
             icon: const Icon(LineAwesomeIcons.angle_double_left),
           ),
-          title: const Text(
-            'Manage Space',
-          ),
+          title: const Text('Manage Space'),
         ),
         body: SingleChildScrollView(
           child: Container(
@@ -192,7 +190,6 @@ class _ManageSpaceScreenState extends State<ManageSpaceScreen> {
                                             .doc(documentSnapshot.id)
                                             .update({
                                           'uid': uid,
-
                                           'location': _locationController.text,
                                           'type': _typeController.text,
                                           'rate':

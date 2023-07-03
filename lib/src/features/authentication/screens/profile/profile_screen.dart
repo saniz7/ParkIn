@@ -12,6 +12,7 @@ import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
 import '../login/login_screen.dart';
 import '../manage_parking_space/widgets/Manage_your_Space_Widget.dart';
+import '../manage_parking_space/widgets/ViewAll_Space_Widget .dart';
 import 'update_profile_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -147,7 +148,7 @@ class ProfileScreen extends StatelessWidget {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const ManageSpaceScreen()));
+                              builder: (context) => const ViewSpaceScreen()));
                     }),
                 const Divider(
                   color: Colors.grey,
