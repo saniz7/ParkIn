@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -18,8 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
     zoom: 15,
   );
 
-  List<Marker> _marker = [];
-  List<Marker> _list = const [
+  List<Marker> _markers = <Marker>[
     Marker(
       markerId: MarkerId('1'),
       position: LatLng(27.671333297258062, 85.33869273960579),
@@ -27,10 +27,41 @@ class _HomeScreenState extends State<HomeScreen> {
     )
   ];
 
+  loadData() {
+    getUserCurrentLocation().then((value) async {
+      print('My current location');
+      print(value.latitude.toString() + " " + value.longitude.toString());
+
+      _markers.add(Marker(
+          markerId: MarkerId('2'),
+          position: LatLng(value.latitude, value.longitude),
+          infoWindow: InfoWindow(title: "My current location")));
+
+      CameraPosition cameraPosition = CameraPosition(
+          zoom: 15, target: LatLng(value.latitude, value.longitude));
+
+      final GoogleMapController controller = await _controller.future;
+
+      controller.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+      setState(() {});
+    });
+  }
+
+  Future<Position> getUserCurrentLocation() async {
+    await Geolocator.requestPermission()
+        .then((value) {})
+        .onError((error, stackTrace) {
+      print("error" + error.toString());
+    });
+
+    return await Geolocator.getCurrentPosition();
+  }
+
   @override
   void initState() {
+    // TODO: implement initState
     super.initState();
-    _marker.addAll(_list);
+    loadData();
   }
 
   @override
@@ -39,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Scaffold(
         body: GoogleMap(
           //marker show
-          markers: Set<Marker>.of(_marker),
+          markers: Set<Marker>.of(_markers),
           initialCameraPosition: _kGooglePlex,
           mapType: MapType.normal,
           compassEnabled: false,
@@ -47,6 +78,29 @@ class _HomeScreenState extends State<HomeScreen> {
           // myLocationButtonEnabled: true,
           onMapCreated: (GoogleMapController controller) {
             _controller.complete(controller);
+          },
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            getUserCurrentLocation().then((value) async {
+              print('My current location');
+              print(
+                  value.latitude.toString() + " " + value.longitude.toString());
+
+              _markers.add(Marker(
+                  markerId: MarkerId('2'),
+                  position: LatLng(value.latitude, value.longitude),
+                  infoWindow: InfoWindow(title: "My current location")));
+
+              CameraPosition cameraPosition = CameraPosition(
+                  zoom: 15, target: LatLng(value.latitude, value.longitude));
+
+              final GoogleMapController controller = await _controller.future;
+
+              controller.animateCamera(
+                  CameraUpdate.newCameraPosition(cameraPosition));
+              setState(() {});
+            });
           },
         ),
       ),
