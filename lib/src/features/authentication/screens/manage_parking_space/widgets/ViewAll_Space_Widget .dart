@@ -4,8 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:learn01/src/features/authentication/screens/manage_parking_space/widgets/Manage_your_Space_Widget.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
-class ViewSpaceScreen extends StatelessWidget {
+class ViewSpaceScreen extends StatefulWidget {
   const ViewSpaceScreen({Key? key}) : super(key: key);
+
+  @override
+  _ViewSpaceScreenState createState() => _ViewSpaceScreenState();
+}
+
+class _ViewSpaceScreenState extends State<ViewSpaceScreen> {
+  int parkingSpaceCount = 0;
 
   void navigateToManageScreen(BuildContext context,
       DocumentSnapshot<Map<String, dynamic>> documentSnapshot) {
@@ -47,39 +54,46 @@ class ViewSpaceScreen extends StatelessWidget {
                       .snapshots(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      // Data is still loading
                       return const CircularProgressIndicator();
                     } else if (snapshot.hasData) {
-                      // User data is available
                       QuerySnapshot<Map<String, dynamic>> querySnapshot =
                           snapshot.data!;
-                      if (querySnapshot.size > 0) {
-                        // Display all the parking spaces
-                        return ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: querySnapshot.size,
-                          itemBuilder: (context, index) {
-                            DocumentSnapshot<Map<String, dynamic>>
-                                documentSnapshot = querySnapshot.docs[index];
-                            Map<String, dynamic>? spaceData =
-                                documentSnapshot.data();
-                            if (spaceData != null) {
-                              return ListTile(
-                                title: Text(spaceData['location']),
-                                subtitle: Text(spaceData['type']),
-                                onTap: () => navigateToManageScreen(
-                                  context,
-                                  documentSnapshot,
-                                ),
-                              );
-                            } else {
-                              return const SizedBox();
-                            }
-                          },
+                      parkingSpaceCount =
+                          querySnapshot.size; // Calculate the count
+
+                      if (parkingSpaceCount > 0) {
+                        return Column(
+                          children: [
+                            ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: parkingSpaceCount,
+                              itemBuilder: (context, index) {
+                                DocumentSnapshot<Map<String, dynamic>>
+                                    documentSnapshot =
+                                    querySnapshot.docs[index];
+                                Map<String, dynamic>? spaceData =
+                                    documentSnapshot.data();
+                                if (spaceData != null) {
+                                  return ListTile(
+                                    title: Text(spaceData['location']),
+                                    subtitle: Text(spaceData['type']),
+                                    onTap: () => navigateToManageScreen(
+                                      context,
+                                      documentSnapshot,
+                                    ),
+                                  );
+                                } else {
+                                  return const SizedBox();
+                                }
+                              },
+                            ),
+                            const SizedBox(height: 20),
+                            Text('Parking Space Count: $parkingSpaceCount'),
+                          ],
                         );
                       }
                     }
-                    // User data not found or no parking spaces
+
                     return const Text('No parking spaces found');
                   },
                 ),
