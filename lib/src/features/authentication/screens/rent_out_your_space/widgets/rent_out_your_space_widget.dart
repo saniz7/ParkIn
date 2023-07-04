@@ -23,6 +23,7 @@ class _RentSpaceState extends State<RentSpaceWidget> {
   final capacityController = TextEditingController();
   final parkingPlaceImageController = TextEditingController();
   final descriptionController = TextEditingController();
+  final viewController = TextEditingController();
 
   bool _isLoading = false;
 
@@ -48,6 +49,7 @@ class _RentSpaceState extends State<RentSpaceWidget> {
         'capacity': capacityController.text,
         'parkingPlaceImage': parkingPlaceImageController.text,
         'description': descriptionController.text,
+        'view': viewController.text,
       };
 
       // Set the form data in the document
@@ -63,6 +65,8 @@ class _RentSpaceState extends State<RentSpaceWidget> {
       capacityController.clear();
       parkingPlaceImageController.clear();
       descriptionController.clear();
+      viewController.clear();
+
       dismissProgressDialog(context);
       Navigator.push(
         context,
@@ -99,6 +103,7 @@ class _RentSpaceState extends State<RentSpaceWidget> {
     capacityController.dispose();
     parkingPlaceImageController.dispose();
     descriptionController.dispose();
+    viewController.clear();
 
     super.dispose();
   }
@@ -222,6 +227,22 @@ class _RentSpaceState extends State<RentSpaceWidget> {
               controller: descriptionController,
               decoration: InputDecoration(
                 labelText: tAddDescription, // Changed label to labelText
+                prefixIcon: Icon(Icons.description),
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter a description';
+                }
+                return null;
+              },
+            ),
+            SizedBox(
+              height: tFormHeight - 20,
+            ),
+            TextFormField(
+              controller: viewController,
+              decoration: InputDecoration(
+                labelText: 'Ready for parking?', // Changed label to labelText
                 prefixIcon: Icon(Icons.description),
               ),
               validator: (value) {

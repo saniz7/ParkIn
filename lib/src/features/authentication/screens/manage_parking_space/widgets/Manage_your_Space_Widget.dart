@@ -25,6 +25,8 @@ class _ManageSpaceScreenState extends State<ManageScreen> {
   final _rateController = TextEditingController();
   final capacityController = TextEditingController();
   final descriptionController = TextEditingController();
+  final viewController = TextEditingController();
+
   late String uid;
 
   @override
@@ -34,6 +36,8 @@ class _ManageSpaceScreenState extends State<ManageScreen> {
     _rateController.dispose();
     capacityController.dispose();
     descriptionController.dispose();
+    viewController.dispose();
+
     super.dispose();
   }
 
@@ -94,6 +98,7 @@ class _ManageSpaceScreenState extends State<ManageScreen> {
                                     spaceData['capacity'].toString();
                                 descriptionController.text =
                                     spaceData['description'];
+                                viewController.text = spaceData['view'];
 
                                 return Form(
                                   key: _formKey,
@@ -173,6 +178,20 @@ class _ManageSpaceScreenState extends State<ManageScreen> {
                                           return null;
                                         },
                                       ),
+                                      SizedBox(height: tFormHeight - 20),
+                                      TextFormField(
+                                        controller: viewController,
+                                        decoration: InputDecoration(
+                                          labelText: tAddDescription,
+                                          prefixIcon: Icon(Icons.description),
+                                        ),
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return 'Please enter a description';
+                                          }
+                                          return null;
+                                        },
+                                      ),
                                       SizedBox(height: 20),
                                       SizedBox(
                                         width: double.infinity,
@@ -194,6 +213,7 @@ class _ManageSpaceScreenState extends State<ManageScreen> {
                                                     capacityController.text),
                                                 'description':
                                                     descriptionController.text,
+                                                'view': viewController.text,
                                               }).then((_) {
                                                 Navigator.pushReplacement(
                                                   context,

@@ -13,6 +13,7 @@ import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import '../login/login_screen.dart';
 import '../manage_parking_space/widgets/Manage_your_Space_Widget.dart';
 import '../manage_parking_space/widgets/ViewAll_Space_Widget .dart';
+import '../parkingspace/ViewParking_Space_Widget .dart';
 import 'update_profile_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -130,6 +131,16 @@ class ProfileScreen extends StatelessWidget {
                           context,
                           MaterialPageRoute(
                               builder: (context) => const AdditionalDetails()));
+                    }),
+                ProfileMenuWidget(
+                    title: 'View All space',
+                    icon: LineAwesomeIcons.user_plus,
+                    onPress: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  const ViewAllParkingSpaceScreen()));
                     }),
                 ProfileMenuWidget(
                   title: tMenu2,

@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:learn01/src/features/authentication/screens/manage_parking_space/widgets/Manage_your_Space_Widget.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
-class ViewSpaceScreen extends StatefulWidget {
-  const ViewSpaceScreen({Key? key}) : super(key: key);
+class ViewAllParkingSpaceScreen extends StatefulWidget {
+  const ViewAllParkingSpaceScreen({Key? key}) : super(key: key);
 
   @override
   _ViewSpaceScreenState createState() => _ViewSpaceScreenState();
 }
 
-class _ViewSpaceScreenState extends State<ViewSpaceScreen> {
+class _ViewSpaceScreenState extends State<ViewAllParkingSpaceScreen> {
   int parkingSpaceCount = 0;
 
   void navigateToManageScreen(BuildContext context,
@@ -49,8 +49,7 @@ class _ViewSpaceScreenState extends State<ViewSpaceScreen> {
                 StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
                   stream: FirebaseFirestore.instance
                       .collection('space')
-                      .where('uid',
-                          isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+                      .where('view', isEqualTo: 'yes')
                       .snapshots(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
