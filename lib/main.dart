@@ -1,8 +1,11 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:learn01/auth/home.dart';
 import 'package:learn01/src/features/authentication/screens/home_screen/home_screen.dart';
 import 'package:learn01/src/features/authentication/screens/welcome/welcome_screen.dart';
 import 'package:learn01/src/utils/theme/theme.dart';
+
+import 'MyHomePage.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,7 +22,7 @@ class MyApp extends StatelessWidget {
       theme: TAppTheme.lightTheme,
       darkTheme: TAppTheme.darkTheme,
       themeMode: ThemeMode.system,
-      home: const WelcomeScreen(),
+      home: const Home(),
     );
   }
 }
