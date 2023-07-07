@@ -90,23 +90,23 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                   ],
                 ),
                 const SizedBox(height: 50),
-                FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-                  future: FirebaseFirestore.instance
-                      .collection('users')
-                      .doc(FirebaseAuth.instance.currentUser?.uid)
-                      .get(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      // Data is still loading
-                      return CircularProgressIndicator();
-                    } else if (snapshot.hasData) {
-                      // User data is available
-                      Map<String, dynamic>? userData = snapshot.data?.data();
-                      if (userData != null) {
-                        _usernameController.text = userData['username'];
-                        _emailController.text = userData['email'];
-                        _phonenoController.text =
-                            userData['phoneno'].toString();
+                  FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+                    future: FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(FirebaseAuth.instance.currentUser?.uid)
+                        .get(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        // Data is still loading
+                        return CircularProgressIndicator();
+                      } else if (snapshot.hasData) {
+                        // User data is available
+                        Map<String, dynamic>? userData = snapshot.data?.data();
+                        if (userData != null) {
+                          _usernameController.text = userData['username'];
+                          _emailController.text = userData['email'];
+                          _phonenoController.text =
+                              userData['phoneno'].toString();
                         return Form(
                           key: _formKey,
                           child: Column(
