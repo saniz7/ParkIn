@@ -47,6 +47,7 @@ dependencies:
   google_sign_in: ^6.1.4
   flutter_osm_plugin: ^0.55.3
   open_street_map_search_and_pick: ^0.0.17
+  khalti_flutter: ^2.2.1
  
 
 
