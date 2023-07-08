@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:learn01/src/features/authentication/screens/admin_dashbord/home_screen/admin_home_dashboard.dart';
 
 import '../../../../constants/sizes.dart';
 import '../../../../constants/text_strings.dart';
@@ -48,7 +49,7 @@ class _LoginFormState extends State<LoginForm> {
           if (role == 'admin') {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => AdminScreen()),
+              MaterialPageRoute(builder: (context) => AdminDashboard()),
             );
           } else {
             Navigator.push(
