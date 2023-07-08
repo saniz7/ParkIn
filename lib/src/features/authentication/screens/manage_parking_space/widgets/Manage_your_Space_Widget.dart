@@ -104,10 +104,10 @@ class _ManageSpaceScreenState extends State<ManageScreen> {
                                   key: _formKey,
                                   child: Column(
                                     children: [
-                                      FormHeaderWidget(
-                                        image: tRentYourSpaceImage,
-                                        subTitle: 'Edit your parking space',
-                                      ),
+                                      // FormHeaderWidget(
+                                      //   image: tRentYourSpaceImage,
+                                      //   subTitle: 'Edit your parking space',
+                                      // ),
                                       TextFormField(
                                         controller: _locationController,
                                         decoration: InputDecoration(
@@ -252,6 +252,57 @@ class _ManageSpaceScreenState extends State<ManageScreen> {
                                             }
                                           },
                                           child: const Text('Update Profile'),
+                                        ),
+                                      ),
+                                      SizedBox(height: 40),
+                                      SizedBox(
+                                        width: double.infinity,
+                                        child: ElevatedButton(
+                                          onPressed: () {
+                                            if (_formKey.currentState!
+                                                .validate()) {
+                                              FirebaseFirestore.instance
+                                                  .collection('space')
+                                                  .doc(documentSnapshot.id)
+                                                  .delete()
+                                                  .then((_) {
+                                                Navigator.pushReplacement(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        const ProfileScreen(),
+                                                  ),
+                                                );
+                                                Navigator.pop(context);
+                                              }).catchError((error) {
+                                                showDialog(
+                                                  context: context,
+                                                  builder:
+                                                      (BuildContext context) {
+                                                    return AlertDialog(
+                                                      title:
+                                                          const Text('Error'),
+                                                      content: Text(
+                                                        'Failed to update user data: $error',
+                                                      ),
+                                                      actions: [
+                                                        TextButton(
+                                                          onPressed: () {
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop();
+                                                          },
+                                                          child:
+                                                              const Text('OK'),
+                                                        ),
+                                                      ],
+                                                    );
+                                                  },
+                                                );
+                                              });
+                                            }
+                                          },
+                                          child: const Text('Delete Profile'),
                                         ),
                                       ),
                                     ],
