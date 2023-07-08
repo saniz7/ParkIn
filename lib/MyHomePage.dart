@@ -52,7 +52,11 @@ class _HomeState extends State<Home> {
           center: LatLong(23, 89),
           buttonColor: Colors.blue,
           buttonText: 'Set Current Location',
-          onPicked: (pickedData) {}),
+          onPicked: (pickedData) {
+            print(pickedData.latLong.latitude);
+            print(pickedData.latLong.longitude);
+            print(pickedData.address);
+          }),
     );
   }
 }
