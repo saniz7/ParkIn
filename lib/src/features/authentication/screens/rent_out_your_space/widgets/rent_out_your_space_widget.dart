@@ -29,6 +29,28 @@ class _RentSpaceState extends State<RentSpaceWidget> {
   String imageUrl = '';
 
   bool _isLoading = false;
+  bool _isRegistered = false;
+
+  @override
+  void initState() {
+    super.initState();
+    checkRegistrationStatus();
+  }
+
+  void checkRegistrationStatus() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    DocumentSnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
+        .instance
+        .collection('space')
+        .doc(user!.uid)
+        .get();
+
+    if (snapshot.exists) {
+      setState(() {
+        _isRegistered = true;
+      });
+    }
+  }
 
   void _storeFormData() async {
     setState(() {
@@ -41,7 +63,7 @@ class _RentSpaceState extends State<RentSpaceWidget> {
       String uid = user?.uid ?? '';
 
       // Generate a new document ID for each data entry
-      DocumentReference spaceRef = firestore.collection('space').doc();
+      DocumentReference spaceRef = firestore.collection('space').doc(uid);
 
       // Prepare the form data
       Map<String, dynamic> formData = {
@@ -139,161 +161,148 @@ class _RentSpaceState extends State<RentSpaceWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: tFormHeight - 10),
-      child: Form(
-        key: _formKey, // Added form key
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TextFormField(
-              controller: locationController,
-              decoration: InputDecoration(
-                labelText: tLocation, // Changed label to labelText
-                prefixIcon: Icon(Icons.location_city),
-              ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter a location';
-                }
-                return null;
-              },
-            ),
-            SizedBox(
-              height: tFormHeight - 20,
-            ),
-            TextFormField(
-              controller: typeController,
-              decoration: InputDecoration(
-                labelText: tType, // Changed label to labelText
-                prefixIcon: Icon(Icons.public_sharp),
-              ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter a type';
-                }
-                return null;
-              },
-            ),
-            SizedBox(
-              height: tFormHeight - 20,
-            ),
-            TextFormField(
-              controller: rateController,
-              decoration: InputDecoration(
-                labelText: tRate, // Changed label to labelText
-                prefixIcon: Icon(Icons.currency_exchange_sharp),
-              ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter a rate';
-                }
-                return null;
-              },
-            ),
-            SizedBox(
-              height: tFormHeight - 20,
-            ),
-            TextFormField(
-              controller: capacityController,
-              decoration: InputDecoration(
-                labelText: tCapacity, // Changed label to labelText
-                prefixIcon: Icon(Icons.numbers),
-              ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter a capacity';
-                }
-                return null;
-              },
-            ),
-            // SizedBox(
-            //   height: tFormHeight - 20,
-            // ),
-            // TextFormField(
-            //   controller: parkingPlaceImageController,
-            //   decoration: InputDecoration(
-            //     labelText: tParkingPlaceImage, // Changed label to labelText
-            //     prefixIcon: Icon(Icons.image),
-            //   ),
-            //   validator: (value) {
-            //     if (value == null || value.isEmpty) {
-            //       return 'Please enter a parking place image';
-            //     }
-            //     return null;
-            //   },
-            // ),
-            SizedBox(
-              height: tFormHeight - 20,
-            ),
-            TextFormField(
-              controller: descriptionController,
-              decoration: InputDecoration(
-                labelText: tAddDescription, // Changed label to labelText
-                prefixIcon: Icon(Icons.description),
-              ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter a description';
-                }
-                return null;
-              },
-            ),
-            SizedBox(
-              height: tFormHeight - 20,
-            ),
-            TextFormField(
-              controller: viewController,
-              decoration: InputDecoration(
-                labelText: 'Ready for parking?', // Changed label to labelText
-                prefixIcon: Icon(Icons.description),
-              ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter a description';
-                }
-                return null;
-              },
-            ),
-
-            SizedBox(
-              height: tFormHeight - 10,
-            ),
-            SizedBox(height: tFormHeight - 10),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: GestureDetector(
-                onTap: () {
-                  if (_formKey.currentState?.validate() == true) {
-                    showProgressDialog(context);
-                    _storeFormData();
+    if (_isRegistered) {
+      return Text('You have already registered a space');
+    } else {
+      return Container(
+        padding: const EdgeInsets.symmetric(vertical: tFormHeight - 10),
+        child: Form(
+          key: _formKey, // Added form key
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextFormField(
+                controller: locationController,
+                decoration: InputDecoration(
+                  labelText: tLocation, // Changed label to labelText
+                  prefixIcon: Icon(Icons.location_city),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a location';
                   }
+                  return null;
                 },
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.green,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: _isLoading
-                      ? CircularProgressIndicator()
-                      : Center(
-                          child: Padding(
-                            padding: EdgeInsets.all(14.0),
-                            child: Text(
-                              'Rent My Space',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
+              ),
+              SizedBox(
+                height: tFormHeight - 20,
+              ),
+              TextFormField(
+                controller: typeController,
+                decoration: InputDecoration(
+                  labelText: tType, // Changed label to labelText
+                  prefixIcon: Icon(Icons.public_sharp),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a type';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(
+                height: tFormHeight - 20,
+              ),
+              TextFormField(
+                controller: rateController,
+                decoration: InputDecoration(
+                  labelText: tRate, // Changed label to labelText
+                  prefixIcon: Icon(Icons.currency_exchange_sharp),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a rate';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(
+                height: tFormHeight - 20,
+              ),
+              TextFormField(
+                controller: capacityController,
+                decoration: InputDecoration(
+                  labelText: tCapacity, // Changed label to labelText
+                  prefixIcon: Icon(Icons.numbers),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a capacity';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(
+                height: tFormHeight - 20,
+              ),
+              TextFormField(
+                controller: descriptionController,
+                decoration: InputDecoration(
+                  labelText: tAddDescription, // Changed label to labelText
+                  prefixIcon: Icon(Icons.description),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a description';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(
+                height: tFormHeight - 20,
+              ),
+              TextFormField(
+                controller: viewController,
+                decoration: InputDecoration(
+                  labelText: 'Ready for parking?', // Changed label to labelText
+                  prefixIcon: Icon(Icons.description),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a description';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(
+                height: tFormHeight - 10,
+              ),
+              SizedBox(height: tFormHeight - 10),
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: GestureDetector(
+                  onTap: () {
+                    if (_formKey.currentState?.validate() == true) {
+                      showProgressDialog(context);
+                      _storeFormData();
+                    }
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.green,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: _isLoading
+                        ? CircularProgressIndicator()
+                        : Center(
+                            child: Padding(
+                              padding: EdgeInsets.all(14.0),
+                              child: Text(
+                                'Rent My Space',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
                               ),
                             ),
                           ),
-                        ),
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    }
   }
 }

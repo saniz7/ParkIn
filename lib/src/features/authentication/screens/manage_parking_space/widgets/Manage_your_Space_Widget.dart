@@ -178,20 +178,20 @@ class _ManageSpaceScreenState extends State<ManageScreen> {
                                           return null;
                                         },
                                       ),
-                                      SizedBox(height: tFormHeight - 20),
-                                      TextFormField(
-                                        controller: viewController,
-                                        decoration: InputDecoration(
-                                          labelText: tAddDescription,
-                                          prefixIcon: Icon(Icons.description),
-                                        ),
-                                        validator: (value) {
-                                          if (value == null || value.isEmpty) {
-                                            return 'Please enter a description';
-                                          }
-                                          return null;
-                                        },
-                                      ),
+                                      // SizedBox(height: tFormHeight - 20),
+                                      // TextFormField(
+                                      //   controller: viewController,
+                                      //   decoration: InputDecoration(
+                                      //     labelText: tAddDescription,
+                                      //     prefixIcon: Icon(Icons.description),
+                                      //   ),
+                                      //   validator: (value) {
+                                      //     if (value == null || value.isEmpty) {
+                                      //       return 'Please enter a description';
+                                      //     }
+                                      //     return null;
+                                      //   },
+                                      // ),
                                       SizedBox(height: 20),
                                       SizedBox(
                                         width: double.infinity,

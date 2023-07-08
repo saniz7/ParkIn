@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:learn01/src/features/authentication/screens/manage_parking_space/widgets/Manage_your_Space_Widget.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
+import '../booking/bookingpage.dart';
 import 'ViewDetail_Space_Widget .dart';
 
 class ViewAllParkingSpaceScreen extends StatefulWidget {
@@ -23,7 +24,7 @@ class _ViewSpaceScreenState extends State<ViewAllParkingSpaceScreen> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ViewDetailSpaceScreen(spaceData: spaceData),
+          builder: (context) => BookingPageSpaceScreen(spaceData: spaceData),
         ),
       );
     }

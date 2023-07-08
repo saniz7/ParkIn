@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:learn01/src/features/authentication/screens/manage_parking_space/widgets/Manage_your_Space_Widget.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
+import '../../../../../constants/sizes.dart';
+import '../../../../../constants/text_strings.dart';
+
 class ViewSpaceScreen extends StatefulWidget {
   const ViewSpaceScreen({Key? key}) : super(key: key);
 
@@ -12,7 +15,9 @@ class ViewSpaceScreen extends StatefulWidget {
 }
 
 class _ViewSpaceScreenState extends State<ViewSpaceScreen> {
+  bool isViewControllerEnabled = false;
   int parkingSpaceCount = 0;
+  int availableSpaces = 0;
 
   void navigateToManageScreen(BuildContext context,
       DocumentSnapshot<Map<String, dynamic>> documentSnapshot) {
@@ -25,6 +30,52 @@ class _ViewSpaceScreenState extends State<ViewSpaceScreen> {
         ),
       );
     }
+  }
+
+  Future<void> updateViewControllerStatus(bool status) async {
+    final user = FirebaseAuth.instance.currentUser;
+    final uid = user?.uid;
+    if (uid != null) {
+      final spaceRef = FirebaseFirestore.instance.collection('space').doc(uid);
+      await spaceRef.update({'view': status ? 'yes' : 'no'});
+    }
+  }
+
+  Future<void> fetchSpaceData() async {
+    final user = FirebaseAuth.instance.currentUser;
+    final uid = user?.uid;
+    if (uid != null) {
+      final spaceRef = FirebaseFirestore.instance.collection('space').doc(uid);
+      final docSnapshot = await spaceRef.get();
+      final data = docSnapshot.data();
+      if (data != null) {
+        setState(() {
+          isViewControllerEnabled = data['view'] == 'yes';
+          availableSpaces = int.parse(data['availablespace'].toString());
+        });
+      }
+    }
+  }
+
+  Future<void> updateAvailableSpaces(int increment) async {
+    final user = FirebaseAuth.instance.currentUser;
+    final uid = user?.uid;
+    if (uid != null) {
+      final spaceRef = FirebaseFirestore.instance.collection('space').doc(uid);
+      await FirebaseFirestore.instance.runTransaction((transaction) async {
+        final snapshot = await transaction.get(spaceRef);
+        final currentAvailableSpaces = snapshot['availablespace'] as int;
+        final updatedAvailableSpaces = currentAvailableSpaces + increment;
+        transaction
+            .update(spaceRef, {'availablespace': updatedAvailableSpaces});
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchSpaceData();
   }
 
   @override
@@ -58,14 +109,12 @@ class _ViewSpaceScreenState extends State<ViewSpaceScreen> {
                     } else if (snapshot.hasData) {
                       QuerySnapshot<Map<String, dynamic>> querySnapshot =
                           snapshot.data!;
-                      int capacity = 20; // Define the capacity value
 
                       parkingSpaceCount =
                           querySnapshot.size; // Calculate the count
 
                       if (parkingSpaceCount > 0) {
-                        int availableSpaces = capacity -
-                            parkingSpaceCount; // Calculate available spaces
+                        // Calculate available spaces
 
                         return Column(
                           children: [
@@ -92,9 +141,49 @@ class _ViewSpaceScreenState extends State<ViewSpaceScreen> {
                                 }
                               },
                             ),
+                            const SizedBox(height: tFormHeight - 20),
+                            Row(
+                              children: [
+                                Text('View Controller:'),
+                                SizedBox(width: 10),
+                                Switch(
+                                  value: isViewControllerEnabled,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      isViewControllerEnabled = value;
+                                      updateViewControllerStatus(value);
+                                    });
+                                  },
+                                ),
+                              ],
+                            ),
                             const SizedBox(height: 20),
-                            Text('Parking Space Count: $parkingSpaceCount'),
                             Text('Available Spaces: $availableSpaces'),
+                            const SizedBox(height: 20),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                ElevatedButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      availableSpaces += 1;
+                                      updateAvailableSpaces(1);
+                                    });
+                                  },
+                                  child: Icon(Icons.add),
+                                ),
+                                SizedBox(width: 10),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      availableSpaces -= 1;
+                                      updateAvailableSpaces(-1);
+                                    });
+                                  },
+                                  child: Icon(Icons.remove),
+                                ),
+                              ],
+                            ),
                           ],
                         );
                       }
