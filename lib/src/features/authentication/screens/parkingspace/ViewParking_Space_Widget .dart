@@ -1,11 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:learn01/src/features/authentication/screens/manage_parking_space/widgets/Manage_your_Space_Widget.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
 import '../booking/bookingpage.dart';
-import 'ViewDetail_Space_Widget .dart';
 
 class ViewAllParkingSpaceScreen extends StatefulWidget {
   const ViewAllParkingSpaceScreen({Key? key}) : super(key: key);

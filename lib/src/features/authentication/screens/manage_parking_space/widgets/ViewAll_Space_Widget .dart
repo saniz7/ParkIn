@@ -5,7 +5,6 @@ import 'package:learn01/src/features/authentication/screens/manage_parking_space
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
 import '../../../../../constants/sizes.dart';
-import '../../../../../constants/text_strings.dart';
 
 class ViewSpaceScreen extends StatefulWidget {
   const ViewSpaceScreen({Key? key}) : super(key: key);
@@ -66,8 +65,10 @@ class _ViewSpaceScreenState extends State<ViewSpaceScreen> {
         final snapshot = await transaction.get(spaceRef);
         final currentAvailableSpaces = snapshot['availablespace'] as int;
         final updatedAvailableSpaces = currentAvailableSpaces + increment;
-        transaction
-            .update(spaceRef, {'availablespace': updatedAvailableSpaces});
+        if (updatedAvailableSpaces >= 0) {
+          transaction
+              .update(spaceRef, {'availablespace': updatedAvailableSpaces});
+        }
       });
     }
   }
@@ -175,10 +176,12 @@ class _ViewSpaceScreenState extends State<ViewSpaceScreen> {
                                 SizedBox(width: 10),
                                 ElevatedButton(
                                   onPressed: () {
-                                    setState(() {
-                                      availableSpaces -= 1;
-                                      updateAvailableSpaces(-1);
-                                    });
+                                    if (availableSpaces > 0) {
+                                      setState(() {
+                                        availableSpaces -= 1;
+                                        updateAvailableSpaces(-1);
+                                      });
+                                    }
                                   },
                                   child: Icon(Icons.remove),
                                 ),
