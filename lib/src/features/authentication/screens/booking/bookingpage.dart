@@ -16,10 +16,11 @@ class BookingPageSpaceScreen extends StatefulWidget {
       : super(key: key);
 
   @override
-  _ViewDetailSpaceScreenState createState() => _ViewDetailSpaceScreenState();
+  _BookingDetailSpaceScreenState createState() =>
+      _BookingDetailSpaceScreenState();
 }
 
-class _ViewDetailSpaceScreenState extends State<BookingPageSpaceScreen> {
+class _BookingDetailSpaceScreenState extends State<BookingPageSpaceScreen> {
   final _formKey = GlobalKey<FormState>();
   final _typeController = TextEditingController();
   final _locationController = TextEditingController();
