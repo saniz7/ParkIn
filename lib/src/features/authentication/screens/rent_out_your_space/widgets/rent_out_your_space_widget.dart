@@ -23,7 +23,6 @@ class _RentSpaceState extends State<RentSpaceWidget> {
   final typeController = TextEditingController();
   final rateController = TextEditingController();
   final capacityController = TextEditingController();
-  final parkingPlaceImageController = TextEditingController();
   final descriptionController = TextEditingController();
   final viewController = TextEditingController();
   String imageUrl = '';
@@ -72,7 +71,7 @@ class _RentSpaceState extends State<RentSpaceWidget> {
         'type': typeController.text,
         'rate': rateController.text,
         'capacity': capacityController.text,
-        'parkingPlaceImage': parkingPlaceImageController.text,
+        'imageUrl': imageUrl,
         'description': descriptionController.text,
         'view': viewController.text,
       };
@@ -88,7 +87,6 @@ class _RentSpaceState extends State<RentSpaceWidget> {
       typeController.clear();
       rateController.clear();
       capacityController.clear();
-      parkingPlaceImageController.clear();
       descriptionController.clear();
       viewController.clear();
 
@@ -120,15 +118,37 @@ class _RentSpaceState extends State<RentSpaceWidget> {
     }
   }
 
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      final file = await pickedFile.readAsBytes();
+      final imageName = DateTime.now().millisecondsSinceEpoch.toString();
+      final Reference storageRef =
+          FirebaseStorage.instance.ref().child('images/$imageName.jpg');
+      final UploadTask uploadTask = storageRef.putData(file);
+
+      final TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() {});
+      final String downloadUrl = await taskSnapshot.ref.getDownloadURL();
+
+      setState(() {
+        imageUrl = downloadUrl;
+      });
+    } else {
+      // User canceled the image picking
+      print('No image picked');
+    }
+  }
+
   @override
   void dispose() {
     locationController.dispose();
     typeController.dispose();
     rateController.dispose();
     capacityController.dispose();
-    parkingPlaceImageController.dispose();
     descriptionController.dispose();
-    viewController.clear();
+    viewController.dispose();
 
     super.dispose();
   }
@@ -251,18 +271,9 @@ class _RentSpaceState extends State<RentSpaceWidget> {
               SizedBox(
                 height: tFormHeight - 20,
               ),
-              TextFormField(
-                controller: viewController,
-                decoration: InputDecoration(
-                  labelText: 'Ready for parking?', // Changed label to labelText
-                  prefixIcon: Icon(Icons.description),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a description';
-                  }
-                  return null;
-                },
+              ElevatedButton(
+                onPressed: _pickImage,
+                child: Text('Pick Image'),
               ),
               SizedBox(
                 height: tFormHeight - 10,
