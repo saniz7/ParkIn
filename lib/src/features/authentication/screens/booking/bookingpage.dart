@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:learn01/src/features/authentication/screens/booking/bookingpage.dart';
 import 'package:learn01/src/features/authentication/screens/manage_parking_space/widgets/Manage_your_Space_Widget.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import '../../../../common_widgets/form/form_header_widget.dart';
@@ -10,17 +9,17 @@ import '../../../../constants/sizes.dart';
 import '../../../../constants/text_strings.dart';
 import '../profile/profile_screen.dart';
 
-class ViewDetailSpaceScreen extends StatefulWidget {
+class BookingPageSpaceScreen extends StatefulWidget {
   final Map<String, dynamic> spaceData;
 
-  const ViewDetailSpaceScreen({Key? key, required this.spaceData})
+  const BookingPageSpaceScreen({Key? key, required this.spaceData})
       : super(key: key);
 
   @override
   _ViewDetailSpaceScreenState createState() => _ViewDetailSpaceScreenState();
 }
 
-class _ViewDetailSpaceScreenState extends State<ViewDetailSpaceScreen> {
+class _ViewDetailSpaceScreenState extends State<BookingPageSpaceScreen> {
   final _formKey = GlobalKey<FormState>();
   final _typeController = TextEditingController();
   final _locationController = TextEditingController();
@@ -30,19 +29,6 @@ class _ViewDetailSpaceScreenState extends State<ViewDetailSpaceScreen> {
   final viewController = TextEditingController();
 
   late String uid;
-
-  void navigateToManageScreen(BuildContext context,
-      DocumentSnapshot<Map<String, dynamic>> documentSnapshot) {
-    final spaceData = documentSnapshot.data();
-    if (spaceData != null) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => BookingPageSpaceScreen(spaceData: spaceData),
-        ),
-      );
-    }
-  }
 
   @override
   void dispose() {
@@ -67,7 +53,7 @@ class _ViewDetailSpaceScreenState extends State<ViewDetailSpaceScreen> {
             },
             icon: const Icon(LineAwesomeIcons.angle_double_left),
           ),
-          title: const Text('Manage Space'),
+          title: const Text('Book a Space'),
         ),
         body: SingleChildScrollView(
           child: Container(
@@ -119,86 +105,25 @@ class _ViewDetailSpaceScreenState extends State<ViewDetailSpaceScreen> {
                                         image: tRentYourSpaceImage,
                                         subTitle: 'Parking Space Detail',
                                       ),
-                                      TextFormField(
-                                        controller: _locationController,
-                                        decoration: InputDecoration(
-                                          labelText: tLocation,
-                                          prefixIcon: Icon(Icons.location_city),
-                                        ),
-                                        validator: (value) {
-                                          if (value == null || value.isEmpty) {
-                                            return 'Please enter a location';
-                                          }
-                                          return null;
-                                        },
-                                      ),
                                       SizedBox(height: tFormHeight - 20),
-                                      TextFormField(
-                                        controller: _typeController,
-                                        decoration: InputDecoration(
-                                          labelText: tType,
-                                          prefixIcon: Icon(Icons.public_sharp),
-                                        ),
-                                        validator: (value) {
-                                          if (value == null || value.isEmpty) {
-                                            return 'Please enter a type';
-                                          }
-                                          return null;
-                                        },
-                                      ),
+                                      Text(
+                                          'Location: ${spaceData['location']}'),
                                       SizedBox(height: tFormHeight - 20),
-                                      TextFormField(
-                                        controller: _rateController,
-                                        decoration: InputDecoration(
-                                          labelText: tRate,
-                                          prefixIcon: Icon(
-                                              Icons.currency_exchange_sharp),
-                                        ),
-                                        validator: (value) {
-                                          if (value == null || value.isEmpty) {
-                                            return 'Please enter a rate';
-                                          }
-                                          return null;
-                                        },
-                                      ),
+                                      Text('Type: ${spaceData['type']}'),
                                       SizedBox(height: tFormHeight - 20),
-                                      TextFormField(
-                                        controller: capacityController,
-                                        decoration: InputDecoration(
-                                          labelText: tCapacity,
-                                          prefixIcon: Icon(Icons.numbers),
-                                        ),
-                                        validator: (value) {
-                                          if (value == null || value.isEmpty) {
-                                            return 'Please enter a capacity';
-                                          }
-                                          return null;
-                                        },
-                                      ),
+                                      Text('Rate: ${spaceData['rate']}'),
                                       SizedBox(height: tFormHeight - 20),
-                                      TextFormField(
-                                        controller: descriptionController,
-                                        decoration: InputDecoration(
-                                          labelText: tAddDescription,
-                                          prefixIcon: Icon(Icons.description),
-                                        ),
-                                        validator: (value) {
-                                          if (value == null || value.isEmpty) {
-                                            return 'Please enter a description';
-                                          }
-                                          return null;
-                                        },
-                                      ),
+                                      Text(
+                                          'Available Space: ${spaceData['capacity']}'),
+                                      SizedBox(height: tFormHeight - 20),
+                                      Text(
+                                          'Description: ${spaceData['description']}'),
+                                      SizedBox(height: 20),
                                       SizedBox(height: 20),
                                       SizedBox(
                                         width: double.infinity,
                                         child: ElevatedButton(
-                                          onPressed: () {
-                                            navigateToManageScreen(
-                                              context,
-                                              documentSnapshot,
-                                            );
-                                          },
+                                          onPressed: () {},
                                           child: const Text('Book A Place'),
                                         ),
                                       ),

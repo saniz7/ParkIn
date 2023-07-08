@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:learn01/src/features/authentication/screens/khalti_button/khaltii.dart';
+import 'package:learn01/src/features/authentication/screens/welcome/welcome_screen.dart';
 import 'package:learn01/src/utils/theme/theme.dart';
 
 void main() async {
@@ -18,7 +19,7 @@ class MyApp extends StatelessWidget {
       theme: TAppTheme.lightTheme,
       darkTheme: TAppTheme.darkTheme,
       themeMode: ThemeMode.system,
-      home: const KhaltiTest(),
+      home: WelcomeScreen(),
       //Home(),
     );
   }
