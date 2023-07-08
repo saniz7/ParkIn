@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:learn01/src/features/authentication/screens/manage_parking_space/widgets/Manage_your_Space_Widget.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
+import 'ViewDetail_Space_Widget .dart';
+
 class ViewAllParkingSpaceScreen extends StatefulWidget {
   const ViewAllParkingSpaceScreen({Key? key}) : super(key: key);
 
@@ -21,7 +23,7 @@ class _ViewSpaceScreenState extends State<ViewAllParkingSpaceScreen> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ManageScreen(spaceData: spaceData),
+          builder: (context) => ViewDetailSpaceScreen(spaceData: spaceData),
         ),
       );
     }
