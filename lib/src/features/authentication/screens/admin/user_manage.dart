@@ -75,6 +75,23 @@
 //     }
 //   }
 
+//   void _deleteUser(String userId) {
+//     FirebaseFirestore.instance
+//         .collection('users')
+//         .doc(userId)
+//         .delete()
+//         .then((_) {
+//       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+//         content: Text('User deleted successfully'),
+//       ));
+//     }).catchError((error) {
+//       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+//         content: Text('Failed to delete user: $error'),
+//         backgroundColor: Colors.red,
+//       ));
+//     });
+//   }
+
 //   @override
 //   Widget build(BuildContext context) {
 //     return Scaffold(
@@ -117,6 +134,91 @@
 //                       onPressed: () {
 //                         _editUser(
 //                             userId, username, email, phoneno, password, role);
+//                         showDialog(
+//                           context: context,
+//                           builder: (BuildContext context) {
+//                             return AlertDialog(
+//                               title: Text('Edit User'),
+//                               content: Form(
+//                                 key: _formKey,
+//                                 child: Column(
+//                                   mainAxisSize: MainAxisSize.min,
+//                                   children: [
+//                                     TextFormField(
+//                                       controller: _usernameController,
+//                                       decoration: InputDecoration(
+//                                           labelText: 'Username'),
+//                                       validator: (value) {
+//                                         if (value == null || value.isEmpty) {
+//                                           return 'Please enter a username';
+//                                         }
+//                                         return null;
+//                                       },
+//                                     ),
+//                                     TextFormField(
+//                                       controller: _emailController,
+//                                       decoration:
+//                                           InputDecoration(labelText: 'Email'),
+//                                       validator: (value) {
+//                                         if (value == null || value.isEmpty) {
+//                                           return 'Please enter an email';
+//                                         }
+//                                         return null;
+//                                       },
+//                                     ),
+//                                     TextFormField(
+//                                       controller: _phonenoController,
+//                                       decoration: InputDecoration(
+//                                           labelText: 'Phone No'),
+//                                       validator: (value) {
+//                                         if (value == null || value.isEmpty) {
+//                                           return 'Please enter a phone number';
+//                                         }
+//                                         return null;
+//                                       },
+//                                     ),
+//                                     TextFormField(
+//                                       controller: _passwordController,
+//                                       decoration: InputDecoration(
+//                                           labelText: 'Password'),
+//                                       validator: (value) {
+//                                         if (value == null || value.isEmpty) {
+//                                           return 'Please enter a password';
+//                                         }
+//                                         return null;
+//                                       },
+//                                     ),
+//                                     TextFormField(
+//                                       controller: _roleController,
+//                                       decoration:
+//                                           InputDecoration(labelText: 'Role'),
+//                                       validator: (value) {
+//                                         if (value == null || value.isEmpty) {
+//                                           return 'Please enter a role';
+//                                         }
+//                                         return null;
+//                                       },
+//                                     ),
+//                                   ],
+//                                 ),
+//                               ),
+//                               actions: [
+//                                 ElevatedButton(
+//                                   onPressed: () {
+//                                     Navigator.of(context).pop();
+//                                   },
+//                                   child: Text('Cancel'),
+//                                 ),
+//                                 ElevatedButton(
+//                                   onPressed: () {
+//                                     _saveUser();
+//                                   },
+//                                   child: Text('Save'),
+//                                 ),
+//                               ],
+//                             );
+//                           },
+//                         );
 //                       },
 //                     ),
 //                   ),
@@ -124,8 +226,7 @@
 //                     IconButton(
 //                       icon: Icon(Icons.delete),
 //                       onPressed: () {
-//                         // Perform delete action for the user
-//                         // Replace with your desired functionality
+//                         _deleteUser(userId);
 //                       },
 //                     ),
 //                   ),
@@ -154,14 +255,6 @@
 //           );
 //         },
 //       ),
-//       floatingActionButton: _isEditing ? _buildSaveButton() : null,
-//     );
-//   }
-
-//   Widget _buildSaveButton() {
-//     return FloatingActionButton(
-//       onPressed: _saveUser,
-//       child: Icon(Icons.save),
 //     );
 //   }
 // }
@@ -234,6 +327,7 @@ class _UserManageScreenState extends State<UserManageScreen> {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text('User updated successfully'),
         ));
+        Navigator.of(context).pop(); // Dismiss the edit user dialog
       }).catchError((error) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text('Failed to update user: $error'),
@@ -307,67 +401,69 @@ class _UserManageScreenState extends State<UserManageScreen> {
                           builder: (BuildContext context) {
                             return AlertDialog(
                               title: Text('Edit User'),
-                              content: Form(
-                                key: _formKey,
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    TextFormField(
-                                      controller: _usernameController,
-                                      decoration: InputDecoration(
-                                          labelText: 'Username'),
-                                      validator: (value) {
-                                        if (value == null || value.isEmpty) {
-                                          return 'Please enter a username';
-                                        }
-                                        return null;
-                                      },
-                                    ),
-                                    TextFormField(
-                                      controller: _emailController,
-                                      decoration:
-                                          InputDecoration(labelText: 'Email'),
-                                      validator: (value) {
-                                        if (value == null || value.isEmpty) {
-                                          return 'Please enter an email';
-                                        }
-                                        return null;
-                                      },
-                                    ),
-                                    TextFormField(
-                                      controller: _phonenoController,
-                                      decoration: InputDecoration(
-                                          labelText: 'Phone No'),
-                                      validator: (value) {
-                                        if (value == null || value.isEmpty) {
-                                          return 'Please enter a phone number';
-                                        }
-                                        return null;
-                                      },
-                                    ),
-                                    TextFormField(
-                                      controller: _passwordController,
-                                      decoration: InputDecoration(
-                                          labelText: 'Password'),
-                                      validator: (value) {
-                                        if (value == null || value.isEmpty) {
-                                          return 'Please enter a password';
-                                        }
-                                        return null;
-                                      },
-                                    ),
-                                    TextFormField(
-                                      controller: _roleController,
-                                      decoration:
-                                          InputDecoration(labelText: 'Role'),
-                                      validator: (value) {
-                                        if (value == null || value.isEmpty) {
-                                          return 'Please enter a role';
-                                        }
-                                        return null;
-                                      },
-                                    ),
-                                  ],
+                              content: SingleChildScrollView(
+                                child: Form(
+                                  key: _formKey,
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      TextFormField(
+                                        controller: _usernameController,
+                                        decoration: InputDecoration(
+                                            labelText: 'Username'),
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return 'Please enter a username';
+                                          }
+                                          return null;
+                                        },
+                                      ),
+                                      TextFormField(
+                                        controller: _emailController,
+                                        decoration:
+                                            InputDecoration(labelText: 'Email'),
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return 'Please enter an email';
+                                          }
+                                          return null;
+                                        },
+                                      ),
+                                      TextFormField(
+                                        controller: _phonenoController,
+                                        decoration: InputDecoration(
+                                            labelText: 'Phone No'),
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return 'Please enter a phone number';
+                                          }
+                                          return null;
+                                        },
+                                      ),
+                                      TextFormField(
+                                        controller: _passwordController,
+                                        decoration: InputDecoration(
+                                            labelText: 'Password'),
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return 'Please enter a password';
+                                          }
+                                          return null;
+                                        },
+                                      ),
+                                      TextFormField(
+                                        controller: _roleController,
+                                        decoration:
+                                            InputDecoration(labelText: 'Role'),
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return 'Please enter a role';
+                                          }
+                                          return null;
+                                        },
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                               actions: [
