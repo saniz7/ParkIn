@@ -2,15 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:learn01/src/features/authentication/screens/admin_dashbord/home_screen/admin_home_dashboard.dart';
-
+// import 'package:learn01/src/features/authentication/screens/admin_dashbord/home_screen/admin_home_dashboard.dart';
+import '../admin/admin_screen.dart';
 import '../../../../constants/sizes.dart';
 import '../../../../constants/text_strings.dart';
 import '../profile/profile_screen.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({Key? key}) : super(key: key);
-
 
   @override
   State<LoginForm> createState() => _LoginFormState();
@@ -48,7 +47,7 @@ class _LoginFormState extends State<LoginForm> {
           if (role == 'admin') {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => AdminDashboard()),
+              MaterialPageRoute(builder: (context) => AdminScreen()),
             );
           } else {
             Navigator.push(
