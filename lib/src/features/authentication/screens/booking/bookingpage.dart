@@ -28,6 +28,7 @@ class _BookingPageSpaceScreenState extends State<BookingPageSpaceScreen> {
   final viewController = TextEditingController();
   final _timeController = TextEditingController();
   final _vehicleController = TextEditingController();
+  final pid = TextEditingController();
 
   late String uid;
   bool _isLoading = false;
@@ -124,8 +125,11 @@ class _BookingPageSpaceScreenState extends State<BookingPageSpaceScreen> {
       // Prepare the form data
       Map<String, dynamic> formData = {
         'uid': uid,
+        'pid': pid.text,
         'capacity': capacityController.text,
         'description': descriptionController.text,
+        'time': _timeController.text,
+        'vehicleno': _vehicleController.text,
       };
 
       // Set the form data in the document
@@ -237,7 +241,7 @@ class _BookingPageSpaceScreenState extends State<BookingPageSpaceScreen> {
                                       widget.spaceData['location'] &&
                                   spaceData['type'] ==
                                       widget.spaceData['type']) {
-                                uid = spaceData['uid'];
+                                pid.text = spaceData['uid'];
                                 _locationController.text =
                                     spaceData['location'];
                                 _typeController.text = spaceData['type'];

@@ -184,7 +184,10 @@ class _LoginFormState extends State<LoginForm> {
                 hintText: tPassword,
                 border: OutlineInputBorder(),
                 suffixIcon: IconButton(
-                  onPressed: null,
+                  onPressed: () {
+                    // obscureText:
+                    // false;
+                  },
                   icon: Icon(Icons.remove_red_eye_sharp),
                 ),
               ),

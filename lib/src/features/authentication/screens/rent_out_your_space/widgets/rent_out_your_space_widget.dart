@@ -70,10 +70,11 @@ class _RentSpaceState extends State<RentSpaceWidget> {
         'location': locationController.text,
         'type': typeController.text,
         'rate': rateController.text,
-        'capacity': capacityController.text,
+        'capacity': int.parse(capacityController.text.trim()),
         'imageUrl': imageUrl,
         'description': descriptionController.text,
         'view': viewController.text,
+        'availablespace': int.parse(capacityController.text.trim()),
       };
 
       // Set the form data in the document
@@ -245,6 +246,9 @@ class _RentSpaceState extends State<RentSpaceWidget> {
                   labelText: tCapacity, // Changed label to labelText
                   prefixIcon: Icon(Icons.numbers),
                 ),
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                ],
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter a capacity';
