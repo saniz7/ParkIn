@@ -50,7 +50,7 @@ class _KhaltiPaymentPageState extends State<KhaltiPaymentPage>{
         borderRadius: BorderRadius.circular(8),
         side: const BorderSide(color: Colors.red)), // RoundedRectangleBorder
       height: 50,
-      color: const Color(@xFF56328c),
+      color: const Color(0xFF56328c),
       child: const Text(
         'Pay With Khalti',
         style: TextStyle(color: Colors.white, fontSize: 22),

@@ -25,7 +25,6 @@ class _KhaltiBtnState extends State<KhaltiBtn> {
                 payWithKhaltiInApp();
               },
               child: const Text("Pay with khalti"),
-            
             ),
             Text(referenceId)
           ],
