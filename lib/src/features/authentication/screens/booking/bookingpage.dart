@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
+
 import '../../../../common_widgets/form/form_header_widget.dart';
 import '../../../../constants/image_strings.dart';
 import '../../../../constants/sizes.dart';
@@ -119,11 +120,11 @@ class _BookingPageSpaceScreenState extends State<BookingPageSpaceScreen> {
       User? user = FirebaseAuth.instance.currentUser;
       String uid = user?.uid ?? '';
 
-      // Generate a new document ID for each data entry
-      DocumentReference spaceRef = firestore.collection('booking').doc(uid);
+      // Generate a new document ID for each booking
+      DocumentReference bookingRef = firestore.collection('booking').doc();
 
-      // Prepare the form data
-      Map<String, dynamic> formData = {
+      // Prepare the booking data
+      Map<String, dynamic> bookingData = {
         'uid': uid,
         'pid': pid.text,
         'capacity': capacityController.text,
@@ -132,36 +133,32 @@ class _BookingPageSpaceScreenState extends State<BookingPageSpaceScreen> {
         'vehicleno': _vehicleController.text,
       };
 
-      // Set the form data in the document
-      await spaceRef.set(formData);
-
-      // Data stored successfully
-      print('Data stored in Firestore');
+      // Store the booking data in Firestore
+      await bookingRef.set(bookingData);
 
       // Clear the form fields
-
       capacityController.clear();
       descriptionController.clear();
       viewController.clear();
 
-      dismissProgressDialog(context);
+      // Navigate to the profile screen
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => ProfileScreen()),
       );
+
       // Display a success message
       Fluttertoast.showToast(
-        msg: 'Data stored successfully',
+        msg: 'Booking successful',
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
       );
     } catch (e) {
       print('Error storing data: $e');
-      dismissProgressDialog(context);
 
       // Display an error message
       Fluttertoast.showToast(
-        msg: 'Failed to store data',
+        msg: 'Failed to book the space',
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
       );
@@ -170,32 +167,6 @@ class _BookingPageSpaceScreenState extends State<BookingPageSpaceScreen> {
         _isLoading = false; // Hide progress indicator
       });
     }
-  }
-
-  showProgressDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return Dialog(
-          child: Container(
-            padding: EdgeInsets.all(16.0),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                CircularProgressIndicator(),
-                SizedBox(width: 16.0),
-                Text('Loading...'),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  dismissProgressDialog(BuildContext context) {
-    Navigator.of(context).pop();
   }
 
   @override

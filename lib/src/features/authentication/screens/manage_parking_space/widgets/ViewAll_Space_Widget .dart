@@ -195,6 +195,46 @@ class _ViewSpaceScreenState extends State<ViewSpaceScreen> {
                     return const Text('No parking spaces found');
                   },
                 ),
+                const SizedBox(height: 50),
+                StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                  stream: FirebaseFirestore.instance
+                      .collection('booking')
+                      .where('pid',
+                          isEqualTo: FirebaseAuth.instance.currentUser?.uid)
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      // Data is still loading
+                      return CircularProgressIndicator();
+                    } else if (snapshot.hasData) {
+                      // User data is available
+                      List<QueryDocumentSnapshot<Map<String, dynamic>>>
+                          documents = snapshot.data!.docs;
+                      if (documents.isNotEmpty) {
+                        return Column(
+                          children: documents.map((document) {
+                            Map<String, dynamic>? bookingData = document.data();
+                            if (bookingData != null) {
+                              return Column(
+                                children: [
+                                  SizedBox(height: tFormHeight - 20),
+                                  Text('Time: ${bookingData['time']}'),
+                                  SizedBox(height: tFormHeight - 20),
+                                  Text(
+                                      'Description: ${bookingData['description']}'),
+                                  SizedBox(height: 20),
+                                  SizedBox(height: 20),
+                                ],
+                              );
+                            }
+                            return const SizedBox.shrink();
+                          }).toList(),
+                        );
+                      }
+                    }
+                    return const Text('No bookings found. Book a space Now');
+                  },
+                ),
               ],
             ),
           ),
