@@ -3,7 +3,7 @@ import 'package:khalti_flutter/khalti_flutter.dart';
 
 import 'khalti-widget.dart';
 
-//void main() => runApp(const KhaltiPaymentApp());
+void main() => runApp(const KhaltiPaymentApp());
 
 class KhaltiPaymentApp extends StatelessWidget {
   const KhaltiPaymentApp({Key? key}) : super(key: key);

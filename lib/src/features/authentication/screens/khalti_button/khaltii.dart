@@ -25,7 +25,7 @@ class KhaltiTest extends StatelessWidget {
             darkTheme: TAppTheme.darkTheme,
             themeMode: ThemeMode.system,
             home: const KhaltiBtn(),
-            
+
             navigatorKey: navkey,
             localizationsDelegates: const [KhaltiLocalizations.delegate],
             //Home(),
