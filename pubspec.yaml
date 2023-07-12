@@ -51,6 +51,7 @@ dependencies:
   khalti_flutter: ^2.2.1
   image_picker: ^1.0.0
   firebase_storage: ^11.2.4
+  flutter_time_picker_spinner: ^2.0.0
  
 
 

@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
+import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
 
 import '../../../../common_widgets/form/form_header_widget.dart';
 import '../../../../constants/image_strings.dart';
@@ -27,12 +28,12 @@ class _BookingPageSpaceScreenState extends State<BookingPageSpaceScreen> {
   final capacityController = TextEditingController();
   final descriptionController = TextEditingController();
   final viewController = TextEditingController();
-  final _timeController = TextEditingController();
   final _vehicleController = TextEditingController();
   final pid = TextEditingController();
 
   late String uid;
   bool _isLoading = false;
+  late DateTime _selectedTime;
 
   @override
   void dispose() {
@@ -42,8 +43,8 @@ class _BookingPageSpaceScreenState extends State<BookingPageSpaceScreen> {
     capacityController.dispose();
     descriptionController.dispose();
     viewController.dispose();
-    _timeController.dispose();
     _vehicleController.dispose();
+    pid.dispose();
 
     super.dispose();
   }
@@ -54,39 +55,57 @@ class _BookingPageSpaceScreenState extends State<BookingPageSpaceScreen> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Confirm Booking'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('Are you sure you want to book this place?'),
-              SizedBox(height: 20),
-              TextFormField(
-                controller: _timeController,
-                decoration: const InputDecoration(
-                  labelText: 'Time',
-                  prefixIcon: Icon(Icons.timer),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text('Are you sure you want to book this place?'),
+                SizedBox(height: 20),
+                Container(
+                  height: 200,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Select Time',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      TimePickerSpinner(
+                        is24HourMode: false,
+                        normalTextStyle: TextStyle(fontSize: 16),
+                        highlightedTextStyle: TextStyle(fontSize: 40),
+                        spacing: 50,
+                        itemHeight: 40,
+                        isForce2Digits: true,
+                        onTimeChange: (time) {
+                          setState(() {
+                            _selectedTime = time;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter the time';
-                  }
-                  return null;
-                },
-              ),
-              SizedBox(height: 20),
-              TextFormField(
-                controller: _vehicleController,
-                decoration: const InputDecoration(
-                  labelText: 'Vehicle Number',
-                  prefixIcon: Icon(Icons.directions_car),
+                SizedBox(height: 20),
+                TextFormField(
+                  controller: _vehicleController,
+                  decoration: const InputDecoration(
+                    labelText: 'Vehicle Number',
+                    prefixIcon: Icon(Icons.directions_car),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your vehicle details';
+                    }
+                    return null;
+                  },
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your vehicle details';
-                  }
-                  return null;
-                },
-              ),
-            ],
+              ],
+            ),
           ),
           actions: [
             TextButton(
@@ -129,7 +148,7 @@ class _BookingPageSpaceScreenState extends State<BookingPageSpaceScreen> {
         'pid': pid.text,
         'capacity': capacityController.text,
         'description': descriptionController.text,
-        'time': _timeController.text,
+        'time': Timestamp.fromDate(_selectedTime),
         'vehicleno': _vehicleController.text,
       };
 
