@@ -34,7 +34,7 @@ class _KhaltiPaymentPageState extends State<KhaltiPaymentPage>{
         labelText: "Enter Amount to pay",
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(color: Colors.black),
-          borderRadius: BorderRadius.all(Radius.circular(8)), 
+          borderRadius: BorderRadius.all(Radius.circular(8)),
         ), // OutlineInputBorder
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(color: Colors.green),
@@ -56,23 +56,40 @@ class _KhaltiPaymentPageState extends State<KhaltiPaymentPage>{
         style: TextStyle(color: Colors.white, fontSize: 22),
       ),//text
       onPressed: () {
-      KhaltiScope.of (context). pay(
+      KhaltiScope.of (context).pay(
       config: PaymentConfig(
-amount: getAmt(),
-productIdentity: 'dells-sssssg5-g55108-2021',
-productName: ‘Product Name',
-), // PaymentConfig
-preferences: [
-PaymentPreference.khalti,
-1,
-onSuccess: (su) {
-const successsnackBar = SnackBar(
-content: Text('Payment Successful'),
-); // SnackBar
-ScaffoldMessenger.of (context)
-.showSnackBar (successsnackBar) ;
-1s
-onFailure: (fa) {
-const failedsnackBar = SnackBar(
-content: Text('Payment Failed'),
-); // SnackBar
+      amount: getAmt(),
+      productIdentity: 'dells-sssssg5-g55108-2021',
+      productName: 'Product Name',
+      ), // PaymentConfig
+      preferences: [
+        PaymentPreference.khalti,
+      ],
+    onSuccess: (su) {
+      const successsnackBar = SnackBar(
+        content: Text('Payment Successful'),
+      ); // SnackBar
+      ScaffoldMessenger.of (context)
+        .showSnackBar (successsnackBar) ;
+    },
+    onFailure: (fa) {
+      const failedsnackBar = SnackBar(
+      content: Text('Payment Failed'),
+    ); // SnackBar
+    ScaffoldMessenger.of(context).showSnackBar(failedsnackBar);
+    },
+    onCancel:(){
+      const cancelsnakBar =SnackBar(
+        content: Text('paymentCancelled'),
+      );
+      ScaffoldMessenger.of(context)
+        .showSnackBar(cancelsnakBar);
+    },
+      );
+      }),
+    ],
+  ),
+  ),
+  );
+  }
+}
