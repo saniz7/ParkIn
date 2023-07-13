@@ -113,13 +113,9 @@ class _BookingPageSpaceScreenState extends State<BookingPageSpaceScreen> {
           actions: [
             TextButton(
               onPressed: () {
-                // if (_formKey.currentState?.validate() ?? false) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => KhaltiPaymentPage()),
-                );
-                // Navigator.of(context).pop(); // Close the popup
-                // }
+                if (_formKey.currentState?.validate() ?? false) {
+                  navigateToKhaltiPaymentPage();
+                }
               },
               child: Text('Confirm'),
             ),
@@ -132,6 +128,20 @@ class _BookingPageSpaceScreenState extends State<BookingPageSpaceScreen> {
           ],
         );
       },
+    );
+  }
+
+  void navigateToKhaltiPaymentPage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => KhaltiPaymentPage(
+          time: _selectedTime,
+          rate: _rateController.text,
+          // location: _locationController.text,
+          // description: descriptionController.text,
+        ),
+      ),
     );
   }
 
