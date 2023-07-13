@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:intl/intl.dart'; // Import the intl package
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
 import '../../../../common_widgets/form/form_header_widget.dart';
@@ -58,10 +60,18 @@ class _MyBookingPageScreenState extends State<MyBookingPageSpaceScreen> {
                           children: documents.map((document) {
                             Map<String, dynamic>? bookingData = document.data();
                             if (bookingData != null) {
+                              // Convert the timestamp to a DateTime object
+                              DateTime time = bookingData['time'].toDate();
+
+                              // Format the DateTime object
+                              String formattedTime =
+                                  DateFormat('dd MMM yyyy, hh:mm a')
+                                      .format(time);
+
                               return Column(
                                 children: [
                                   SizedBox(height: tFormHeight - 20),
-                                  Text('Time: ${bookingData['time']}'),
+                                  Text('Time: $formattedTime'),
                                   SizedBox(height: tFormHeight - 20),
                                   Text(
                                       'Description: ${bookingData['description']}'),
