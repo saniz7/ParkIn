@@ -2,12 +2,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:learn01/main.dart';
+import 'package:learn01/src/features/authentication/screens/parkingspace/ViewParking_Space_Widget%20.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
 
 import '../../../../common_widgets/form/form_header_widget.dart';
 import '../../../../constants/image_strings.dart';
 import '../../../../constants/sizes.dart';
+import '../Khalti/khalti-widget.dart';
 import '../profile/profile_screen.dart';
 
 class BookingPageSpaceScreen extends StatefulWidget {
@@ -110,10 +113,13 @@ class _BookingPageSpaceScreenState extends State<BookingPageSpaceScreen> {
           actions: [
             TextButton(
               onPressed: () {
-                if (_formKey.currentState?.validate() ?? false) {
-                  bookup();
-                  Navigator.of(context).pop(); // Close the popup
-                }
+                // if (_formKey.currentState?.validate() ?? false) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => KhaltiPaymentPage()),
+                );
+                // Navigator.of(context).pop(); // Close the popup
+                // }
               },
               child: Text('Confirm'),
             ),

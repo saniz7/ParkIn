@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:khalti_flutter/khalti_flutter.dart';
 
+import '../manage_parking_space/widgets/ViewAll_Space_Widget .dart';
+
 class KhaltiPaymentPage extends StatefulWidget {
   const KhaltiPaymentPage({Key? key}) : super(key: key);
 
@@ -67,6 +69,11 @@ class _KhaltiPaymentPageState extends State<KhaltiPaymentPage> {
                       PaymentPreference.khalti,
                     ],
                     onSuccess: (su) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ViewSpaceScreen()),
+                      );
                       const successsnackBar = SnackBar(
                         content: Text('Payment Successful'),
                       ); // SnackBar

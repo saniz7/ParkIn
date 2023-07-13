@@ -19,62 +19,65 @@ class WelcomeScreen extends StatelessWidget {
     final isDarkMode = brightness == Brightness.dark;
     return Scaffold(
       backgroundColor: isDarkMode ? tSecondaryColor : Colors.white,
-      body: Container(
+      body: SingleChildScrollView(
+        child: Container(
           padding: EdgeInsets.all(tDefaultSize),
+          height: height,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Image(
                 image: AssetImage(tWelcomeScreenImage1),
                 height: height * 0.6,
               ),
+              SizedBox(height: tDefaultSize),
               Column(
                 children: [
                   Text(tWelcomeTitle,
                       style: Theme.of(context).textTheme.headlineMedium),
+                  SizedBox(height: tDefaultSize),
                   Text(
                     twelcomeSubTitle,
                     style: Theme.of(context).textTheme.titleSmall,
                     textAlign: TextAlign.center,
                   ),
-                  Text(
-                    twelcomeSubTitle,
-                    style: Theme.of(context).textTheme.titleSmall,
-                    textAlign: TextAlign.center,
-                  )
                 ],
               ),
+              SizedBox(height: tDefaultSize),
               Row(
                 children: [
                   Expanded(
                     child: OutlinedButton(
                       onPressed: () {
                         Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>  LoginScreen()));
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => LoginScreen()),
+                        );
                       },
                       child: Text(tLogin.toUpperCase()),
                     ),
                   ),
-                  SizedBox(
-                    width: 10.0,
-                  ),
+                  SizedBox(width: 10.0),
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
                         Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const SignUpScreen()));
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const SignUpScreen()),
+                        );
                       },
                       child: Text(tSignUp.toUpperCase()),
                     ),
-                  )
+                  ),
                 ],
-              )
+              ),
             ],
-          )),
+          ),
+        ),
+      ),
     );
   }
 }
