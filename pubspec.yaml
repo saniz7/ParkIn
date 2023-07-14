@@ -50,7 +50,10 @@ dependencies:
   khalti_flutter: ^2.2.1
   image_picker: ^1.0.0
   firebase_storage: ^11.2.4
- 
+  flutter_map_marker_cluster: ^1.1.0
+  flutter_map: ^3.0.0
+  latlong2: ^0.8.0 
+  latlng: ^1.0.0
 
 
 dev_dependencies:
