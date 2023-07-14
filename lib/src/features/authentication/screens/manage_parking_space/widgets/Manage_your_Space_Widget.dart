@@ -3,8 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
-import '../../../../../common_widgets/form/form_header_widget.dart';
-import '../../../../../constants/image_strings.dart';
+
 import '../../../../../constants/sizes.dart';
 import '../../../../../constants/text_strings.dart';
 import '../../profile/profile_screen.dart';
@@ -104,10 +103,10 @@ class _ManageSpaceScreenState extends State<ManageScreen> {
                                   key: _formKey,
                                   child: Column(
                                     children: [
-                                      FormHeaderWidget(
-                                        image: tRentYourSpaceImage,
-                                        subTitle: 'Edit your parking space',
-                                      ),
+                                      // FormHeaderWidget(
+                                      //   image: tRentYourSpaceImage,
+                                      //   subTitle: 'Edit your parking space',
+                                      // ),
                                       TextFormField(
                                         controller: _locationController,
                                         decoration: InputDecoration(
@@ -178,20 +177,20 @@ class _ManageSpaceScreenState extends State<ManageScreen> {
                                           return null;
                                         },
                                       ),
-                                      SizedBox(height: tFormHeight - 20),
-                                      TextFormField(
-                                        controller: viewController,
-                                        decoration: InputDecoration(
-                                          labelText: tAddDescription,
-                                          prefixIcon: Icon(Icons.description),
-                                        ),
-                                        validator: (value) {
-                                          if (value == null || value.isEmpty) {
-                                            return 'Please enter a description';
-                                          }
-                                          return null;
-                                        },
-                                      ),
+                                      // SizedBox(height: tFormHeight - 20),
+                                      // TextFormField(
+                                      //   controller: viewController,
+                                      //   decoration: InputDecoration(
+                                      //     labelText: tAddDescription,
+                                      //     prefixIcon: Icon(Icons.description),
+                                      //   ),
+                                      //   validator: (value) {
+                                      //     if (value == null || value.isEmpty) {
+                                      //       return 'Please enter a description';
+                                      //     }
+                                      //     return null;
+                                      //   },
+                                      // ),
                                       SizedBox(height: 20),
                                       SizedBox(
                                         width: double.infinity,
@@ -252,6 +251,57 @@ class _ManageSpaceScreenState extends State<ManageScreen> {
                                             }
                                           },
                                           child: const Text('Update Profile'),
+                                        ),
+                                      ),
+                                      SizedBox(height: 40),
+                                      SizedBox(
+                                        width: double.infinity,
+                                        child: ElevatedButton(
+                                          onPressed: () {
+                                            if (_formKey.currentState!
+                                                .validate()) {
+                                              FirebaseFirestore.instance
+                                                  .collection('space')
+                                                  .doc(documentSnapshot.id)
+                                                  .delete()
+                                                  .then((_) {
+                                                Navigator.pushReplacement(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        const ProfileScreen(),
+                                                  ),
+                                                );
+                                                Navigator.pop(context);
+                                              }).catchError((error) {
+                                                showDialog(
+                                                  context: context,
+                                                  builder:
+                                                      (BuildContext context) {
+                                                    return AlertDialog(
+                                                      title:
+                                                          const Text('Error'),
+                                                      content: Text(
+                                                        'Failed to update user data: $error',
+                                                      ),
+                                                      actions: [
+                                                        TextButton(
+                                                          onPressed: () {
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop();
+                                                          },
+                                                          child:
+                                                              const Text('OK'),
+                                                        ),
+                                                      ],
+                                                    );
+                                                  },
+                                                );
+                                              });
+                                            }
+                                          },
+                                          child: const Text('Delete Profile'),
                                         ),
                                       ),
                                     ],

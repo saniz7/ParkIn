@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:learn01/src/features/authentication/screens/manage_parking_space/widgets/Manage_your_Space_Widget.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
+import '../../../../../constants/sizes.dart';
+import 'package:intl/intl.dart'; // Import the intl package
+
 class ViewSpaceScreen extends StatefulWidget {
   const ViewSpaceScreen({Key? key}) : super(key: key);
 
@@ -12,7 +15,9 @@ class ViewSpaceScreen extends StatefulWidget {
 }
 
 class _ViewSpaceScreenState extends State<ViewSpaceScreen> {
+  bool isViewControllerEnabled = false;
   int parkingSpaceCount = 0;
+  int availableSpaces = 0;
 
   void navigateToManageScreen(BuildContext context,
       DocumentSnapshot<Map<String, dynamic>> documentSnapshot) {
@@ -25,6 +30,59 @@ class _ViewSpaceScreenState extends State<ViewSpaceScreen> {
         ),
       );
     }
+  }
+
+  Future<void> updateViewControllerStatus(bool status) async {
+    final user = FirebaseAuth.instance.currentUser;
+    final uid = user?.uid;
+    if (uid != null) {
+      final spaceRef = FirebaseFirestore.instance.collection('space').doc(uid);
+      await spaceRef.update({'view': status ? 'yes' : 'no'});
+    }
+  }
+
+  Future<void> fetchSpaceData() async {
+    final user = FirebaseAuth.instance.currentUser;
+    final uid = user?.uid;
+    if (uid != null) {
+      final spaceRef = FirebaseFirestore.instance.collection('space').doc(uid);
+      final docSnapshot = await spaceRef.get();
+      final data = docSnapshot.data();
+      if (data != null) {
+        setState(() {
+          isViewControllerEnabled = data['view'] == 'yes';
+          availableSpaces = int.parse(data['availablespace'].toString());
+        });
+      }
+    }
+  }
+
+  Future<void> updateAvailableSpaces(int increment) async {
+    final user = FirebaseAuth.instance.currentUser;
+    final uid = user?.uid;
+    if (uid != null) {
+      final spaceRef = FirebaseFirestore.instance.collection('space').doc(uid);
+      await FirebaseFirestore.instance.runTransaction((transaction) async {
+        final snapshot = await transaction.get(spaceRef);
+        final currentAvailableSpaces = snapshot['availablespace'] as int;
+        final updatedAvailableSpaces = currentAvailableSpaces + increment;
+        if (updatedAvailableSpaces >= 0) {
+          transaction
+              .update(spaceRef, {'availablespace': updatedAvailableSpaces});
+        }
+      });
+    }
+  }
+
+  String formatDate(DateTime dateTime) {
+    final formatter = DateFormat('yyyy-MM-dd HH:mm');
+    return formatter.format(dateTime);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchSpaceData();
   }
 
   @override
@@ -58,14 +116,12 @@ class _ViewSpaceScreenState extends State<ViewSpaceScreen> {
                     } else if (snapshot.hasData) {
                       QuerySnapshot<Map<String, dynamic>> querySnapshot =
                           snapshot.data!;
-                      int capacity = 20; // Define the capacity value
 
                       parkingSpaceCount =
                           querySnapshot.size; // Calculate the count
 
                       if (parkingSpaceCount > 0) {
-                        int availableSpaces = capacity -
-                            parkingSpaceCount; // Calculate available spaces
+                        // Calculate available spaces
 
                         return Column(
                           children: [
@@ -92,15 +148,106 @@ class _ViewSpaceScreenState extends State<ViewSpaceScreen> {
                                 }
                               },
                             ),
+                            const SizedBox(height: tFormHeight - 20),
+                            Row(
+                              children: [
+                                Text('View Controller:'),
+                                SizedBox(width: 10),
+                                Switch(
+                                  value: isViewControllerEnabled,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      isViewControllerEnabled = value;
+                                      updateViewControllerStatus(value);
+                                    });
+                                  },
+                                ),
+                              ],
+                            ),
                             const SizedBox(height: 20),
-                            Text('Parking Space Count: $parkingSpaceCount'),
                             Text('Available Spaces: $availableSpaces'),
+                            const SizedBox(height: 20),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                ElevatedButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      availableSpaces += 1;
+                                      updateAvailableSpaces(1);
+                                    });
+                                  },
+                                  child: Icon(Icons.add),
+                                ),
+                                SizedBox(width: 10),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    if (availableSpaces > 0) {
+                                      setState(() {
+                                        availableSpaces -= 1;
+                                        updateAvailableSpaces(-1);
+                                      });
+                                    }
+                                  },
+                                  child: Icon(Icons.remove),
+                                ),
+                              ],
+                            ),
                           ],
                         );
                       }
                     }
 
                     return const Text('No parking spaces found');
+                  },
+                ),
+                const SizedBox(height: 50),
+                StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                  stream: FirebaseFirestore.instance
+                      .collection('booking')
+                      .where('pid',
+                          isEqualTo: FirebaseAuth.instance.currentUser?.uid)
+                      .where('time',
+                          isGreaterThan: Timestamp.now()) // Use Timestamp.now()
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      // Data is still loading
+                      return CircularProgressIndicator();
+                    } else if (snapshot.hasData) {
+                      // User data is available
+                      List<QueryDocumentSnapshot<Map<String, dynamic>>>
+                          documents = snapshot.data!.docs;
+                      if (documents.isNotEmpty) {
+                        return Column(
+                          children: documents.map((document) {
+                            Map<String, dynamic>? bookingData = document.data();
+                            if (bookingData != null) {
+                              // Format the date
+                              final date = formatDate(
+                                  (bookingData['time'] as Timestamp).toDate());
+                              print(Timestamp.now());
+                              return Column(
+                                children: [
+                                  SizedBox(height: tFormHeight - 20),
+                                  Text('Name: ${bookingData['name']}'),
+                                  SizedBox(height: tFormHeight - 20),
+                                  Text('Time: $date'),
+                                  SizedBox(height: tFormHeight - 20),
+                                  Text(
+                                      'Description: ${bookingData['description']}'),
+                                  SizedBox(height: tFormHeight - 20),
+                                  Text(
+                                      'Vehicle Number: ${bookingData['vehicleno']}'),
+                                ],
+                              );
+                            }
+                            return const SizedBox.shrink();
+                          }).toList(),
+                        );
+                      }
+                    }
+                    return const Text('No bookings found. Book a space Now');
                   },
                 ),
               ],

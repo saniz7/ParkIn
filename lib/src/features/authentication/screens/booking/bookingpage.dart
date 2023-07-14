@@ -1,12 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:learn01/src/features/authentication/screens/manage_parking_space/widgets/Manage_your_Space_Widget.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:learn01/main.dart';
+import 'package:learn01/src/features/authentication/screens/parkingspace/ViewParking_Space_Widget%20.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
+import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
+
 import '../../../../common_widgets/form/form_header_widget.dart';
 import '../../../../constants/image_strings.dart';
 import '../../../../constants/sizes.dart';
-import '../../../../constants/text_strings.dart';
+import '../Khalti/khalti-widget.dart';
 import '../profile/profile_screen.dart';
 
 class BookingPageSpaceScreen extends StatefulWidget {
@@ -16,10 +20,10 @@ class BookingPageSpaceScreen extends StatefulWidget {
       : super(key: key);
 
   @override
-  _ViewDetailSpaceScreenState createState() => _ViewDetailSpaceScreenState();
+  _BookingPageSpaceScreenState createState() => _BookingPageSpaceScreenState();
 }
 
-class _ViewDetailSpaceScreenState extends State<BookingPageSpaceScreen> {
+class _BookingPageSpaceScreenState extends State<BookingPageSpaceScreen> {
   final _formKey = GlobalKey<FormState>();
   final _typeController = TextEditingController();
   final _locationController = TextEditingController();
@@ -27,8 +31,12 @@ class _ViewDetailSpaceScreenState extends State<BookingPageSpaceScreen> {
   final capacityController = TextEditingController();
   final descriptionController = TextEditingController();
   final viewController = TextEditingController();
+  final _vehicleController = TextEditingController();
+  final pid = TextEditingController();
 
   late String uid;
+  bool _isLoading = false;
+  late DateTime _selectedTime;
 
   @override
   void dispose() {
@@ -38,8 +46,173 @@ class _ViewDetailSpaceScreenState extends State<BookingPageSpaceScreen> {
     capacityController.dispose();
     descriptionController.dispose();
     viewController.dispose();
+    _vehicleController.dispose();
+    pid.dispose();
 
     super.dispose();
+  }
+
+  void _showBookingPopup() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Confirm Booking'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text('Are you sure you want to book this place?'),
+                SizedBox(height: 20),
+                Container(
+                  height: 200,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Select Time',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      TimePickerSpinner(
+                        is24HourMode: false,
+                        normalTextStyle: TextStyle(fontSize: 16),
+                        highlightedTextStyle: TextStyle(fontSize: 40),
+                        spacing: 50,
+                        itemHeight: 40,
+                        isForce2Digits: true,
+                        onTimeChange: (time) {
+                          setState(() {
+                            _selectedTime = time;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 20),
+                TextFormField(
+                  controller: _vehicleController,
+                  decoration: const InputDecoration(
+                    labelText: 'Vehicle Number',
+                    prefixIcon: Icon(Icons.directions_car),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your vehicle details';
+                    }
+                    return null;
+                  },
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                if (_formKey.currentState?.validate() ?? false) {
+                  navigateToKhaltiPaymentPage();
+                }
+              },
+              child: Text('Confirm'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancel'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void initState() {
+    super.initState();
+    final user = FirebaseAuth.instance.currentUser;
+    uid = user?.uid ?? '';
+  }
+
+  void navigateToKhaltiPaymentPage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => KhaltiPaymentPage(
+          time: _selectedTime,
+          rate: int.parse(_rateController.text),
+          description: descriptionController.text,
+          name: descriptionController.text,
+          uid: uid,
+          pid: pid.text,
+          vehicleno: int.parse(_vehicleController.text),
+
+          // location: _locationController.text,
+        ),
+      ),
+    );
+  }
+
+  void bookup() async {
+    setState(() {
+      _isLoading = true; // Show progress indicator
+    });
+
+    try {
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+      User? user = FirebaseAuth.instance.currentUser;
+      String uid = user?.uid ?? '';
+
+      // Generate a new document ID for each booking
+      DocumentReference bookingRef = firestore.collection('booking').doc();
+
+      // Prepare the booking data
+      Map<String, dynamic> bookingData = {
+        'uid': uid,
+        'pid': pid.text,
+        'capacity': capacityController.text,
+        'description': descriptionController.text,
+        'time': Timestamp.fromDate(_selectedTime),
+        'vehicleno': _vehicleController.text,
+      };
+
+      // Store the booking data in Firestore
+      await bookingRef.set(bookingData);
+
+      // Clear the form fields
+      capacityController.clear();
+      descriptionController.clear();
+      viewController.clear();
+
+      // Navigate to the profile screen
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => ProfileScreen()),
+      );
+
+      // Display a success message
+      Fluttertoast.showToast(
+        msg: 'Booking successful',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+      );
+    } catch (e) {
+      print('Error storing data: $e');
+
+      // Display an error message
+      Fluttertoast.showToast(
+        msg: 'Failed to book the space',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+      );
+    } finally {
+      setState(() {
+        _isLoading = false; // Hide progress indicator
+      });
+    }
   }
 
   @override
@@ -85,7 +258,7 @@ class _ViewDetailSpaceScreenState extends State<BookingPageSpaceScreen> {
                                       widget.spaceData['location'] &&
                                   spaceData['type'] ==
                                       widget.spaceData['type']) {
-                                uid = spaceData['uid'];
+                                pid.text = spaceData['uid'];
                                 _locationController.text =
                                     spaceData['location'];
                                 _typeController.text = spaceData['type'];
@@ -114,7 +287,7 @@ class _ViewDetailSpaceScreenState extends State<BookingPageSpaceScreen> {
                                       Text('Rate: ${spaceData['rate']}'),
                                       SizedBox(height: tFormHeight - 20),
                                       Text(
-                                          'Available Space: ${spaceData['capacity']}'),
+                                          'Available Space: ${spaceData['availablespace']}'),
                                       SizedBox(height: tFormHeight - 20),
                                       Text(
                                           'Description: ${spaceData['description']}'),
@@ -123,7 +296,9 @@ class _ViewDetailSpaceScreenState extends State<BookingPageSpaceScreen> {
                                       SizedBox(
                                         width: double.infinity,
                                         child: ElevatedButton(
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            _showBookingPopup();
+                                          },
                                           child: const Text('Book A Place'),
                                         ),
                                       ),

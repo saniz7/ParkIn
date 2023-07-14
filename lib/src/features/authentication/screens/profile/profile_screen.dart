@@ -6,12 +6,12 @@ import 'package:learn01/src/constants/image_strings.dart';
 import 'package:learn01/src/constants/sizes.dart';
 import 'package:learn01/src/constants/text_strings.dart';
 import 'package:learn01/src/features/authentication/screens/additional_details/additional_details.dart';
+import 'package:learn01/src/features/authentication/screens/booking/Mybookings.dart';
 import 'package:learn01/src/features/authentication/screens/profile/widgets/profile_menu.dart';
 import 'package:learn01/src/features/authentication/screens/rent_out_your_space/rent_out-your_space.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
 import '../login/login_screen.dart';
-import '../manage_parking_space/widgets/Manage_your_Space_Widget.dart';
 import '../manage_parking_space/widgets/ViewAll_Space_Widget .dart';
 import '../parkingspace/ViewParking_Space_Widget .dart';
 import 'update_profile_screen.dart';
@@ -131,6 +131,16 @@ class ProfileScreen extends StatelessWidget {
                           context,
                           MaterialPageRoute(
                               builder: (context) => const AdditionalDetails()));
+                    }),
+                ProfileMenuWidget(
+                    title: 'My Bookings',
+                    icon: LineAwesomeIcons.user_plus,
+                    onPress: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  MyBookingPageSpaceScreen()));
                     }),
                 ProfileMenuWidget(
                     title: 'View All space',

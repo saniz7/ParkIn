@@ -2,15 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
+// import 'package:learn01/src/features/authentication/screens/admin_dashbord/home_screen/admin_home_dashboard.dart';
+import '../admin/admin_screen.dart';
 import '../../../../constants/sizes.dart';
 import '../../../../constants/text_strings.dart';
 import '../profile/profile_screen.dart';
-import '../admin/admin_screen.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({Key? key}) : super(key: key);
-
 
   @override
   State<LoginForm> createState() => _LoginFormState();
@@ -185,7 +184,10 @@ class _LoginFormState extends State<LoginForm> {
                 hintText: tPassword,
                 border: OutlineInputBorder(),
                 suffixIcon: IconButton(
-                  onPressed: null,
+                  onPressed: () {
+                    // obscureText:
+                    // false;
+                  },
                   icon: Icon(Icons.remove_red_eye_sharp),
                 ),
               ),
