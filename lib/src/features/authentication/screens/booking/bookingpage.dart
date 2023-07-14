@@ -131,15 +131,26 @@ class _BookingPageSpaceScreenState extends State<BookingPageSpaceScreen> {
     );
   }
 
+  void initState() {
+    super.initState();
+    final user = FirebaseAuth.instance.currentUser;
+    uid = user?.uid ?? '';
+  }
+
   void navigateToKhaltiPaymentPage() {
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => KhaltiPaymentPage(
           time: _selectedTime,
-          rate: _rateController.text,
+          rate: int.parse(_rateController.text),
+          description: descriptionController.text,
+          name: descriptionController.text,
+          uid: uid,
+          pid: pid.text,
+          vehicleno: int.parse(_vehicleController.text),
+
           // location: _locationController.text,
-          // description: descriptionController.text,
         ),
       ),
     );

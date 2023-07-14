@@ -71,12 +71,17 @@ class _MyBookingPageScreenState extends State<MyBookingPageSpaceScreen> {
                               return Column(
                                 children: [
                                   SizedBox(height: tFormHeight - 20),
+                                  Text('Name: ${bookingData['name']}'),
+                                  SizedBox(height: tFormHeight - 20),
                                   Text('Time: $formattedTime'),
                                   SizedBox(height: tFormHeight - 20),
                                   Text(
                                       'Description: ${bookingData['description']}'),
-                                  SizedBox(height: 20),
-                                  SizedBox(height: 20),
+                                  SizedBox(height: tFormHeight - 20),
+                                  Text(
+                                      'Vehicle Number: ${bookingData['vehicleno']}'),
+                                  SizedBox(height: tFormHeight - 20),
+                                  Text('Rate: ${bookingData['rate']}'),
                                 ],
                               );
                             }

@@ -5,6 +5,7 @@ import 'package:learn01/src/features/authentication/screens/manage_parking_space
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
 import '../../../../../constants/sizes.dart';
+import 'package:intl/intl.dart'; // Import the intl package
 
 class ViewSpaceScreen extends StatefulWidget {
   const ViewSpaceScreen({Key? key}) : super(key: key);
@@ -71,6 +72,11 @@ class _ViewSpaceScreenState extends State<ViewSpaceScreen> {
         }
       });
     }
+  }
+
+  String formatDate(DateTime dateTime) {
+    final formatter = DateFormat('yyyy-MM-dd HH:mm');
+    return formatter.format(dateTime);
   }
 
   @override
@@ -201,6 +207,8 @@ class _ViewSpaceScreenState extends State<ViewSpaceScreen> {
                       .collection('booking')
                       .where('pid',
                           isEqualTo: FirebaseAuth.instance.currentUser?.uid)
+                      .where('time',
+                          isGreaterThan: Timestamp.now()) // Use Timestamp.now()
                       .snapshots(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
@@ -215,15 +223,22 @@ class _ViewSpaceScreenState extends State<ViewSpaceScreen> {
                           children: documents.map((document) {
                             Map<String, dynamic>? bookingData = document.data();
                             if (bookingData != null) {
+                              // Format the date
+                              final date = formatDate(
+                                  (bookingData['time'] as Timestamp).toDate());
+                              print(Timestamp.now());
                               return Column(
                                 children: [
                                   SizedBox(height: tFormHeight - 20),
-                                  Text('Time: ${bookingData['time']}'),
+                                  Text('Name: ${bookingData['name']}'),
+                                  SizedBox(height: tFormHeight - 20),
+                                  Text('Time: $date'),
                                   SizedBox(height: tFormHeight - 20),
                                   Text(
                                       'Description: ${bookingData['description']}'),
-                                  SizedBox(height: 20),
-                                  SizedBox(height: 20),
+                                  SizedBox(height: tFormHeight - 20),
+                                  Text(
+                                      'Vehicle Number: ${bookingData['vehicleno']}'),
                                 ],
                               );
                             }
