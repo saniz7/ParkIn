@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
-
 import '../../../../../constants/sizes.dart';
 import '../../../../../constants/text_strings.dart';
 import '../../profile/profile_screen.dart';
@@ -58,7 +57,6 @@ class _ManageSpaceScreenState extends State<ManageScreen> {
             padding: const EdgeInsets.all(16),
             child: Column(
               children: [
-                const SizedBox(height: 50),
                 FutureBuilder<QuerySnapshot<Map<String, dynamic>>>(
                   future: FirebaseFirestore.instance
                       .collection('space')
@@ -103,10 +101,11 @@ class _ManageSpaceScreenState extends State<ManageScreen> {
                                   key: _formKey,
                                   child: Column(
                                     children: [
-                                      // FormHeaderWidget(
-                                      //   image: tRentYourSpaceImage,
-                                      //   subTitle: 'Edit your parking space',
-                                      // ),
+                                      Image.network(
+                                        spaceData['imageUrl'],
+                                        height: 300,
+                                        width: 600,
+                                      ),
                                       TextFormField(
                                         controller: _locationController,
                                         decoration: InputDecoration(
@@ -177,20 +176,6 @@ class _ManageSpaceScreenState extends State<ManageScreen> {
                                           return null;
                                         },
                                       ),
-                                      // SizedBox(height: tFormHeight - 20),
-                                      // TextFormField(
-                                      //   controller: viewController,
-                                      //   decoration: InputDecoration(
-                                      //     labelText: tAddDescription,
-                                      //     prefixIcon: Icon(Icons.description),
-                                      //   ),
-                                      //   validator: (value) {
-                                      //     if (value == null || value.isEmpty) {
-                                      //       return 'Please enter a description';
-                                      //     }
-                                      //     return null;
-                                      //   },
-                                      // ),
                                       SizedBox(height: 20),
                                       SizedBox(
                                         width: double.infinity,
@@ -253,7 +238,7 @@ class _ManageSpaceScreenState extends State<ManageScreen> {
                                           child: const Text('Update Profile'),
                                         ),
                                       ),
-                                      SizedBox(height: 40),
+                                      SizedBox(height: 10),
                                       SizedBox(
                                         width: double.infinity,
                                         child: ElevatedButton(
