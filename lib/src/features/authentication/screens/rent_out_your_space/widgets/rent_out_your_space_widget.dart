@@ -25,6 +25,8 @@ class _RentSpaceState extends State<RentSpaceWidget> {
   final capacityController = TextEditingController();
   final descriptionController = TextEditingController();
   final viewController = TextEditingController();
+  final nameController = TextEditingController();
+
   String imageUrl = '';
 
   bool _isLoading = false;
@@ -67,6 +69,7 @@ class _RentSpaceState extends State<RentSpaceWidget> {
       // Prepare the form data
       Map<String, dynamic> formData = {
         'uid': uid,
+        'spacename': nameController.text,
         'location': locationController.text,
         'type': typeController.text,
         'rate': rateController.text,
@@ -85,6 +88,8 @@ class _RentSpaceState extends State<RentSpaceWidget> {
 
       // Clear the form fields
       locationController.clear();
+      nameController.clear();
+
       typeController.clear();
       rateController.clear();
       capacityController.clear();
@@ -150,6 +155,7 @@ class _RentSpaceState extends State<RentSpaceWidget> {
     capacityController.dispose();
     descriptionController.dispose();
     viewController.dispose();
+    nameController.dispose();
 
     super.dispose();
   }
@@ -192,6 +198,19 @@ class _RentSpaceState extends State<RentSpaceWidget> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              TextFormField(
+                controller: nameController,
+                decoration: InputDecoration(
+                  labelText: 'Space Name', // Changed label to labelText
+                  prefixIcon: Icon(Icons.location_city),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a name';
+                  }
+                  return null;
+                },
+              ),
               TextFormField(
                 controller: locationController,
                 decoration: InputDecoration(
