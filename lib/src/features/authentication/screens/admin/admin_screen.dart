@@ -298,5 +298,192 @@ class _AdminScreenState extends State<AdminScreen> {
   @override
   Widget build(BuildContext context) {
     // The rest of your AdminScreen build method remains unchanged...
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Admin Screen'),
+      ),
+      body: FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+        future: FirebaseFirestore.instance
+            .collection('users')
+            .doc(FirebaseAuth.instance.currentUser?.uid)
+            .get(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            // Data is still loading
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasData && snapshot.data?.exists == true) {
+            // User data is available
+            Map<String, dynamic>? userData = snapshot.data?.data();
+            if (userData != null) {
+              // Extract the user's email
+              String email = userData['email'];
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(16.0),
+                    color: Colors.blue,
+                    child: Text(
+                      'Admin Screen',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.all(16.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Email: $email',
+                            style: TextStyle(fontSize: 18),
+                          ),
+                          SizedBox(height: 32),
+                          Expanded(
+                            child: GridView.count(
+                              crossAxisCount: 2,
+                              children: [
+                                StreamBuilder<
+                                    QuerySnapshot<Map<String, dynamic>>>(
+                                  stream: FirebaseFirestore.instance
+                                      .collection('users')
+                                      .snapshots(),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.hasError) {
+                                      return Text('Error: ${snapshot.error}');
+                                    }
+
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.waiting) {
+                                      return Center(
+                                          child: CircularProgressIndicator());
+                                    }
+
+                                    int userCount = snapshot.data!.docs.length;
+
+                                    return ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                UserDataScreen(),
+                                          ),
+                                        );
+                                      },
+                                      child: Column(
+                                        children: [
+                                          Text('User'),
+                                          Text('Total: $userCount'),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                ),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            ParkingDataScreen(),
+                                      ),
+                                    );
+                                  },
+                                  child: Text('Places'),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            UserManageScreen(),
+                                      ),
+                                    );
+                                  },
+                                  child: Text('Users (Manage)'),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            ParkingManageScreen(),
+                                      ),
+                                    );
+                                  },
+                                  child: Text('Places (Manage)'),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: 16),
+                          ElevatedButton(
+                            onPressed: () {
+                              FirebaseAuth.instance.signOut();
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => LoginScreen(),
+                                ),
+                              );
+                            },
+                            child: Text('Logout'),
+                          ),
+                          SizedBox(height: 16), // Add some spacing
+
+                          // New Box with Text Field and Send Button
+                          Container(
+                            padding: EdgeInsets.all(16.0),
+                            color: Colors.white,
+                            child: Column(
+                              children: [
+                                TextField(
+                                  controller: _notificationController,
+                                  decoration: InputDecoration(
+                                    labelText: 'Type your notification here',
+                                    border: OutlineInputBorder(),
+                                  ),
+                                ),
+                                SizedBox(height: 16),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    String message =
+                                        _notificationController.text.trim();
+                                    if (message.isNotEmpty) {
+                                      _sendNotification(context, message);
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                            content:
+                                                Text('Please enter a message')),
+                                      );
+                                    }
+                                  },
+                                  child: Text('Send Notification'),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            }
+          }
+          // User data not found
+          return Center(child: Text('User data not found'));
+        },
+      ),
+    );
   }
 }

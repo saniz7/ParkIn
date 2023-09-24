@@ -64,7 +64,8 @@ class SignUpScreen extends StatelessWidget {
             email: user.email ?? '',
             username: user.displayName ?? '',
             isGoogleSignIn: true, // Indicate that it's a Google sign-in
-            googleId: user.uid, // Store the Google ID
+            googleId: user.uid,
+// Store the Google ID
           );
           Navigator.pushReplacement(
             context,
@@ -106,6 +107,8 @@ class SignUpScreen extends StatelessWidget {
         'username': username,
         'isGoogleSignIn': isGoogleSignIn,
         'googleId': googleId,
+        'role': 'user',
+
         // Add more fields as needed
       });
     } catch (error) {
