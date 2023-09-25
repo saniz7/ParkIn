@@ -10,37 +10,30 @@ class Home extends StatefulWidget {
 
   @override
   // ignore: library_private_types_in_public_api
-  _HomeState createState() => _HomeState();
+  State<Home> createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
-  // ignore: prefer_final_fields
   Completer<GoogleMapController> _controller = Completer();
-
-  static final CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(27.700769, 85.300140),
-    zoom: 14.4746,
-  );
-
   List<Marker> _marker = [];
-  final List<Marker> _list = const [
-    Marker(
-        markerId: MarkerId('1'),
-        position: LatLng(27.700769, 85.300140),
-        infoWindow: InfoWindow(title: 'My current location')),
-    Marker(
-        markerId: MarkerId('2'),
-        position: LatLng(27.6712723667, 85.3390844333),
-        infoWindow: InfoWindow(title: 'Ncit College'))
-  ];
+  int id = 1;
+  Set<Polyline> _polylines = Set<Polyline>();
+  List<LatLng> polylineCoordinates = [];
 
   @override
   void initState() {
-    // TODO: implement initState
+    intilize();
     super.initState();
-    _marker.addAll(_list);
   }
 
+  intilize() {
+    // Initialize your variables here if needed
+  }
+
+  var _kGooglePlex = CameraPosition(
+    target: LatLng(27.700769, 85.300140), // Initial map center coordinates
+    zoom: 14.0, // Initial zoom level
+  );
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,6 +44,9 @@ class _HomeState extends State<Home> {
           mapType: MapType.normal,
           myLocationEnabled: false,
           compassEnabled: false,
+          onTap: (LatLng latLng) {
+            print('Our Latitude and Longitude is: $latLng');
+          },
           onMapCreated: (GoogleMapController controller) {
             _controller.complete(controller);
           },
