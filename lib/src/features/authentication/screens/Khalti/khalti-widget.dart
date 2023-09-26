@@ -3,6 +3,7 @@ import 'package:khalti_flutter/khalti_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../manage_parking_space/widgets/ViewAll_Space_Widget .dart';
+import '../parkingspace/ViewParking_Space_Widget .dart';
 
 class KhaltiPaymentPage extends StatefulWidget {
   final time;
@@ -13,8 +14,15 @@ class KhaltiPaymentPage extends StatefulWidget {
   final String uid;
   final int vehicleno;
 
-
-  const KhaltiPaymentPage({Key? key, required this.time, required this.rate, required this.description, required this.name, required this.uid, required this.pid,required this.vehicleno  })
+  const KhaltiPaymentPage(
+      {Key? key,
+      required this.time,
+      required this.rate,
+      required this.description,
+      required this.name,
+      required this.uid,
+      required this.pid,
+      required this.vehicleno})
       : super(key: key);
 
   @override
@@ -36,11 +44,11 @@ class _KhaltiPaymentPageState extends State<KhaltiPaymentPage> {
       Map<String, dynamic> bookingData = {
         'time': widget.time,
         'rate': widget.rate,
-        'name':widget.name,
-        'description':widget.description,
-        'pid':widget.pid,
-        'uid':widget.uid,
-        'vehicleno':widget.vehicleno,
+        'name': widget.name,
+        'description': widget.description,
+        'pid': widget.pid,
+        'uid': widget.uid,
+        'vehicleno': widget.vehicleno,
         // Add other necessary booking data here
       };
 
@@ -116,7 +124,7 @@ class _KhaltiPaymentPageState extends State<KhaltiPaymentPage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => ViewSpaceScreen()),
+                          builder: (context) => ViewAllParkingSpaceScreen()),
                     );
 
                     const successsnackBar = SnackBar(
