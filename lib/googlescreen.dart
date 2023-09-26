@@ -45,11 +45,22 @@ class _HomeState extends State<Home> {
           myLocationEnabled: false,
           compassEnabled: false,
           onTap: (LatLng latLng) {
+            Marker newMarker = Marker(
+              markerId: MarkerId('gramercy'),
+              position: LatLng(latLng.latitude, latLng.longitude),
+              infoWindow: InfoWindow(title: 'New place'),
+              icon: BitmapDescriptor.defaultMarkerWithHue(
+                BitmapDescriptor.hueRed,
+              ),
+            );
+            _marker.add(newMarker);
+            setState(() {});
             print('Our Latitude and Longitude is: $latLng');
           },
           onMapCreated: (GoogleMapController controller) {
             _controller.complete(controller);
           },
+          polylines: _polylines,
         ),
       ),
       floatingActionButton: FloatingActionButton(
