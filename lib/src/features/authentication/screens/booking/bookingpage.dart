@@ -29,6 +29,8 @@ class _BookingPageSpaceScreenState extends State<BookingPageSpaceScreen> {
   final _locationController = TextEditingController();
   final _rateController = TextEditingController();
   final capacityController = TextEditingController();
+  final nameController = TextEditingController();
+
   final descriptionController = TextEditingController();
   final viewController = TextEditingController();
   final _vehicleController = TextEditingController();
@@ -45,6 +47,7 @@ class _BookingPageSpaceScreenState extends State<BookingPageSpaceScreen> {
     _rateController.dispose();
     capacityController.dispose();
     descriptionController.dispose();
+    nameController.dispose();
     viewController.dispose();
     _vehicleController.dispose();
     pid.dispose();
@@ -145,7 +148,7 @@ class _BookingPageSpaceScreenState extends State<BookingPageSpaceScreen> {
           time: _selectedTime,
           rate: int.parse(_rateController.text),
           description: descriptionController.text,
-          name: descriptionController.text,
+          name: nameController.text,
           uid: uid,
           pid: pid.text,
           vehicleno: int.parse(_vehicleController.text),
@@ -175,6 +178,7 @@ class _BookingPageSpaceScreenState extends State<BookingPageSpaceScreen> {
         'pid': pid.text,
         'capacity': capacityController.text,
         'description': descriptionController.text,
+        'name': nameController.text,
         'time': Timestamp.fromDate(_selectedTime),
         'vehicleno': _vehicleController.text,
       };
@@ -259,6 +263,7 @@ class _BookingPageSpaceScreenState extends State<BookingPageSpaceScreen> {
                                   spaceData['type'] ==
                                       widget.spaceData['type']) {
                                 pid.text = spaceData['uid'];
+                                nameController.text = spaceData['spacename'];
                                 _locationController.text =
                                     spaceData['location'];
                                 _typeController.text = spaceData['type'];
