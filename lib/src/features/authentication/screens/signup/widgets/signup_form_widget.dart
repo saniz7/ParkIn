@@ -39,14 +39,15 @@ class _SignUpScreenState extends State<SignUpFormWidget> {
       String uid = userCredential.user!.uid;
 
       Fluttertoast.showToast(
-        msg: 'Signup successful',
+        msg: 'Signuppp successful',
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         backgroundColor: Colors.green,
         textColor: Colors.white,
       );
-      Navigator.push(
-        context,
+      Navigator.pushReplacement(
+        // Use pushReplacement to remove the SignUpFormWidget from the stack
+        context, // Use the context passed to the method
         MaterialPageRoute(builder: (context) => LoginScreen()),
       );
       addUserDetails(
