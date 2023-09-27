@@ -19,21 +19,13 @@ class _HomeState extends State<Home> {
   int id = 1;
   Set<Polyline> _polylines = Set<Polyline>();
   List<LatLng> polylineCoordinates = [];
-
-  @override
-  void initState() {
-    intilize();
-    super.initState();
-  }
-
-  intilize() {
-    // Initialize your variables here if needed
-  }
+  LatLng? selectedLatLng; // Added to store the selected latitude and longitude
 
   var _kGooglePlex = CameraPosition(
     target: LatLng(27.700769, 85.300140), // Initial map center coordinates
     zoom: 14.0, // Initial zoom level
   );
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,22 +37,46 @@ class _HomeState extends State<Home> {
           myLocationEnabled: false,
           compassEnabled: false,
           onTap: (LatLng latLng) {
-            Marker newMarker = Marker(
-              markerId: MarkerId('gramercy'),
-              position: LatLng(latLng.latitude, latLng.longitude),
-              infoWindow: InfoWindow(title: 'New place'),
-              icon: BitmapDescriptor.defaultMarkerWithHue(
-                BitmapDescriptor.hueRed,
-              ),
+            // Show a confirmation dialog when tapping on the map
+            showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  title: Text('Confirm Location'),
+                  content: Text('Do you want to add a marker here?'),
+                  actions: <Widget>[
+                    TextButton(
+                      child: Text('No'),
+                      onPressed: () {
+                        Navigator.of(context).pop(); // Close the dialog
+                      },
+                    ),
+                    TextButton(
+                      child: Text('Yes'),
+                      onPressed: () {
+                        // Add the marker to the map
+                        Marker newMarker = Marker(
+                          markerId: MarkerId('gramercy'),
+                          position: LatLng(latLng.latitude, latLng.longitude),
+                          infoWindow: InfoWindow(title: 'New place'),
+                          icon: BitmapDescriptor.defaultMarkerWithHue(
+                            BitmapDescriptor.hueRed,
+                          ),
+                        );
+                        _marker.add(newMarker);
+                        setState(() {});
+                        Navigator.of(context).pop(); // Close the dialog
+                        print('Our Latitude and Longitude is: $latLng');
+                      },
+                    ),
+                  ],
+                );
+              },
             );
-            _marker.add(newMarker);
-            setState(() {});
-            print('Our Latitude and Longitude is: $latLng');
           },
           onMapCreated: (GoogleMapController controller) {
             _controller.complete(controller);
           },
-          polylines: _polylines,
         ),
       ),
       floatingActionButton: FloatingActionButton(
