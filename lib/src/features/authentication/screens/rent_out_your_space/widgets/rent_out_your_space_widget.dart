@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:learn01/src/constants/sizes.dart';
 import 'package:learn01/src/constants/text_strings.dart';
 import 'package:flutter/services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import '../../../../../../custom_marker_info_window.dart';
+import '../../../../../../googlescreen.dart';
 import '../../profile/profile_screen.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -211,19 +214,50 @@ class _RentSpaceState extends State<RentSpaceWidget> {
                   return null;
                 },
               ),
-              TextFormField(
-                controller: locationController,
-                decoration: InputDecoration(
-                  labelText: tLocation, // Changed label to labelText
-                  prefixIcon: Icon(Icons.location_city),
+              Padding(
+                padding: const EdgeInsets.all(0.0),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Home()),
+                    );
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.green,
+                      // borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: _isLoading
+                        ? CircularProgressIndicator()
+                        : Center(
+                            child: Padding(
+                              padding: EdgeInsets.all(14.0),
+                              child: Text(
+                                'Choose a location',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                  ),
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a location';
-                  }
-                  return null;
-                },
               ),
+              // TextFormField(
+              //   controller: locationController,
+              //   decoration: InputDecoration(
+              //     labelText: tLocation, // Changed label to labelText
+              //     prefixIcon: Icon(Icons.location_city),
+              //   ),
+              //   validator: (value) {
+              //     if (value == null || value.isEmpty) {
+              //       return 'Please enter a location';
+              //     }
+              //     return null;
+              //   },
+              // ),
               SizedBox(
                 height: tFormHeight - 20,
               ),
