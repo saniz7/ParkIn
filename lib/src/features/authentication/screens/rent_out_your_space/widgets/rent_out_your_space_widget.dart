@@ -36,6 +36,7 @@ class _RentSpaceState extends State<RentSpaceWidget> {
 
   bool _isLoading = false;
   bool _isRegistered = false;
+  bool locationSelected = false;
 
   @override
   void initState() {
@@ -83,6 +84,8 @@ class _RentSpaceState extends State<RentSpaceWidget> {
         'description': descriptionController.text,
         'view': viewController.text,
         'availablespace': int.parse(capacityController.text.trim()),
+        'latitude': selectedLatLng?.latitude, // Store latitude
+        'longitude': selectedLatLng?.longitude, // Store longitude
       };
 
       // Set the form data in the document
@@ -94,7 +97,6 @@ class _RentSpaceState extends State<RentSpaceWidget> {
       // Clear the form fields
       locationController.clear();
       nameController.clear();
-
       typeController.clear();
       rateController.clear();
       capacityController.clear();
@@ -196,11 +198,13 @@ class _RentSpaceState extends State<RentSpaceWidget> {
     // Store the selected location in your state or variables
     setState(() {
       selectedLatLng = latLng;
-      locationController.text =
-          'Latitude: ${latLng.latitude}, Longitude: ${latLng.longitude}';
+      locationSelected = true; // Location is selected
+
+      // locationController.text =
+      //     'Latitude: ${latLng.latitude}, Longitude: ${latLng.longitude}';
     });
-    print('No image picked');
     print('Our Latitude and is: ${latLng.latitude}');
+    print(selectedLatLng?.latitude);
   }
 
   @override
@@ -234,15 +238,15 @@ class _RentSpaceState extends State<RentSpaceWidget> {
                 padding: const EdgeInsets.all(0.0),
                 child: GestureDetector(
                   onTap: () {
-                    // Navigate to the home screen and pass the selected location
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => Home(
+                    // Open Home as a BottomSheet
+                    showModalBottomSheet<void>(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return Home(
                           selectedLocation: selectedLatLng,
                           onLocationSelected: setLocation,
-                        ),
-                      ),
+                        );
+                      },
                     );
                   },
                   child: Container(
@@ -255,7 +259,9 @@ class _RentSpaceState extends State<RentSpaceWidget> {
                             child: Padding(
                               padding: EdgeInsets.all(14.0),
                               child: Text(
-                                'Choose a location',
+                                locationSelected
+                                    ? 'Location selected'
+                                    : 'Choose a location',
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.white,
@@ -266,18 +272,18 @@ class _RentSpaceState extends State<RentSpaceWidget> {
                   ),
                 ),
               ),
-              TextFormField(
-                controller: locationController, // Use the controller here
-                decoration: InputDecoration(
-                  labelText: 'Location',
-                  prefixIcon: Icon(Icons.location_city),
-                ),
-                readOnly: true, // Make the text field read-only
-                validator: (value) {
-                  // You can add validation here if needed
-                  return null;
-                },
-              ),
+              // TextFormField(
+              //   controller: locationController, // Use the controller here
+              //   decoration: InputDecoration(
+              //     labelText: 'Location',
+              //     prefixIcon: Icon(Icons.location_city),
+              //   ),
+              //   readOnly: true, // Make the text field read-only
+              //   validator: (value) {
+              //     // You can add validation here if needed
+              //     return null;
+              //   },
+              // ),
               // TextFormField(
               //   controller: locationController,
               //   decoration: InputDecoration(

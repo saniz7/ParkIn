@@ -91,11 +91,6 @@ class _HomeState extends State<Home> {
 
                         // Call the callback function to send latitude and longitude
                         widget.onLocationSelected(latLng);
-                        // Use the callback function passed from RentSpaceWidget
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => RentSpace()),
-                        );
                       },
                     ),
                   ],
