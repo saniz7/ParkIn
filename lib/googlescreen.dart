@@ -4,13 +4,22 @@ import 'package:flutter/material.dart';
 // ignore: unused_import
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:learn01/src/features/authentication/screens/booking/Mybookings.dart';
+import 'package:learn01/src/features/authentication/screens/rent_out_your_space/rent_out-your_space.dart';
+import 'package:learn01/src/features/authentication/screens/rent_out_your_space/widgets/rent_out_your_space_widget.dart';
+
+import 'custom_marker_info_window.dart';
 
 class Home extends StatefulWidget {
-  const Home({Key? key}) : super(key: key);
+  final LatLng? selectedLocation; // Accept the selected location as a parameter
+  final void Function(LatLng) onLocationSelected; // Callback function
+
+  const Home(
+      {Key? key, this.selectedLocation, required this.onLocationSelected})
+      : super(key: key);
 
   @override
-  // ignore: library_private_types_in_public_api
-  State<Home> createState() => _HomeState();
+  _HomeState createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
@@ -27,11 +36,23 @@ class _HomeState extends State<Home> {
   );
 
   @override
+  void initState() {
+    super.initState();
+    // Initialize the selectedLatLng with the provided selectedLocation
+    selectedLatLng = widget.selectedLocation;
+  }
+
   Widget build(BuildContext context) {
+    LatLng initialLocation =
+        widget.selectedLocation ?? LatLng(27.700769, 85.300140);
+
     return Scaffold(
       body: SafeArea(
         child: GoogleMap(
-          initialCameraPosition: _kGooglePlex,
+          initialCameraPosition: CameraPosition(
+            target: initialLocation,
+            zoom: 14.0,
+          ),
           markers: Set<Marker>.of(_marker),
           mapType: MapType.normal,
           myLocationEnabled: false,
@@ -67,6 +88,14 @@ class _HomeState extends State<Home> {
                         setState(() {});
                         Navigator.of(context).pop(); // Close the dialog
                         print('Our Latitude and Longitude is: $latLng');
+
+                        // Call the callback function to send latitude and longitude
+                        widget.onLocationSelected(latLng);
+                        // Use the callback function passed from RentSpaceWidget
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => RentSpace()),
+                        );
                       },
                     ),
                   ],

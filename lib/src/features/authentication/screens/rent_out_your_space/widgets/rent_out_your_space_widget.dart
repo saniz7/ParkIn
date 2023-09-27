@@ -11,6 +11,7 @@ import '../../../../../../googlescreen.dart';
 import '../../profile/profile_screen.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class RentSpaceWidget extends StatefulWidget {
   const RentSpaceWidget({Key? key}) : super(key: key);
@@ -21,8 +22,9 @@ class RentSpaceWidget extends StatefulWidget {
 
 class _RentSpaceState extends State<RentSpaceWidget> {
   final _formKey = GlobalKey<FormState>();
+  LatLng? selectedLatLng;
 
-  final locationController = TextEditingController();
+  final locationController = TextEditingController(); // Add this controller
   final typeController = TextEditingController();
   final rateController = TextEditingController();
   final capacityController = TextEditingController();
@@ -189,12 +191,26 @@ class _RentSpaceState extends State<RentSpaceWidget> {
     Navigator.of(context).pop();
   }
 
+  // Callback function to receive the selected location
+  void setLocation(LatLng latLng) {
+    // Store the selected location in your state or variables
+    setState(() {
+      selectedLatLng = latLng;
+      locationController.text =
+          'Latitude: ${latLng.latitude}, Longitude: ${latLng.longitude}';
+    });
+    print('No image picked');
+    print('Our Latitude and is: ${latLng.latitude}');
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_isRegistered) {
       return Text('You have already registered a space');
     } else {
-      return Container(
+      return Material(
+          // Wrap with Material widget
+          child: Container(
         padding: const EdgeInsets.symmetric(vertical: tFormHeight - 10),
         child: Form(
           key: _formKey, // Added form key
@@ -218,15 +234,20 @@ class _RentSpaceState extends State<RentSpaceWidget> {
                 padding: const EdgeInsets.all(0.0),
                 child: GestureDetector(
                   onTap: () {
+                    // Navigate to the home screen and pass the selected location
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => Home()),
+                      MaterialPageRoute(
+                        builder: (context) => Home(
+                          selectedLocation: selectedLatLng,
+                          onLocationSelected: setLocation,
+                        ),
+                      ),
                     );
                   },
                   child: Container(
                     decoration: BoxDecoration(
                       color: Colors.green,
-                      // borderRadius: BorderRadius.circular(12),
                     ),
                     child: _isLoading
                         ? CircularProgressIndicator()
@@ -244,6 +265,18 @@ class _RentSpaceState extends State<RentSpaceWidget> {
                           ),
                   ),
                 ),
+              ),
+              TextFormField(
+                controller: locationController, // Use the controller here
+                decoration: InputDecoration(
+                  labelText: 'Location',
+                  prefixIcon: Icon(Icons.location_city),
+                ),
+                readOnly: true, // Make the text field read-only
+                validator: (value) {
+                  // You can add validation here if needed
+                  return null;
+                },
               ),
               // TextFormField(
               //   controller: locationController,
@@ -370,7 +403,7 @@ class _RentSpaceState extends State<RentSpaceWidget> {
             ],
           ),
         ),
-      );
+      ));
     }
   }
 }
