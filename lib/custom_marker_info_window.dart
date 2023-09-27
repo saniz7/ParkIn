@@ -37,67 +37,64 @@ class _CustomMarkerInfoWindowState extends State<CustomMarkerInfoWindow> {
           onTap: () {
             _customInfoWindowController.hideInfoWindow!();
             _customInfoWindowController.addInfoWindow!(
-              Column(
-                children: [
-                  Container(
-                    height: 300,
-                    width: 200,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          width: 300,
-                          height: 100,
-                          decoration: const BoxDecoration(
-                            image: DecorationImage(
-                                image: NetworkImage(
-                                    'https://www.collegeinfonepal.com/wp-content/uploads/2023/07/Nepal-College-of-Information-Technology-NCIT-Photo-1.jpg'),
-                                fit: BoxFit.fitWidth,
-                                filterQuality: FilterQuality.high),
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(10.0),
-                            ),
-                            color: Colors.red,
+              Container(
+                height: 300, // Adjust this height as needed
+                width: 200,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(color: Colors.grey),
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: ListView(
+                  // Wrap the content in a ListView
+                  children: [
+                    Container(
+                      width: 300,
+                      height: 100,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: NetworkImage(
+                            'https://www.collegeinfonepal.com/wp-content/uploads/2023/07/Nepal-College-of-Information-Technology-NCIT-Photo-1.jpg',
                           ),
-                        )
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 1, left: 1, right: 1),
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: 100,
-                          child: Text(
-                            'Ncit College Parking',
-                            maxLines: 1,
-                            overflow: TextOverflow.fade,
-                            softWrap: false,
-                          ),
+                          fit: BoxFit.fitWidth,
+                          filterQuality: FilterQuality.high,
                         ),
-                        const Spacer(),
-                        Text(
-                          '.3 mi.',
-                        )
-                      ],
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(10.0),
+                        ),
+                        color: Colors.red,
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              'Ncit College Parking',
+                              maxLines: 1,
+                              overflow: TextOverflow.fade,
+                              softWrap: false,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              '.3 mi.',
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(top: 10, left: 10, right: 10),
-                    child: Text(
-                      'You can park here from 11am to 5pm - Sunday to Friday',
-                      maxLines: 2,
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        'You can park here from 11 am to 5 pm - Sunday to Friday',
+                        maxLines: 2,
+                      ),
                     ),
-                  )
-                ],
+                  ],
+                ),
               ),
               _latLng[i],
             );
