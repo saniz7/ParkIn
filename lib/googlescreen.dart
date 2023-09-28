@@ -14,9 +14,11 @@ class Home extends StatefulWidget {
   final LatLng? selectedLocation; // Accept the selected location as a parameter
   final void Function(LatLng) onLocationSelected; // Callback function
 
-  const Home(
-      {Key? key, this.selectedLocation, required this.onLocationSelected})
-      : super(key: key);
+  const Home({
+    Key? key,
+    this.selectedLocation,
+    required this.onLocationSelected,
+  }) : super(key: key);
 
   @override
   _HomeState createState() => _HomeState();
@@ -40,8 +42,41 @@ class _HomeState extends State<Home> {
     super.initState();
     // Initialize the selectedLatLng with the provided selectedLocation
     selectedLatLng = widget.selectedLocation;
+
+    // Load initial markers or data here if needed.
+    // Example:
+    // _loadMarkers();
   }
 
+  // Example function to load markers initially (you can replace this with your actual data loading logic).
+  // void _loadMarkers() {
+  //   // Add initial markers to _marker list.
+  //   _marker.add(Marker(
+  //     markerId: MarkerId('initialMarker'),
+  //     position: LatLng(27.700769, 85.300140),
+  //     infoWindow: InfoWindow(title: 'Initial Location'),
+  //   ));
+  // }
+
+  // Function to add a new marker to the map.
+  void _addMarker(LatLng latLng) {
+    Marker newMarker = Marker(
+      markerId: MarkerId('marker$id'),
+      position: latLng,
+      infoWindow: InfoWindow(title: 'New place'),
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+    );
+    id++;
+    _marker.add(newMarker);
+
+    // Call the callback function to send latitude and longitude
+    widget.onLocationSelected(latLng);
+
+    // Update the map immediately.
+    setState(() {});
+  }
+
+  @override
   Widget build(BuildContext context) {
     LatLng initialLocation =
         widget.selectedLocation ?? LatLng(27.700769, 85.300140);
@@ -76,21 +111,9 @@ class _HomeState extends State<Home> {
                       child: Text('Yes'),
                       onPressed: () {
                         // Add the marker to the map
-                        Marker newMarker = Marker(
-                          markerId: MarkerId('gramercy'),
-                          position: LatLng(latLng.latitude, latLng.longitude),
-                          infoWindow: InfoWindow(title: 'New place'),
-                          icon: BitmapDescriptor.defaultMarkerWithHue(
-                            BitmapDescriptor.hueRed,
-                          ),
-                        );
-                        _marker.add(newMarker);
-                        setState(() {});
+                        _addMarker(latLng);
                         Navigator.of(context).pop(); // Close the dialog
                         print('Our Latitude and Longitude is: $latLng');
-
-                        // Call the callback function to send latitude and longitude
-                        widget.onLocationSelected(latLng);
                       },
                     ),
                   ],

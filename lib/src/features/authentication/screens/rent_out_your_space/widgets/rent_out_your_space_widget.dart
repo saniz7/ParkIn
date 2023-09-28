@@ -106,7 +106,7 @@ class _RentSpaceState extends State<RentSpaceWidget> {
       dismissProgressDialog(context);
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => ProfileScreen()),
+        MaterialPageRoute(builder: (context) => CustomMarkerInfoWindow()),
       );
       // Display a success message
       Fluttertoast.showToast(
