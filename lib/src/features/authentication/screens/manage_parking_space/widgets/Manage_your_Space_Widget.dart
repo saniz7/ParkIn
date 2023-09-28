@@ -3,9 +3,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
+import '../../../../../../googlescreen.dart';
 import '../../../../../constants/sizes.dart';
 import '../../../../../constants/text_strings.dart';
 import '../../profile/profile_screen.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class ManageScreen extends StatefulWidget {
   final Map<String, dynamic> spaceData;
@@ -19,24 +21,34 @@ class ManageScreen extends StatefulWidget {
 class _ManageSpaceScreenState extends State<ManageScreen> {
   final _formKey = GlobalKey<FormState>();
   final _typeController = TextEditingController();
-  final _locationController = TextEditingController();
+  final _nameController = TextEditingController();
   final _rateController = TextEditingController();
   final capacityController = TextEditingController();
   final descriptionController = TextEditingController();
   final viewController = TextEditingController();
 
   late String uid;
+  bool locationSelected = false;
+  bool _isLoading = false;
+  LatLng? selectedLatLng; // Define a variable to store the selected location
 
   @override
   void dispose() {
     _typeController.dispose();
-    _locationController.dispose();
+    _nameController.dispose();
     _rateController.dispose();
     capacityController.dispose();
     descriptionController.dispose();
     viewController.dispose();
 
     super.dispose();
+  }
+
+  void setLocation(LatLng? location) {
+    setState(() {
+      selectedLatLng = location;
+      locationSelected = selectedLatLng != null;
+    });
   }
 
   @override
@@ -86,8 +98,7 @@ class _ManageSpaceScreenState extends State<ManageScreen> {
                                   spaceData['type'] ==
                                       widget.spaceData['type']) {
                                 uid = spaceData['uid'];
-                                _locationController.text =
-                                    spaceData['location'];
+                                _nameController.text = spaceData['spacename'];
                                 _typeController.text = spaceData['type'];
                                 _rateController.text =
                                     spaceData['rate'].toString();
@@ -96,7 +107,10 @@ class _ManageSpaceScreenState extends State<ManageScreen> {
                                 descriptionController.text =
                                     spaceData['description'];
                                 viewController.text = spaceData['view'];
-
+                                double latitude =
+                                    spaceData['latitude'] as double;
+                                double longitude =
+                                    spaceData['longitude'] as double;
                                 return Form(
                                   key: _formKey,
                                   child: Column(
@@ -107,14 +121,14 @@ class _ManageSpaceScreenState extends State<ManageScreen> {
                                         width: 600,
                                       ),
                                       TextFormField(
-                                        controller: _locationController,
+                                        controller: _nameController,
                                         decoration: InputDecoration(
-                                          labelText: tLocation,
+                                          labelText: tFullName,
                                           prefixIcon: Icon(Icons.location_city),
                                         ),
                                         validator: (value) {
                                           if (value == null || value.isEmpty) {
-                                            return 'Please enter a location';
+                                            return 'Please enter a name';
                                           }
                                           return null;
                                         },
@@ -176,6 +190,52 @@ class _ManageSpaceScreenState extends State<ManageScreen> {
                                           return null;
                                         },
                                       ),
+                                      Text(
+                                          'Latitude: ${selectedLatLng?.latitude.toString() ?? 'Not selected'}'),
+                                      Text(
+                                          'Longitude: ${selectedLatLng?.longitude.toString() ?? 'Not selected'}'),
+                                      Padding(
+                                        padding: const EdgeInsets.all(0.0),
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            // Open Home as a BottomSheet
+                                            showModalBottomSheet<void>(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return Home(
+                                                  selectedLocation:
+                                                      selectedLatLng,
+                                                  onLocationSelected:
+                                                      setLocation,
+                                                );
+                                              },
+                                            );
+                                          },
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: Colors.green,
+                                            ),
+                                            child: _isLoading
+                                                ? CircularProgressIndicator()
+                                                : Center(
+                                                    child: Padding(
+                                                      padding:
+                                                          EdgeInsets.all(14.0),
+                                                      child: Text(
+                                                        locationSelected
+                                                            ? 'Location selected'
+                                                            : 'Choose a location',
+                                                        style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color: Colors.white,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                          ),
+                                        ),
+                                      ),
                                       SizedBox(height: 20),
                                       SizedBox(
                                         width: double.infinity,
@@ -188,8 +248,8 @@ class _ManageSpaceScreenState extends State<ManageScreen> {
                                                   .doc(documentSnapshot.id)
                                                   .update({
                                                 'uid': uid,
-                                                'location':
-                                                    _locationController.text,
+                                                'spacename':
+                                                    _nameController.text,
                                                 'type': _typeController.text,
                                                 'rate': int.parse(
                                                     _rateController.text),
@@ -198,6 +258,10 @@ class _ManageSpaceScreenState extends State<ManageScreen> {
                                                 'description':
                                                     descriptionController.text,
                                                 'view': viewController.text,
+                                                'latitude': selectedLatLng
+                                                    ?.latitude, // Store latitude
+                                                'longitude':
+                                                    selectedLatLng?.longitude
                                               }).then((_) {
                                                 Navigator.pushReplacement(
                                                   context,
@@ -286,7 +350,7 @@ class _ManageSpaceScreenState extends State<ManageScreen> {
                                               });
                                             }
                                           },
-                                          child: const Text('Delete Profile'),
+                                          child: const Text('Delete Space'),
                                         ),
                                       ),
                                     ],
