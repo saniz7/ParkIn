@@ -1,7 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:custom_info_window/custom_info_window.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:learn01/src/features/authentication/screens/profile/profile_screen.dart';
 
 class CustomMarkerInfoWindow extends StatefulWidget {
   const CustomMarkerInfoWindow({Key? key}) : super(key: key);
@@ -110,9 +111,10 @@ class _CustomMarkerInfoWindowState extends State<CustomMarkerInfoWindow> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Custom Info Window'),
-        backgroundColor: Colors.red,
+        title: Text('Find parking'),
+        backgroundColor: Color.fromARGB(255, 38, 220, 74),
       ),
+      drawer: ProfileScreen(),
       body: Stack(
         children: [
           GoogleMap(
