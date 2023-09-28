@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 
 class ParkingManageScreen extends StatefulWidget {
   @override
@@ -125,234 +125,254 @@ class _ParkingManageScreenState extends State<ParkingManageScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Parking Space (Manage)'),
-      ),
-      body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-        stream: FirebaseFirestore.instance.collection('space').snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          }
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Parking Space (Manage)'),
+          backgroundColor: Color.fromARGB(255, 2, 80, 113),
+        ),
+        body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+          stream: FirebaseFirestore.instance.collection('space').snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            }
 
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          }
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            }
 
-          List<DataRow> rows = [];
+            List<DataRow> rows = [];
 
-          snapshot.data!.docs.forEach((doc) {
-            Map<String, dynamic>? spaceData = doc.data();
-            String spaceId = doc.id;
-            String spaceName = spaceData?['spacename'] ?? '';
-            int capacity = spaceData?['capacity'] is int
-                ? spaceData!['capacity']
-                : int.tryParse(spaceData!['capacity'] ?? '0') ?? 0;
-            int availableSpace = spaceData?['available_space'] is int
-                ? spaceData!['available_space']
-                : int.tryParse(spaceData!['available_space'] ?? '0') ?? 0;
-            String description = spaceData?['description'] ?? '';
-            String imageUrl = spaceData?['imageUrl'] ?? '';
-            String location = spaceData?['location'] ?? '';
-            int rate = spaceData?['rate'] is int
-                ? spaceData!['rate']
-                : int.tryParse(spaceData!['rate'] ?? '0') ?? 0;
-            String type = spaceData?['type'] ?? '';
-            String view = spaceData?['view'] ?? '';
+            snapshot.data!.docs.forEach((doc) {
+              Map<String, dynamic>? spaceData = doc.data();
+              String spaceId = doc.id;
+              String spaceName = spaceData?['spacename'] ?? '';
+              int capacity = spaceData?['capacity'] is int
+                  ? spaceData!['capacity']
+                  : int.tryParse(spaceData!['capacity'] ?? '0') ?? 0;
+              int availableSpace = spaceData?['available_space'] is int
+                  ? spaceData!['available_space']
+                  : int.tryParse(spaceData!['available_space'] ?? '0') ?? 0;
+              String description = spaceData?['description'] ?? '';
+              String imageUrl = spaceData?['imageUrl'] ?? '';
+              String location = spaceData?['location'] ?? '';
+              int rate = spaceData?['rate'] is int
+                  ? spaceData!['rate']
+                  : int.tryParse(spaceData!['rate'] ?? '0') ?? 0;
+              String type = spaceData?['type'] ?? '';
+              String view = spaceData?['view'] ?? '';
 
-            rows.add(
-              DataRow(
-                cells: [
-                  DataCell(Text(spaceName)),
-                  DataCell(Text(capacity.toString())),
-                  DataCell(Text(availableSpace.toString())),
-                  DataCell(Text(description)),
-                  DataCell(imageUrl.isNotEmpty
-                      ? Image.network(imageUrl)
-                      : Text(
-                          'No Image')), // Show 'No Image' if the imageUrl is empty
-                  DataCell(Text(location)),
-                  DataCell(Text(rate.toString())),
-                  DataCell(Text(type)),
-                  DataCell(Text(view)),
-                  DataCell(
-                    IconButton(
-                      icon: Icon(Icons.edit),
-                      onPressed: () {
-                        _editSpace(spaceId, spaceName, capacity, availableSpace,
-                            description, imageUrl, location, rate, type, view);
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: Text('Edit Parking Space'),
-                              content: SingleChildScrollView(
-                                child: Form(
-                                  key: _formKey,
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      TextFormField(
-                                        controller: _spaceNameController,
-                                        decoration: InputDecoration(
-                                            labelText: 'Space Name'),
-                                        validator: (value) {
-                                          if (value == null || value.isEmpty) {
-                                            return 'Please enter a space name';
-                                          }
-                                          return null;
-                                        },
-                                      ),
-                                      TextFormField(
-                                        controller: _capacityController,
-                                        keyboardType: TextInputType.number,
-                                        decoration: InputDecoration(
-                                            labelText: 'Capacity'),
-                                        validator: (value) {
-                                          if (value == null || value.isEmpty) {
-                                            return 'Please enter the capacity';
-                                          }
-                                          return null;
-                                        },
-                                      ),
-                                      TextFormField(
-                                        controller: _availableSpaceController,
-                                        keyboardType: TextInputType.number,
-                                        decoration: InputDecoration(
-                                            labelText: 'Available Space'),
-                                        validator: (value) {
-                                          if (value == null || value.isEmpty) {
-                                            return 'Please enter the available space';
-                                          }
-                                          return null;
-                                        },
-                                      ),
-                                      TextFormField(
-                                        controller: _descriptionController,
-                                        decoration: InputDecoration(
-                                            labelText: 'Description'),
-                                        validator: (value) {
-                                          if (value == null || value.isEmpty) {
-                                            return 'Please enter a description';
-                                          }
-                                          return null;
-                                        },
-                                      ),
-                                      TextFormField(
-                                        controller: _imageUrlController,
-                                        decoration: InputDecoration(
-                                            labelText: 'Image URL'),
-                                        validator: (value) {
-                                          // You can add URL validation here if needed
-                                          return null;
-                                        },
-                                      ),
-                                      TextFormField(
-                                        controller: _locationController,
-                                        decoration: InputDecoration(
-                                            labelText: 'Location'),
-                                        validator: (value) {
-                                          if (value == null || value.isEmpty) {
-                                            return 'Please enter a location';
-                                          }
-                                          return null;
-                                        },
-                                      ),
-                                      TextFormField(
-                                        controller: _rateController,
-                                        keyboardType: TextInputType.number,
-                                        decoration:
-                                            InputDecoration(labelText: 'Rate'),
-                                        validator: (value) {
-                                          if (value == null || value.isEmpty) {
-                                            return 'Please enter the rate';
-                                          }
-                                          return null;
-                                        },
-                                      ),
-                                      TextFormField(
-                                        controller: _typeController,
-                                        decoration:
-                                            InputDecoration(labelText: 'Type'),
-                                        validator: (value) {
-                                          if (value == null || value.isEmpty) {
-                                            return 'Please enter a type';
-                                          }
-                                          return null;
-                                        },
-                                      ),
-                                      TextFormField(
-                                        controller: _viewController,
-                                        decoration:
-                                            InputDecoration(labelText: 'View'),
-                                        validator: (value) {
-                                          if (value == null || value.isEmpty) {
-                                            return 'Please enter a view';
-                                          }
-                                          return null;
-                                        },
-                                      ),
-                                    ],
+              rows.add(
+                DataRow(
+                  cells: [
+                    DataCell(Text(spaceName)),
+                    DataCell(Text(capacity.toString())),
+                    DataCell(Text(availableSpace.toString())),
+                    DataCell(Text(description)),
+                    DataCell(imageUrl.isNotEmpty
+                        ? Image.network(imageUrl)
+                        : Text(
+                            'No Image')), // Show 'No Image' if the imageUrl is empty
+                    DataCell(Text(location)),
+                    DataCell(Text(rate.toString())),
+                    DataCell(Text(type)),
+                    DataCell(Text(view)),
+                    DataCell(
+                      IconButton(
+                        icon: Icon(Icons.edit),
+                        onPressed: () {
+                          _editSpace(
+                              spaceId,
+                              spaceName,
+                              capacity,
+                              availableSpace,
+                              description,
+                              imageUrl,
+                              location,
+                              rate,
+                              type,
+                              view);
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text('Edit Parking Space'),
+                                content: SingleChildScrollView(
+                                  child: Form(
+                                    key: _formKey,
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        TextFormField(
+                                          controller: _spaceNameController,
+                                          decoration: InputDecoration(
+                                              labelText: 'Space Name'),
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return 'Please enter a space name';
+                                            }
+                                            return null;
+                                          },
+                                        ),
+                                        TextFormField(
+                                          controller: _capacityController,
+                                          keyboardType: TextInputType.number,
+                                          decoration: InputDecoration(
+                                              labelText: 'Capacity'),
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return 'Please enter the capacity';
+                                            }
+                                            return null;
+                                          },
+                                        ),
+                                        TextFormField(
+                                          controller: _availableSpaceController,
+                                          keyboardType: TextInputType.number,
+                                          decoration: InputDecoration(
+                                              labelText: 'Available Space'),
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return 'Please enter the available space';
+                                            }
+                                            return null;
+                                          },
+                                        ),
+                                        TextFormField(
+                                          controller: _descriptionController,
+                                          decoration: InputDecoration(
+                                              labelText: 'Description'),
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return 'Please enter a description';
+                                            }
+                                            return null;
+                                          },
+                                        ),
+                                        TextFormField(
+                                          controller: _imageUrlController,
+                                          decoration: InputDecoration(
+                                              labelText: 'Image URL'),
+                                          validator: (value) {
+                                            // You can add URL validation here if needed
+                                            return null;
+                                          },
+                                        ),
+                                        TextFormField(
+                                          controller: _locationController,
+                                          decoration: InputDecoration(
+                                              labelText: 'Location'),
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return 'Please enter a location';
+                                            }
+                                            return null;
+                                          },
+                                        ),
+                                        TextFormField(
+                                          controller: _rateController,
+                                          keyboardType: TextInputType.number,
+                                          decoration: InputDecoration(
+                                              labelText: 'Rate'),
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return 'Please enter the rate';
+                                            }
+                                            return null;
+                                          },
+                                        ),
+                                        TextFormField(
+                                          controller: _typeController,
+                                          decoration: InputDecoration(
+                                              labelText: 'Type'),
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return 'Please enter a type';
+                                            }
+                                            return null;
+                                          },
+                                        ),
+                                        TextFormField(
+                                          controller: _viewController,
+                                          decoration: InputDecoration(
+                                              labelText: 'View'),
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return 'Please enter a view';
+                                            }
+                                            return null;
+                                          },
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                              actions: [
-                                ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: Text('Cancel'),
-                                ),
-                                ElevatedButton(
-                                  onPressed: () {
-                                    _saveSpace();
-                                  },
-                                  child: Text('Save'),
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                      },
+                                actions: [
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: Text('Cancel'),
+                                  ),
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      _saveSpace();
+                                    },
+                                    child: Text('Save'),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                      ),
                     ),
-                  ),
-                  DataCell(
-                    IconButton(
-                      icon: Icon(Icons.delete),
-                      onPressed: () {
-                        _deleteSpace(spaceId);
-                      },
+                    DataCell(
+                      IconButton(
+                        icon: Icon(Icons.delete),
+                        onPressed: () {
+                          _deleteSpace(spaceId);
+                        },
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
+              );
+            });
+
+            return SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: DataTable(
+                  columns: [
+                    DataColumn(label: Text('Space Name')),
+                    DataColumn(label: Text('Capacity')),
+                    DataColumn(label: Text('Available Space')),
+                    DataColumn(label: Text('Description')),
+                    DataColumn(label: Text('Image URL')),
+                    DataColumn(label: Text('Location')),
+                    DataColumn(label: Text('Rate')),
+                    DataColumn(label: Text('Type')),
+                    DataColumn(label: Text('View')),
+                    DataColumn(label: Text('Edit')),
+                    DataColumn(label: Text('Delete')),
+                  ],
+                  rows: rows,
+                ),
               ),
             );
-          });
-
-          return SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: DataTable(
-                columns: [
-                  DataColumn(label: Text('Space Name')),
-                  DataColumn(label: Text('Capacity')),
-                  DataColumn(label: Text('Available Space')),
-                  DataColumn(label: Text('Description')),
-                  DataColumn(label: Text('Image URL')),
-                  DataColumn(label: Text('Location')),
-                  DataColumn(label: Text('Rate')),
-                  DataColumn(label: Text('Type')),
-                  DataColumn(label: Text('View')),
-                  DataColumn(label: Text('Edit')),
-                  DataColumn(label: Text('Delete')),
-                ],
-                rows: rows,
-              ),
-            ),
-          );
-        },
+          },
+        ),
       ),
     );
   }

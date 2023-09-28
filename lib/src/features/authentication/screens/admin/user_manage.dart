@@ -235,6 +235,7 @@
 //             );
 //           });
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 //           return SingleChildScrollView(
 //             scrollDirection: Axis.horizontal,
 //             child: SingleChildScrollView(
@@ -260,7 +261,6 @@
 // }
 
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserManageScreen extends StatefulWidget {
   @override
@@ -356,168 +356,176 @@ class _UserManageScreenState extends State<UserManageScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('User (Manage)'),
-      ),
-      body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-        stream: FirebaseFirestore.instance.collection('users').snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          }
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Color.fromARGB(255, 2, 80, 113),
+          title: Text('User (Manage)'),
+        ),
+        body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+          stream: FirebaseFirestore.instance.collection('users').snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            }
 
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          }
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            }
 
-          List<DataRow> rows = [];
+            List<DataRow> rows = [];
 
-          snapshot.data!.docs.forEach((doc) {
-            Map<String, dynamic>? userData = doc.data();
-            String userId = doc.id;
-            String username = userData?['username'] ?? '';
-            String email = userData?['email'] ?? '';
-            String phoneno = userData?['phoneno']?.toString() ?? '';
-            String password = userData?['password'] ?? '';
-            String role = userData?['role'] ?? '';
+            snapshot.data!.docs.forEach((doc) {
+              Map<String, dynamic>? userData = doc.data();
+              String userId = doc.id;
+              String username = userData?['username'] ?? '';
+              String email = userData?['email'] ?? '';
+              String phoneno = userData?['phoneno']?.toString() ?? '';
+              String password = userData?['password'] ?? '';
+              String role = userData?['role'] ?? '';
 
-            rows.add(
-              DataRow(
-                cells: [
-                  DataCell(Text(username)),
-                  DataCell(Text(email)),
-                  DataCell(Text(phoneno)),
-                  DataCell(Text(password)),
-                  DataCell(Text(role)),
-                  DataCell(
-                    IconButton(
-                      icon: Icon(Icons.edit),
-                      onPressed: () {
-                        _editUser(
-                            userId, username, email, phoneno, password, role);
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: Text('Edit User'),
-                              content: SingleChildScrollView(
-                                child: Form(
-                                  key: _formKey,
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      TextFormField(
-                                        controller: _usernameController,
-                                        decoration: InputDecoration(
-                                            labelText: 'Username'),
-                                        validator: (value) {
-                                          if (value == null || value.isEmpty) {
-                                            return 'Please enter a username';
-                                          }
-                                          return null;
-                                        },
-                                      ),
-                                      TextFormField(
-                                        controller: _emailController,
-                                        decoration:
-                                            InputDecoration(labelText: 'Email'),
-                                        validator: (value) {
-                                          if (value == null || value.isEmpty) {
-                                            return 'Please enter an email';
-                                          }
-                                          return null;
-                                        },
-                                      ),
-                                      TextFormField(
-                                        controller: _phonenoController,
-                                        decoration: InputDecoration(
-                                            labelText: 'Phone No'),
-                                        validator: (value) {
-                                          if (value == null || value.isEmpty) {
-                                            return 'Please enter a phone number';
-                                          }
-                                          return null;
-                                        },
-                                      ),
-                                      TextFormField(
-                                        controller: _passwordController,
-                                        decoration: InputDecoration(
-                                            labelText: 'Password'),
-                                        validator: (value) {
-                                          if (value == null || value.isEmpty) {
-                                            return 'Please enter a password';
-                                          }
-                                          return null;
-                                        },
-                                      ),
-                                      TextFormField(
-                                        controller: _roleController,
-                                        decoration:
-                                            InputDecoration(labelText: 'Role'),
-                                        validator: (value) {
-                                          if (value == null || value.isEmpty) {
-                                            return 'Please enter a role';
-                                          }
-                                          return null;
-                                        },
-                                      ),
-                                    ],
+              rows.add(
+                DataRow(
+                  cells: [
+                    DataCell(Text(username)),
+                    DataCell(Text(email)),
+                    DataCell(Text(phoneno)),
+                    DataCell(Text(password)),
+                    DataCell(Text(role)),
+                    DataCell(
+                      IconButton(
+                        icon: Icon(Icons.edit),
+                        onPressed: () {
+                          _editUser(
+                              userId, username, email, phoneno, password, role);
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text('Edit User'),
+                                content: SingleChildScrollView(
+                                  child: Form(
+                                    key: _formKey,
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        TextFormField(
+                                          controller: _usernameController,
+                                          decoration: InputDecoration(
+                                              labelText: 'Username'),
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return 'Please enter a username';
+                                            }
+                                            return null;
+                                          },
+                                        ),
+                                        TextFormField(
+                                          controller: _emailController,
+                                          decoration: InputDecoration(
+                                              labelText: 'Email'),
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return 'Please enter an email';
+                                            }
+                                            return null;
+                                          },
+                                        ),
+                                        TextFormField(
+                                          controller: _phonenoController,
+                                          decoration: InputDecoration(
+                                              labelText: 'Phone No'),
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return 'Please enter a phone number';
+                                            }
+                                            return null;
+                                          },
+                                        ),
+                                        TextFormField(
+                                          controller: _passwordController,
+                                          decoration: InputDecoration(
+                                              labelText: 'Password'),
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return 'Please enter a password';
+                                            }
+                                            return null;
+                                          },
+                                        ),
+                                        TextFormField(
+                                          controller: _roleController,
+                                          decoration: InputDecoration(
+                                              labelText: 'Role'),
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return 'Please enter a role';
+                                            }
+                                            return null;
+                                          },
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                              actions: [
-                                ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: Text('Cancel'),
-                                ),
-                                ElevatedButton(
-                                  onPressed: () {
-                                    _saveUser();
-                                  },
-                                  child: Text('Save'),
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                      },
+                                actions: [
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: Text('Cancel'),
+                                  ),
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      _saveUser();
+                                    },
+                                    child: Text('Save'),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                      ),
                     ),
-                  ),
-                  DataCell(
-                    IconButton(
-                      icon: Icon(Icons.delete),
-                      onPressed: () {
-                        _deleteUser(userId);
-                      },
+                    DataCell(
+                      IconButton(
+                        icon: Icon(Icons.delete),
+                        onPressed: () {
+                          _deleteUser(userId);
+                        },
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
+              );
+            });
+
+            return SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: DataTable(
+                  columns: [
+                    DataColumn(label: Text('Username')),
+                    DataColumn(label: Text('Email')),
+                    DataColumn(label: Text('Phone No')),
+                    DataColumn(label: Text('Password')),
+                    DataColumn(label: Text('Role')),
+                    DataColumn(label: Text('Edit')),
+                    DataColumn(label: Text('Delete')),
+                  ],
+                  rows: rows,
+                ),
               ),
             );
-          });
-
-          return SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: DataTable(
-                columns: [
-                  DataColumn(label: Text('Username')),
-                  DataColumn(label: Text('Email')),
-                  DataColumn(label: Text('Phone No')),
-                  DataColumn(label: Text('Password')),
-                  DataColumn(label: Text('Role')),
-                  DataColumn(label: Text('Edit')),
-                  DataColumn(label: Text('Delete')),
-                ],
-                rows: rows,
-              ),
-            ),
-          );
-        },
+          },
+        ),
       ),
     );
   }
