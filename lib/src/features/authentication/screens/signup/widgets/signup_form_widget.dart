@@ -39,7 +39,7 @@ class _SignUpScreenState extends State<SignUpFormWidget> {
       String uid = userCredential.user!.uid;
 
       Fluttertoast.showToast(
-        msg: 'Signuppp successful',
+        msg: 'Signup successful',
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         backgroundColor: Colors.green,

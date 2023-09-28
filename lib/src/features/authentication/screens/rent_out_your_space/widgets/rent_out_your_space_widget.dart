@@ -207,6 +207,27 @@ class _RentSpaceState extends State<RentSpaceWidget> {
     print(selectedLatLng?.latitude);
   }
 
+  void _showLocationSelectionDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Select Location'),
+          contentPadding: EdgeInsets.zero, // Remove default content padding
+
+          content: Container(
+            height: 800,
+            // width: 600, // Set an appropriate height for your dialog
+            child: Home(
+              selectedLocation: selectedLatLng,
+              onLocationSelected: setLocation,
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_isRegistered) {
@@ -235,43 +256,33 @@ class _RentSpaceState extends State<RentSpaceWidget> {
                 },
               ),
               Padding(
-                padding: const EdgeInsets.all(0.0),
-                child: GestureDetector(
-                  onTap: () {
-                    // Open Home as a BottomSheet
-                    showModalBottomSheet<void>(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return Home(
-                          selectedLocation: selectedLatLng,
-                          onLocationSelected: setLocation,
-                        );
-                      },
-                    );
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.green,
-                    ),
-                    child: _isLoading
-                        ? CircularProgressIndicator()
-                        : Center(
-                            child: Padding(
-                              padding: EdgeInsets.all(14.0),
-                              child: Text(
-                                locationSelected
-                                    ? 'Location selected'
-                                    : 'Choose a location',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
+                  padding: const EdgeInsets.all(0.0),
+                  child: GestureDetector(
+                    onTap: () {
+                      _showLocationSelectionDialog(context);
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.green,
+                      ),
+                      child: _isLoading
+                          ? CircularProgressIndicator()
+                          : Center(
+                              child: Padding(
+                                padding: EdgeInsets.all(14.0),
+                                child: Text(
+                                  locationSelected
+                                      ? 'Location selected'
+                                      : 'Change location',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                  ),
-                ),
-              ),
+                    ),
+                  )),
               // TextFormField(
               //   controller: locationController, // Use the controller here
               //   decoration: InputDecoration(

@@ -51,6 +51,27 @@ class _ManageSpaceScreenState extends State<ManageScreen> {
     });
   }
 
+  void _showLocationSelectionDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Select Location'),
+          contentPadding: EdgeInsets.zero, // Remove default content padding
+
+          content: Container(
+            height: 800,
+            // width: 600, // Set an appropriate height for your dialog
+            child: Home(
+              selectedLocation: selectedLatLng,
+              onLocationSelected: setLocation,
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -195,53 +216,36 @@ class _ManageSpaceScreenState extends State<ManageScreen> {
                                       // Text(
                                       //     'Longitude: ${selectedLatLng?.longitude.toString() ?? 'Not selected'}'),
                                       Padding(
-                                        padding: const EdgeInsets.all(0.0),
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            // Open Home as a BottomSheet
-                                            showModalBottomSheet<void>(
-                                              context: context,
-                                              builder: (BuildContext context) {
-                                                return Container(
-                                                  height:
-                                                      400, // Set an appropriate height for your modal sheet
-                                                  child: InteractiveViewer(
-                                                    child: Home(
-                                                      selectedLocation:
-                                                          selectedLatLng,
-                                                      onLocationSelected:
-                                                          setLocation,
-                                                    ),
-                                                  ),
-                                                );
-                                              },
-                                            );
-                                          },
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                              color: Colors.green,
-                                            ),
-                                            child: _isLoading
-                                                ? CircularProgressIndicator()
-                                                : Center(
-                                                    child: Padding(
-                                                      padding:
-                                                          EdgeInsets.all(14.0),
-                                                      child: Text(
-                                                        locationSelected
-                                                            ? 'Location selected'
-                                                            : 'Choose a location',
-                                                        style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          color: Colors.white,
+                                          padding: const EdgeInsets.all(0.0),
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              _showLocationSelectionDialog(
+                                                  context);
+                                            },
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                color: Colors.green,
+                                              ),
+                                              child: _isLoading
+                                                  ? CircularProgressIndicator()
+                                                  : Center(
+                                                      child: Padding(
+                                                        padding: EdgeInsets.all(
+                                                            14.0),
+                                                        child: Text(
+                                                          locationSelected
+                                                              ? 'Location selected'
+                                                              : 'Change location',
+                                                          style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            color: Colors.white,
+                                                          ),
                                                         ),
                                                       ),
                                                     ),
-                                                  ),
-                                          ),
-                                        ),
-                                      ),
+                                            ),
+                                          )),
                                       SizedBox(height: 20),
                                       SizedBox(
                                         width: double.infinity,
