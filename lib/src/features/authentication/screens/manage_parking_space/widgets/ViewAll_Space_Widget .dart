@@ -222,29 +222,29 @@ class _ViewSpaceScreenState extends State<ViewSpaceScreen> {
                               },
                             ),
                             const SizedBox(height: tFormHeight - 20),
-                            Row(
-                              children: [
-                                Text(
-                                  'View Controller:',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(width: 10),
-                                Switch(
-                                  value: isViewControllerEnabled,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      isViewControllerEnabled = value;
-                                      updateViewControllerStatus(value);
-                                    });
-                                  },
-                                  activeColor: Colors.green,
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 20),
+                            // Row(
+                            //   children: [
+                            //     Text(
+                            //       'View Controller:',
+                            //       style: TextStyle(
+                            //         fontSize: 16,
+                            //         fontWeight: FontWeight.bold,
+                            //       ),
+                            //     ),
+                            //     SizedBox(width: 10),
+                            //     Switch(
+                            //       value: isViewControllerEnabled,
+                            //       onChanged: (value) {
+                            //         setState(() {
+                            //           isViewControllerEnabled = value;
+                            //           updateViewControllerStatus(value);
+                            //         });
+                            //       },
+                            //       activeColor: Colors.green,
+                            //     ),
+                            //   ],
+                            // ),
+                            // const SizedBox(height: 20),
                             Text(
                               'Available Spaces: $availableSpaces',
                               style: TextStyle(
