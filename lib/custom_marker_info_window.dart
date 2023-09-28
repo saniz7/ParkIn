@@ -40,15 +40,14 @@ class _CustomMarkerInfoWindowState extends State<CustomMarkerInfoWindow> {
 
         _markers.add(
           Marker(
-            markerId: MarkerId(
-                document.id), // You can use the document ID as the marker ID
+            markerId: MarkerId(document.id),
             icon: BitmapDescriptor.defaultMarker,
             position: LatLng(latitude, longitude),
             onTap: () {
               _customInfoWindowController.hideInfoWindow!();
               _customInfoWindowController.addInfoWindow!(
                 Container(
-                  height: 300, // Adjust this height as needed
+                  height: 300,
                   width: 200,
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -62,7 +61,7 @@ class _CustomMarkerInfoWindowState extends State<CustomMarkerInfoWindow> {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          'Custom Marker Info',
+                          'Place Info',
                           maxLines: 1,
                           overflow: TextOverflow.fade,
                           softWrap: false,
@@ -71,13 +70,31 @@ class _CustomMarkerInfoWindowState extends State<CustomMarkerInfoWindow> {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          'Latitude: $latitude, Longitude: $longitude',
+                          'Name: ${document['spacename']}',
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          'Description: ${document['description']}',
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          'Available Space:${document['availablespace'].toString()}',
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          'Rate:${document['rate'].toString()}',
                         ),
                       ),
                     ],
                   ),
                 ),
-                LatLng(27.67141, 85.33913),
+                LatLng(latitude, longitude),
               );
             },
           ),
