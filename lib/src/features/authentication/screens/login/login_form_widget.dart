@@ -17,6 +17,7 @@ class LoginForm extends StatefulWidget {
 }
 
 class _LoginFormState extends State<LoginForm> {
+  bool _obscureText = true;
   final _formKey = GlobalKey<FormState>();
 
   // TextControllers
@@ -177,7 +178,7 @@ class _LoginFormState extends State<LoginForm> {
             ),
             const SizedBox(height: tFormHeight - 20),
             TextFormField(
-              obscureText: true,
+              obscureText: _obscureText,
               controller: _passwordController,
               decoration: InputDecoration(
                 prefixIcon: Icon(Icons.fingerprint),
@@ -186,10 +187,15 @@ class _LoginFormState extends State<LoginForm> {
                 border: OutlineInputBorder(),
                 suffixIcon: IconButton(
                   onPressed: () {
+                    setState(() {
+                      _obscureText = !_obscureText;
+                    });
                     // obscureText:
                     // false;
                   },
-                  icon: Icon(Icons.remove_red_eye_sharp),
+                  icon: Icon(_obscureText
+                      ? Icons.remove_red_eye_sharp
+                      : Icons.visibility_off_sharp),
                 ),
               ),
               validator: (value) {
