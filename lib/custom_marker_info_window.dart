@@ -1,6 +1,7 @@
 import 'package:custom_info_window/custom_info_window.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CustomMarkerInfoWindow extends StatefulWidget {
   const CustomMarkerInfoWindow({Key? key}) : super(key: key);
@@ -13,95 +14,78 @@ class _CustomMarkerInfoWindowState extends State<CustomMarkerInfoWindow> {
   CustomInfoWindowController _customInfoWindowController =
       CustomInfoWindowController();
   final List<Marker> _markers = <Marker>[];
-  final List<LatLng> _latLng = [
-    LatLng(27.67141, 85.33913),
-    LatLng(27.6721, 85.3398),
-    LatLng(27.6770118, 85.3327667),
-    LatLng(27.704127, 85.332151),
-  ];
+  final List<LatLng> _latLng = [];
 
   @override
   void initState() {
     super.initState();
     _customInfoWindowController = CustomInfoWindowController();
-    loadData();
+    fetchSpaceData();
   }
 
-  loadData() {
-    for (int i = 0; i < _latLng.length; i++) {
-      _markers.add(
-        Marker(
-          markerId: MarkerId(i.toString()),
-          icon: BitmapDescriptor.defaultMarker,
-          position: _latLng[i],
-          onTap: () {
-            _customInfoWindowController.hideInfoWindow!();
-            _customInfoWindowController.addInfoWindow!(
-              Container(
-                height: 300, // Adjust this height as needed
-                width: 200,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(color: Colors.grey),
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                child: ListView(
-                  // Wrap the content in a ListView
-                  children: [
-                    Container(
-                      width: 300,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: NetworkImage(
-                            'https://www.collegeinfonepal.com/wp-content/uploads/2023/07/Nepal-College-of-Information-Technology-NCIT-Photo-1.jpg',
-                          ),
-                          fit: BoxFit.fitWidth,
-                          filterQuality: FilterQuality.high,
+  Future<void> fetchSpaceData() async {
+    try {
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+      QuerySnapshot<Map<String, dynamic>> querySnapshot =
+          await firestore.collection('space').get();
+
+      for (QueryDocumentSnapshot<Map<String, dynamic>> document
+          in querySnapshot.docs) {
+        double latitude = document['latitude']
+            as double; // Replace 'latitude' with the actual field name
+        double longitude = document['longitude']
+            as double; // Replace 'longitude' with the actual field name
+
+        _latLng.add(LatLng(latitude, longitude));
+
+        _markers.add(
+          Marker(
+            markerId: MarkerId(
+                document.id), // You can use the document ID as the marker ID
+            icon: BitmapDescriptor.defaultMarker,
+            position: LatLng(latitude, longitude),
+            onTap: () {
+              _customInfoWindowController.hideInfoWindow!();
+              _customInfoWindowController.addInfoWindow!(
+                Container(
+                  height: 300, // Adjust this height as needed
+                  width: 200,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  child: ListView(
+                    // Wrap the content in a ListView
+                    children: [
+                      // Customize the content here based on the selected Firestore document
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          'Custom Marker Info',
+                          maxLines: 1,
+                          overflow: TextOverflow.fade,
+                          softWrap: false,
                         ),
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10.0),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          'Latitude: $latitude, Longitude: $longitude',
                         ),
-                        color: Colors.red,
                       ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              'Ncit College Parking',
-                              maxLines: 1,
-                              overflow: TextOverflow.fade,
-                              softWrap: false,
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              '.3 mi.',
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        'You can park here from 11 am to 5 pm - Sunday to Friday',
-                        maxLines: 2,
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              _latLng[i],
-            );
-          },
-        ),
-      );
+                LatLng(27.67141, 85.33913),
+              );
+            },
+          ),
+        );
+      }
       setState(() {});
+    } catch (e) {
+      print('Error fetching data: $e');
     }
   }
 
