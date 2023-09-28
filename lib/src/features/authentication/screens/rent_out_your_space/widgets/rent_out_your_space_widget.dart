@@ -231,39 +231,214 @@ class _RentSpaceState extends State<RentSpaceWidget> {
   @override
   Widget build(BuildContext context) {
     if (_isRegistered) {
-      return Text('You have already registered a space');
+      return Center(
+        child: Container(
+          padding: const EdgeInsets.all(.0), // Add padding to create space
+          decoration: BoxDecoration(
+            color: Colors.green[100], // Custom background color for the box
+            borderRadius: BorderRadius.circular(12), // Custom border radius
+          ),
+          child: Text(
+            'You have already registered a space',
+            style: TextStyle(
+              fontSize: 18,
+              color: Colors.red, // Custom text color
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      );
     } else {
       return Material(
-          // Wrap with Material widget
-          child: Container(
-        padding: const EdgeInsets.symmetric(vertical: tFormHeight - 10),
-        child: Form(
-          key: _formKey, // Added form key
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TextFormField(
-                controller: nameController,
-                decoration: InputDecoration(
-                  labelText: 'Space Name', // Changed label to labelText
-                  prefixIcon: Icon(Icons.location_city),
+        // Wrap with Material widget
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: tFormHeight - 10),
+          child: Form(
+            key: _formKey, // Added form key
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                TextFormField(
+                  controller: nameController,
+                  decoration: InputDecoration(
+                    labelText: 'Space Name',
+                    prefixIcon: Icon(
+                      Icons.location_city,
+                      color: Colors.green, // Custom icon color
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      // Custom border for the input field
+                      borderSide: BorderSide(color: Colors.green),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      // Custom border for the input field when focused
+                      borderSide: BorderSide(color: Colors.green),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter a name';
+                    }
+                    return null;
+                  },
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a name';
-                  }
-                  return null;
-                },
-              ),
-              Padding(
-                  padding: const EdgeInsets.all(0.0),
+                Padding(
+                    padding: const EdgeInsets.all(0.0),
+                    child: GestureDetector(
+                      onTap: () {
+                        _showLocationSelectionDialog(context);
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.green,
+                        ),
+                        child: _isLoading
+                            ? CircularProgressIndicator()
+                            : Center(
+                                child: Padding(
+                                  padding: EdgeInsets.all(14.0),
+                                  child: Text(
+                                    locationSelected
+                                        ? 'Location selected'
+                                        : 'Change location',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                      ),
+                    )),
+                // TextFormField(
+                //   controller: locationController, // Use the controller here
+                //   decoration: InputDecoration(
+                //     labelText: 'Location',
+                //     prefixIcon: Icon(Icons.location_city),
+                //   ),
+                //   readOnly: true, // Make the text field read-only
+                //   validator: (value) {
+                //     // You can add validation here if needed
+                //     return null;
+                //   },
+                // ),
+                // TextFormField(
+                //   controller: locationController,
+                //   decoration: InputDecoration(
+                //     labelText: tLocation, // Changed label to labelText
+                //     prefixIcon: Icon(Icons.location_city),
+                //   ),
+                //   validator: (value) {
+                //     if (value == null || value.isEmpty) {
+                //       return 'Please enter a location';
+                //     }
+                //     return null;
+                //   },
+                // ),
+                SizedBox(
+                  height: tFormHeight - 20,
+                ),
+                TextFormField(
+                  controller: typeController,
+                  decoration: InputDecoration(
+                    labelText: tType, // Changed label to labelText
+                    prefixIcon: Icon(Icons.public_sharp),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter a type';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(
+                  height: tFormHeight - 20,
+                ),
+                TextFormField(
+                  controller: rateController,
+                  decoration: InputDecoration(
+                    labelText: tRate, // Changed label to labelText
+                    prefixIcon: Icon(Icons.currency_exchange_sharp),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter a rate';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(
+                  height: tFormHeight - 20,
+                ),
+                TextFormField(
+                  controller: capacityController,
+                  decoration: InputDecoration(
+                    labelText: tCapacity, // Changed label to labelText
+                    prefixIcon: Icon(Icons.numbers),
+                  ),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                  ],
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter a capacity';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(
+                  height: tFormHeight - 20,
+                ),
+                TextFormField(
+                  controller: descriptionController,
+                  decoration: InputDecoration(
+                    labelText: tAddDescription, // Changed label to labelText
+                    prefixIcon: Icon(Icons.description),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter a description';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(
+                  height: tFormHeight - 20,
+                ),
+                ElevatedButton(
+                  onPressed: _pickImage,
+                  child: Text(
+                    'Pick Image',
+                    style: TextStyle(
+                      color: Colors.white, // Set text color to white
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor:
+                        Colors.lightGreen, // Make button background transparent
+                  ),
+                ),
+                SizedBox(
+                  height: tFormHeight - 10,
+                ),
+                SizedBox(height: tFormHeight - 10),
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
                   child: GestureDetector(
                     onTap: () {
-                      _showLocationSelectionDialog(context);
+                      if (_formKey.currentState?.validate() == true) {
+                        showProgressDialog(context);
+                        _storeFormData();
+                      }
                     },
                     child: Container(
                       decoration: BoxDecoration(
                         color: Colors.green,
+                        borderRadius: BorderRadius.circular(12),
                       ),
                       child: _isLoading
                           ? CircularProgressIndicator()
@@ -271,165 +446,23 @@ class _RentSpaceState extends State<RentSpaceWidget> {
                               child: Padding(
                                 padding: EdgeInsets.all(14.0),
                                 child: Text(
-                                  locationSelected
-                                      ? 'Location selected'
-                                      : 'Choose a location',
+                                  'Rent My Space',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
+                                    fontSize: 18,
                                   ),
                                 ),
                               ),
                             ),
                     ),
-                  )),
-              // TextFormField(
-              //   controller: locationController, // Use the controller here
-              //   decoration: InputDecoration(
-              //     labelText: 'Location',
-              //     prefixIcon: Icon(Icons.location_city),
-              //   ),
-              //   readOnly: true, // Make the text field read-only
-              //   validator: (value) {
-              //     // You can add validation here if needed
-              //     return null;
-              //   },
-              // ),
-              // TextFormField(
-              //   controller: locationController,
-              //   decoration: InputDecoration(
-              //     labelText: tLocation, // Changed label to labelText
-              //     prefixIcon: Icon(Icons.location_city),
-              //   ),
-              //   validator: (value) {
-              //     if (value == null || value.isEmpty) {
-              //       return 'Please enter a location';
-              //     }
-              //     return null;
-              //   },
-              // ),
-              SizedBox(
-                height: tFormHeight - 20,
-              ),
-              TextFormField(
-                controller: typeController,
-                decoration: InputDecoration(
-                  labelText: tType, // Changed label to labelText
-                  prefixIcon: Icon(Icons.public_sharp),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a type';
-                  }
-                  return null;
-                },
-              ),
-              SizedBox(
-                height: tFormHeight - 20,
-              ),
-              TextFormField(
-                controller: rateController,
-                decoration: InputDecoration(
-                  labelText: tRate, // Changed label to labelText
-                  prefixIcon: Icon(Icons.currency_exchange_sharp),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a rate';
-                  }
-                  return null;
-                },
-              ),
-              SizedBox(
-                height: tFormHeight - 20,
-              ),
-              TextFormField(
-                controller: capacityController,
-                decoration: InputDecoration(
-                  labelText: tCapacity, // Changed label to labelText
-                  prefixIcon: Icon(Icons.numbers),
-                ),
-                inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
-                ],
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a capacity';
-                  }
-                  return null;
-                },
-              ),
-              SizedBox(
-                height: tFormHeight - 20,
-              ),
-              TextFormField(
-                controller: descriptionController,
-                decoration: InputDecoration(
-                  labelText: tAddDescription, // Changed label to labelText
-                  prefixIcon: Icon(Icons.description),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a description';
-                  }
-                  return null;
-                },
-              ),
-              SizedBox(
-                height: tFormHeight - 20,
-              ),
-              ElevatedButton(
-                onPressed: _pickImage,
-                child: Text('Pick Image'),
-              ),
-              SizedBox(
-                height: tFormHeight - 10,
-              ),
-              SizedBox(height: tFormHeight - 10),
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: GestureDetector(
-                  onTap: () {
-                    if (_formKey.currentState?.validate() == true &&
-                        selectedLatLng != null) {
-                      showProgressDialog(context);
-                      _storeFormData();
-                    }
-                    if (selectedLatLng == null) {
-                      // Location is not selected, show an error message
-                      Fluttertoast.showToast(
-                        msg: 'Location is required',
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.BOTTOM,
-                      );
-                    }
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.green,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: _isLoading
-                        ? CircularProgressIndicator()
-                        : Center(
-                            child: Padding(
-                              padding: EdgeInsets.all(14.0),
-                              child: Text(
-                                'Rent My Space',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
-      ));
+      );
     }
   }
 }

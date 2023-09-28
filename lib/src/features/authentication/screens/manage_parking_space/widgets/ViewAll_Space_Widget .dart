@@ -5,7 +5,7 @@ import 'package:learn01/src/features/authentication/screens/manage_parking_space
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
 import '../../../../../constants/sizes.dart';
-import 'package:intl/intl.dart'; // Import the intl package
+import 'package:intl/intl.dart';
 
 class ViewSpaceScreen extends StatefulWidget {
   const ViewSpaceScreen({Key? key}) : super(key: key);
@@ -98,7 +98,16 @@ class _ViewSpaceScreenState extends State<ViewSpaceScreen> {
             },
             icon: const Icon(LineAwesomeIcons.angle_double_left),
           ),
-          title: const Text('Manage Space'),
+          title: Text(
+            'Manage Your Space',
+            style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.black // Title color is green
+                ),
+          ),
+          backgroundColor: Color.fromARGB(
+              255, 130, 242, 154), // Background color is light green
         ),
         body: SingleChildScrollView(
           child: Container(
@@ -106,6 +115,8 @@ class _ViewSpaceScreenState extends State<ViewSpaceScreen> {
             child: Column(
               children: [
                 const SizedBox(height: 50),
+                // Add the home icon here next to "Dhumbarahi"
+
                 StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
                   stream: FirebaseFirestore.instance
                       .collection('space')
@@ -119,12 +130,9 @@ class _ViewSpaceScreenState extends State<ViewSpaceScreen> {
                       QuerySnapshot<Map<String, dynamic>> querySnapshot =
                           snapshot.data!;
 
-                      parkingSpaceCount =
-                          querySnapshot.size; // Calculate the count
+                      parkingSpaceCount = querySnapshot.size;
 
                       if (parkingSpaceCount > 0) {
-                        // Calculate available spaces
-
                         return Column(
                           children: [
                             ListView.builder(
@@ -137,12 +145,55 @@ class _ViewSpaceScreenState extends State<ViewSpaceScreen> {
                                 Map<String, dynamic>? spaceData =
                                     documentSnapshot.data();
                                 if (spaceData != null) {
-                                  return ListTile(
-                                    title: Text(spaceData['spacename']),
-                                    subtitle: Text(spaceData['type']),
-                                    onTap: () => navigateToManageScreen(
-                                      context,
-                                      documentSnapshot,
+                                  return Container(
+                                    margin: EdgeInsets.symmetric(
+                                        vertical: 8, horizontal: 16),
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: Colors.green, width: 2),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: ListTile(
+                                      contentPadding: EdgeInsets.all(16),
+                                      title: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                            Icons.home,
+                                            color: Colors.green,
+                                            size: 24,
+                                          ),
+                                          SizedBox(width: 10),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                spaceData['location'],
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight
+                                                      .bold, // Make text bold
+                                                  fontSize: 18,
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                              Text(
+                                                spaceData['type'],
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight
+                                                      .bold, // Make text bold
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                      onTap: () => navigateToManageScreen(
+                                        context,
+                                        documentSnapshot,
+                                      ),
                                     ),
                                   );
                                 } else {
@@ -153,7 +204,13 @@ class _ViewSpaceScreenState extends State<ViewSpaceScreen> {
                             const SizedBox(height: tFormHeight - 20),
                             Row(
                               children: [
-                                Text('View Controller:'),
+                                Text(
+                                  'View Controller:',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                                 SizedBox(width: 10),
                                 Switch(
                                   value: isViewControllerEnabled,
@@ -163,43 +220,79 @@ class _ViewSpaceScreenState extends State<ViewSpaceScreen> {
                                       updateViewControllerStatus(value);
                                     });
                                   },
+                                  activeColor: Colors.green,
                                 ),
                               ],
                             ),
                             const SizedBox(height: 20),
-                            Text('Available Spaces: $availableSpaces'),
-                            Text('Capacity: $capacity'),
+                            Text(
+                              'Available Spaces: $availableSpaces',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              'Capacity: $capacity',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                             const SizedBox(height: 20),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                ElevatedButton(
-                                  onPressed: availableSpaces < capacity
-                                      ? () {
-                                          setState(() {
-                                            availableSpaces += 1;
-                                            updateAvailableSpaces(1);
-                                          });
-                                        }
-                                      : null, // Disable the button if availableSpaces equals or exceeds capacity
-                                  child: Icon(Icons.add),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: availableSpaces >= capacity
-                                        ? Colors.grey
+                                Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: Colors.green, // Border color
+                                      width: 2.0, // Border width
+                                    ),
+                                  ),
+                                  child: IconButton(
+                                    onPressed: availableSpaces < capacity
+                                        ? () {
+                                            setState(() {
+                                              availableSpaces += 1;
+                                              updateAvailableSpaces(1);
+                                            });
+                                          }
                                         : null,
+                                    icon: Icon(
+                                      Icons.add,
+                                      color: Colors
+                                          .green, // Set the icon color to green
+                                    ),
+                                    iconSize: 48, // Adjust the size as needed
                                   ),
                                 ),
                                 SizedBox(width: 10),
-                                ElevatedButton(
-                                  onPressed: () {
-                                    if (availableSpaces > 0) {
-                                      setState(() {
-                                        availableSpaces -= 1;
-                                        updateAvailableSpaces(-1);
-                                      });
-                                    }
-                                  },
-                                  child: Icon(Icons.remove),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: Colors.green, // Border color
+                                      width: 2.0, // Border width
+                                    ),
+                                  ),
+                                  child: IconButton(
+                                    onPressed: () {
+                                      if (availableSpaces > 0) {
+                                        setState(() {
+                                          availableSpaces -= 1;
+                                          updateAvailableSpaces(-1);
+                                        });
+                                      }
+                                    },
+                                    icon: Icon(
+                                      Icons.remove,
+                                      color: Colors
+                                          .green, // Set the icon color to green
+                                    ),
+                                    iconSize: 48, // Adjust the size as needed
+                                  ),
                                 ),
                               ],
                             ),
@@ -217,15 +310,12 @@ class _ViewSpaceScreenState extends State<ViewSpaceScreen> {
                       .collection('booking')
                       .where('pid',
                           isEqualTo: FirebaseAuth.instance.currentUser?.uid)
-                      .where('time',
-                          isGreaterThan: Timestamp.now()) // Use Timestamp.now()
+                      .where('time', isGreaterThan: Timestamp.now())
                       .snapshots(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      // Data is still loading
                       return CircularProgressIndicator();
                     } else if (snapshot.hasData) {
-                      // User data is available
                       List<QueryDocumentSnapshot<Map<String, dynamic>>>
                           documents = snapshot.data!.docs;
                       if (documents.isNotEmpty) {
@@ -233,10 +323,8 @@ class _ViewSpaceScreenState extends State<ViewSpaceScreen> {
                           children: documents.map((document) {
                             Map<String, dynamic>? bookingData = document.data();
                             if (bookingData != null) {
-                              // Format the date
                               final date = formatDate(
                                   (bookingData['time'] as Timestamp).toDate());
-                              print(Timestamp.now());
                               return Column(
                                 children: [
                                   SizedBox(height: tFormHeight - 20),
@@ -257,7 +345,12 @@ class _ViewSpaceScreenState extends State<ViewSpaceScreen> {
                         );
                       }
                     }
-                    return const Text('No bookings found. Book a space Now');
+                    return const Text('No bookings found. Book a space Now!!',
+                        style: TextStyle(
+                          fontStyle: FontStyle.italic, // Make the text italic
+                          decoration:
+                              TextDecoration.underline, // Underline the text
+                        ));
                   },
                 ),
               ],
