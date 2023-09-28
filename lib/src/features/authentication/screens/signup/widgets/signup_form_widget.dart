@@ -42,7 +42,7 @@ class _SignUpScreenState extends State<SignUpFormWidget> {
         msg: 'Signup successful',
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
-        backgroundColor: Colors.green,
+        backgroundColor: Color.fromARGB(255, 53, 199, 84),
         textColor: Colors.white,
       );
       Navigator.pushReplacement(
@@ -266,7 +266,7 @@ class _SignUpScreenState extends State<SignUpFormWidget> {
                 },
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Colors.green,
+                    color: Color.fromARGB(255, 53, 199, 84),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: _isLoading
