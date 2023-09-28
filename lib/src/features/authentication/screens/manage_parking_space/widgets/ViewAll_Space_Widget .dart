@@ -138,7 +138,7 @@ class _ViewSpaceScreenState extends State<ViewSpaceScreen> {
                                     documentSnapshot.data();
                                 if (spaceData != null) {
                                   return ListTile(
-                                    title: Text(spaceData['location']),
+                                    title: Text(spaceData['spacename']),
                                     subtitle: Text(spaceData['type']),
                                     onTap: () => navigateToManageScreen(
                                       context,
