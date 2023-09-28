@@ -190,10 +190,10 @@ class _ManageSpaceScreenState extends State<ManageScreen> {
                                           return null;
                                         },
                                       ),
-                                      Text(
-                                          'Latitude: ${selectedLatLng?.latitude.toString() ?? 'Not selected'}'),
-                                      Text(
-                                          'Longitude: ${selectedLatLng?.longitude.toString() ?? 'Not selected'}'),
+                                      // Text(
+                                      //     'Latitude: ${selectedLatLng?.latitude.toString() ?? 'Not selected'}'),
+                                      // Text(
+                                      //     'Longitude: ${selectedLatLng?.longitude.toString() ?? 'Not selected'}'),
                                       Padding(
                                         padding: const EdgeInsets.all(0.0),
                                         child: GestureDetector(
@@ -202,11 +202,17 @@ class _ManageSpaceScreenState extends State<ManageScreen> {
                                             showModalBottomSheet<void>(
                                               context: context,
                                               builder: (BuildContext context) {
-                                                return Home(
-                                                  selectedLocation:
-                                                      selectedLatLng,
-                                                  onLocationSelected:
-                                                      setLocation,
+                                                return Container(
+                                                  height:
+                                                      400, // Set an appropriate height for your modal sheet
+                                                  child: InteractiveViewer(
+                                                    child: Home(
+                                                      selectedLocation:
+                                                          selectedLatLng,
+                                                      onLocationSelected:
+                                                          setLocation,
+                                                    ),
+                                                  ),
                                                 );
                                               },
                                             );
