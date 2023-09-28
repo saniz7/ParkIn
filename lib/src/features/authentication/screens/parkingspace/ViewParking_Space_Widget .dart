@@ -79,8 +79,8 @@ class _ViewSpaceScreenState extends State<ViewAllParkingSpaceScreen> {
                                     documentSnapshot.data();
                                 if (spaceData != null) {
                                   return ListTile(
-                                    title: Text(spaceData['location']),
-                                    subtitle: Text(spaceData['type']),
+                                    title: Text(spaceData['spacename']),
+                                    subtitle: Text(spaceData['description']),
                                     onTap: () => navigateToManageScreen(
                                       context,
                                       documentSnapshot,
