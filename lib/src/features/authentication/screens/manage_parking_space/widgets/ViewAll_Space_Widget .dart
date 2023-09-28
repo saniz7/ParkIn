@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:learn01/src/features/authentication/screens/manage_parking_space/widgets/Manage_your_Space_Widget.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
 import '../../../../../constants/sizes.dart';
-import 'package:intl/intl.dart';
 
 class ViewSpaceScreen extends StatefulWidget {
   const ViewSpaceScreen({Key? key}) : super(key: key);
@@ -100,14 +100,11 @@ class _ViewSpaceScreenState extends State<ViewSpaceScreen> {
           ),
           title: Text(
             'Manage Your Space',
-            style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.black // Title color is green
+            style: TextStyle(color: Colors.black // Title color is green
                 ),
           ),
-          backgroundColor: Color.fromARGB(
-              255, 130, 242, 154), // Background color is light green
+          // backgroundColor: Color.fromARGB(
+          //     255, 130, 242, 154), // Background color is light green
         ),
         body: SingleChildScrollView(
           child: Container(
@@ -181,10 +178,10 @@ class _ViewSpaceScreenState extends State<ViewSpaceScreen> {
                                               Text(
                                                 spaceData['type'],
                                                 style: TextStyle(
-                                                  fontWeight: FontWeight
-                                                      .bold, // Make text bold
-                                                  color: Colors.black,
-                                                ),
+                                                    fontWeight: FontWeight
+                                                        .bold, // Make text bold
+                                                    color: Colors.black,
+                                                    fontSize: 20),
                                               ),
                                             ],
                                           ),
@@ -220,7 +217,8 @@ class _ViewSpaceScreenState extends State<ViewSpaceScreen> {
                                       updateViewControllerStatus(value);
                                     });
                                   },
-                                  activeColor: Colors.green,
+                                  activeColor:
+                                      const Color.fromARGB(255, 19, 206, 26),
                                 ),
                               ],
                             ),
@@ -247,7 +245,8 @@ class _ViewSpaceScreenState extends State<ViewSpaceScreen> {
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                     border: Border.all(
-                                      color: Colors.green, // Border color
+                                      color: Color.fromARGB(
+                                          255, 47, 145, 50), // Border color
                                       width: 2.0, // Border width
                                     ),
                                   ),
@@ -262,8 +261,8 @@ class _ViewSpaceScreenState extends State<ViewSpaceScreen> {
                                         : null,
                                     icon: Icon(
                                       Icons.add,
-                                      color: Colors
-                                          .green, // Set the icon color to green
+                                      color: const Color.fromARGB(255, 47, 145,
+                                          50), // Set the icon color to green
                                     ),
                                     iconSize: 48, // Adjust the size as needed
                                   ),
@@ -273,7 +272,8 @@ class _ViewSpaceScreenState extends State<ViewSpaceScreen> {
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                     border: Border.all(
-                                      color: Colors.green, // Border color
+                                      color: Color.fromARGB(
+                                          255, 47, 145, 50), // Border color
                                       width: 2.0, // Border width
                                     ),
                                   ),
@@ -288,8 +288,8 @@ class _ViewSpaceScreenState extends State<ViewSpaceScreen> {
                                     },
                                     icon: Icon(
                                       Icons.remove,
-                                      color: Colors
-                                          .green, // Set the icon color to green
+                                      color: Color.fromARGB(255, 47, 145,
+                                          50), // Set the icon color to green
                                     ),
                                     iconSize: 48, // Adjust the size as needed
                                   ),
@@ -345,6 +345,7 @@ class _ViewSpaceScreenState extends State<ViewSpaceScreen> {
                         );
                       }
                     }
+
                     return const Text('No bookings found. Book a space Now!!',
                         style: TextStyle(
                           fontStyle: FontStyle.italic, // Make the text italic

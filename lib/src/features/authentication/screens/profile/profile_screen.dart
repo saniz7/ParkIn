@@ -109,6 +109,7 @@ class ProfileScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 20),
                     SizedBox(
+                    
                       width: 200,
                       child: ElevatedButton(
                         onPressed: () {
