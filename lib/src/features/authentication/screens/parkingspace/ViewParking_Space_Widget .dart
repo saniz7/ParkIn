@@ -38,7 +38,7 @@ class _ViewSpaceScreenState extends State<ViewAllParkingSpaceScreen> {
             },
             icon: const Icon(LineAwesomeIcons.angle_double_left),
           ),
-          title: const Text('Manage Space'),
+          title: const Text('Available Space'),
         ),
         body: SingleChildScrollView(
           child: Container(
