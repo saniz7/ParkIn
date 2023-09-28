@@ -114,7 +114,30 @@ class _ViewSpaceScreenState extends State<ViewSpaceScreen> {
             padding: const EdgeInsets.all(16),
             child: Column(
               children: [
-                const SizedBox(height: 50),
+                const SizedBox(height: tFormHeight - 20),
+                Row(
+                  children: [
+                    Text(
+                      'View Your Space To Public For Parking:',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    Switch(
+                      value: isViewControllerEnabled,
+                      onChanged: (value) {
+                        setState(() {
+                          isViewControllerEnabled = value;
+                          updateViewControllerStatus(value);
+                        });
+                      },
+                      activeColor: Colors.green,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
                 // Add the home icon here next to "Dhumbarahi"
 
                 StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
@@ -200,29 +223,6 @@ class _ViewSpaceScreenState extends State<ViewSpaceScreen> {
                                   return const SizedBox();
                                 }
                               },
-                            ),
-                            const SizedBox(height: tFormHeight - 20),
-                            Row(
-                              children: [
-                                Text(
-                                  'View Controller:',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(width: 10),
-                                Switch(
-                                  value: isViewControllerEnabled,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      isViewControllerEnabled = value;
-                                      updateViewControllerStatus(value);
-                                    });
-                                  },
-                                  activeColor: Colors.green,
-                                ),
-                              ],
                             ),
                             const SizedBox(height: 20),
                             Text(
