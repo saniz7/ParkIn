@@ -18,6 +18,7 @@ class _ViewSpaceScreenState extends State<ViewSpaceScreen> {
   bool isViewControllerEnabled = false;
   int parkingSpaceCount = 0;
   int availableSpaces = 0;
+  int capacity = 0;
 
   void navigateToManageScreen(BuildContext context,
       DocumentSnapshot<Map<String, dynamic>> documentSnapshot) {
@@ -52,6 +53,7 @@ class _ViewSpaceScreenState extends State<ViewSpaceScreen> {
         setState(() {
           isViewControllerEnabled = data['view'] == 'yes';
           availableSpaces = int.parse(data['availablespace'].toString());
+          capacity = int.parse(data['capacity'].toString());
         });
       }
     }
@@ -166,18 +168,26 @@ class _ViewSpaceScreenState extends State<ViewSpaceScreen> {
                             ),
                             const SizedBox(height: 20),
                             Text('Available Spaces: $availableSpaces'),
+                            Text('Capacity: $capacity'),
                             const SizedBox(height: 20),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 ElevatedButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      availableSpaces += 1;
-                                      updateAvailableSpaces(1);
-                                    });
-                                  },
+                                  onPressed: availableSpaces < capacity
+                                      ? () {
+                                          setState(() {
+                                            availableSpaces += 1;
+                                            updateAvailableSpaces(1);
+                                          });
+                                        }
+                                      : null, // Disable the button if availableSpaces equals or exceeds capacity
                                   child: Icon(Icons.add),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: availableSpaces >= capacity
+                                        ? Colors.grey
+                                        : null,
+                                  ),
                                 ),
                                 SizedBox(width: 10),
                                 ElevatedButton(

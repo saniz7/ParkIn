@@ -91,9 +91,9 @@ class _ViewSpaceScreenState extends State<ViewAllParkingSpaceScreen> {
                                 }
                               },
                             ),
-                            const SizedBox(height: 20),
-                            Text('Parking Space Count: $parkingSpaceCount'),
-                            Text('Available Spaces: $availableSpaces'),
+                            // const SizedBox(height: 20),
+                            // Text('Parking Space Count: $parkingSpaceCount'),
+                            // Text('Available Spaces: $availableSpaces'),
                           ],
                         );
                       }
