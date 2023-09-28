@@ -1,81 +1,84 @@
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 
 class ParkingDataScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Parking Data'),
-      ),
-      body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-        stream: FirebaseFirestore.instance.collection('space').snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          }
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Parking Data'),
+          backgroundColor: Color.fromARGB(255, 2, 80, 113),
+        ),
+        body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+          stream: FirebaseFirestore.instance.collection('space').snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            }
 
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          }
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            }
 
-          List<DataRow> rows = [];
+            List<DataRow> rows = [];
 
-          snapshot.data!.docs.forEach((doc) {
-            Map<String, dynamic>? spaceData = doc.data();
-            String spaceName = spaceData?['spacename'] ?? '';
+            snapshot.data!.docs.forEach((doc) {
+              Map<String, dynamic>? spaceData = doc.data();
+              String spaceName = spaceData?['spacename'] ?? '';
 
-            rows.add(
-              DataRow(
-                cells: [
-                  DataCell(
-                    GestureDetector(
-                      child: Text(
-                        spaceName,
-                        style: TextStyle(
-                          decoration: TextDecoration.underline,
-                          color: Colors.blue,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
+              rows.add(
+                DataRow(
+                  cells: [
+                    DataCell(
+                      GestureDetector(
+                        child: Text(
+                          spaceName,
+                          style: TextStyle(
+                            decoration: TextDecoration.underline,
+                            color: Colors.blue,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                          ),
                         ),
+                        onTap: () {
+                          _showSpaceDetailsDialog(context, spaceData);
+                        },
                       ),
-                      onTap: () {
-                        _showSpaceDetailsDialog(context, spaceData);
-                      },
                     ),
+                  ],
+                ),
+              );
+            });
+
+            return SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: DataTable(
+                  headingTextStyle: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    fontSize: 20,
                   ),
-                ],
+                  dataTextStyle: TextStyle(
+                    fontWeight: FontWeight.normal,
+                    fontSize: 16,
+                  ),
+                  columnSpacing: 16.0,
+                  columns: [
+                    DataColumn(
+                      label: Text('Space Name'),
+                      numeric: false,
+                      tooltip: 'Space Name',
+                    ),
+                  ],
+                  rows: rows,
+                ),
               ),
             );
-          });
-
-          return SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: DataTable(
-                headingTextStyle: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  fontSize: 20,
-                ),
-                dataTextStyle: TextStyle(
-                  fontWeight: FontWeight.normal,
-                  fontSize: 16,
-                ),
-                columnSpacing: 16.0,
-                columns: [
-                  DataColumn(
-                    label: Text('Space Name'),
-                    numeric: false,
-                    tooltip: 'Space Name',
-                  ),
-                ],
-                rows: rows,
-              ),
-            ),
-          );
-        },
+          },
+        ),
       ),
     );
   }

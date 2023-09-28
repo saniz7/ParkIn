@@ -1,17 +1,17 @@
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:learn01/src/constants/sizes.dart';
-import 'package:learn01/src/constants/text_strings.dart';
-import 'package:flutter/services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:learn01/src/constants/sizes.dart';
+import 'package:learn01/src/constants/text_strings.dart';
+
 import '../../../../../../custom_marker_info_window.dart';
 import '../../../../../../googlescreen.dart';
-import '../../profile/profile_screen.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import '../../../../../constants/colors.dart';
 
 class RentSpaceWidget extends StatefulWidget {
   const RentSpaceWidget({Key? key}) : super(key: key);
@@ -238,10 +238,11 @@ class _RentSpaceState extends State<RentSpaceWidget> {
             color: Colors.green[100], // Custom background color for the box
             borderRadius: BorderRadius.circular(12), // Custom border radius
           ),
+
           child: Text(
-            'You have already registered a space',
+            'Oops,You have already registered a space!',
             style: TextStyle(
-              fontSize: 18,
+              fontSize: 35,
               color: Colors.red, // Custom text color
               fontWeight: FontWeight.bold,
             ),
@@ -283,6 +284,9 @@ class _RentSpaceState extends State<RentSpaceWidget> {
                     }
                     return null;
                   },
+                ),
+                SizedBox(
+                  height: tFormHeight - 20,
                 ),
                 Padding(
                     padding: const EdgeInsets.all(0.0),
@@ -405,25 +409,24 @@ class _RentSpaceState extends State<RentSpaceWidget> {
                   },
                 ),
                 SizedBox(
-                  height: tFormHeight - 20,
+                  height: tFormHeight - 15,
                 ),
-                ElevatedButton(
-                  onPressed: _pickImage,
-                  child: Text(
-                    'Pick Image',
-                    style: TextStyle(
-                      color: Colors.white, // Set text color to white
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                    ),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        Colors.lightGreen, // Make button background transparent
-                  ),
-                ),
+
                 SizedBox(
-                  height: tFormHeight - 10,
+                  width: 150,
+                  child: ElevatedButton(
+                    onPressed: _pickImage,
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: tPrimaryColor,
+                        side: BorderSide.none,
+                        shape: const StadiumBorder()),
+                    child: const Text('Pick Image',
+                        style: TextStyle(color: tDarkColor)),
+                  ),
+                ),
+
+                SizedBox(
+                  height: tFormHeight - 30,
                 ),
                 SizedBox(height: tFormHeight - 10),
                 Padding(

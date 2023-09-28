@@ -151,84 +151,87 @@ import 'package:flutter/material.dart';
 class UserDataScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('User Data'),
-      ),
-      body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-        stream: FirebaseFirestore.instance.collection('users').snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          }
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('User Data'),
+          backgroundColor: Color.fromARGB(255, 2, 80, 113),
+        ),
+        body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+          stream: FirebaseFirestore.instance.collection('users').snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            }
 
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          }
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            }
 
-          List<DataRow> rows = [];
+            List<DataRow> rows = [];
 
-          snapshot.data!.docs.forEach((doc) {
-            Map<String, dynamic>? userData = doc.data();
-            String username = userData?['username'] ?? '';
-            String email = userData?['email'] ?? '';
-            String phoneno = userData?['phoneno'].toString() ?? '';
-            String password = userData?['password'] ?? '';
-            String uid = doc.id;
-            String role = userData?['role'] ?? '';
+            snapshot.data!.docs.forEach((doc) {
+              Map<String, dynamic>? userData = doc.data();
+              String username = userData?['username'] ?? '';
+              String email = userData?['email'] ?? '';
+              String phoneno = userData?['phoneno'].toString() ?? '';
+              String password = userData?['password'] ?? '';
+              String uid = doc.id;
+              String role = userData?['role'] ?? '';
 
-            rows.add(
-              DataRow(
-                cells: [
-                  DataCell(
-                    GestureDetector(
-                      child: Text(
-                        username,
-                        style: TextStyle(
-                          decoration: TextDecoration.underline,
-                          color: Colors.blue,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
+              rows.add(
+                DataRow(
+                  cells: [
+                    DataCell(
+                      GestureDetector(
+                        child: Text(
+                          username,
+                          style: TextStyle(
+                            decoration: TextDecoration.underline,
+                            color: Colors.blue,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                          ),
                         ),
+                        onTap: () {
+                          _showUserDetailsDialog(context, username, email,
+                              phoneno, password, uid, role);
+                        },
                       ),
-                      onTap: () {
-                        _showUserDetailsDialog(context, username, email,
-                            phoneno, password, uid, role);
-                      },
                     ),
+                  ],
+                ),
+              );
+            });
+
+            return SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: DataTable(
+                  headingTextStyle: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    fontSize: 20,
                   ),
-                ],
+                  dataTextStyle: TextStyle(
+                    fontWeight: FontWeight.normal,
+                    fontSize: 16,
+                  ),
+                  columnSpacing: 16.0,
+                  columns: [
+                    DataColumn(
+                      label: Text('Username'),
+                      numeric: false,
+                      tooltip: 'Username',
+                    ),
+                  ],
+                  rows: rows,
+                ),
               ),
             );
-          });
-
-          return SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: DataTable(
-                headingTextStyle: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  fontSize: 20,
-                ),
-                dataTextStyle: TextStyle(
-                  fontWeight: FontWeight.normal,
-                  fontSize: 16,
-                ),
-                columnSpacing: 16.0,
-                columns: [
-                  DataColumn(
-                    label: Text('Username'),
-                    numeric: false,
-                    tooltip: 'Username',
-                  ),
-                ],
-                rows: rows,
-              ),
-            ),
-          );
-        },
+          },
+        ),
       ),
     );
   }

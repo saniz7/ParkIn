@@ -176,7 +176,7 @@ class _CustomMarkerInfoWindowState extends State<CustomMarkerInfoWindow> {
       child: Scaffold(
         appBar: AppBar(
           title: Text('Find parking'),
-          backgroundColor: Color.fromARGB(255, 38, 220, 74),
+          backgroundColor: Color.fromRGBO(29, 133, 51, 1),
         ),
         drawer: ProfileScreen(),
         body: Stack(
