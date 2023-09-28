@@ -1,6 +1,5 @@
 // import 'package:firebase_core/firebase_core.dart';
 // import 'package:flutter/material.dart';
-import 'package:learn01/custom_marker_info_window.dart';
 // import 'package:learn01/src/features/authentication/screens/home_screen/home_screen.dart';
 // import 'package:learn01/src/features/authentication/screens/welcome/welcome_screen.dart';
 // import 'package:learn01/src/utils/theme/theme.dart';
@@ -27,7 +26,6 @@ import 'package:learn01/custom_marker_info_window.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:khalti_flutter/khalti_flutter.dart';
-import 'package:learn01/googlescreen.dart';
 import 'package:learn01/src/features/authentication/screens/notification/firebase_notification.dart';
 import 'package:learn01/src/features/authentication/screens/welcome/welcome_screen.dart';
 import 'package:learn01/src/utils/theme/theme.dart';
@@ -56,6 +54,7 @@ class KhaltiPaymentApp extends StatelessWidget {
           localizationsDelegates: const [
             KhaltiLocalizations.delegate,
           ],
+          debugShowCheckedModeBanner: false,
           theme: TAppTheme.lightTheme,
           darkTheme: TAppTheme.darkTheme,
           themeMode: ThemeMode.system,

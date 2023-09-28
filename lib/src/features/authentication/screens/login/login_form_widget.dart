@@ -1,12 +1,13 @@
-import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+
 // import 'package:learn01/src/features/authentication/screens/admin_dashbord/home_screen/admin_home_dashboard.dart';
-import '../admin/admin_screen.dart';
+import '../../../../../custom_marker_info_window.dart';
 import '../../../../constants/sizes.dart';
 import '../../../../constants/text_strings.dart';
-import '../profile/profile_screen.dart';
+import '../admin/admin_screen.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({Key? key}) : super(key: key);
@@ -52,7 +53,7 @@ class _LoginFormState extends State<LoginForm> {
           } else {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => ProfileScreen()),
+              MaterialPageRoute(builder: (context) => CustomMarkerInfoWindow()),
             );
           }
         }
