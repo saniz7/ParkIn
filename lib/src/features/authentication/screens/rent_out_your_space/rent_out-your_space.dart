@@ -3,7 +3,6 @@ import 'package:learn01/src/common_widgets/form/form_header_widget.dart';
 import 'package:learn01/src/constants/image_strings.dart';
 import 'package:learn01/src/constants/sizes.dart';
 import 'package:learn01/src/constants/text_strings.dart';
-import 'package:learn01/src/features/authentication/screens/profile/profile_screen.dart';
 import 'package:learn01/src/features/authentication/screens/rent_out_your_space/widgets/rent_out_your_space_widget.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
@@ -16,12 +15,7 @@ class RentSpace extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           leading: IconButton(
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const ProfileScreen()));
-            },
+            onPressed: () => Navigator.of(context).pop(),
             icon: const Icon(LineAwesomeIcons.angle_double_left),
           ),
           title: Text(

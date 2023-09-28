@@ -1,7 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:custom_info_window/custom_info_window.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:learn01/src/features/authentication/screens/profile/profile_screen.dart';
 
 class CustomMarkerInfoWindow extends StatefulWidget {
   const CustomMarkerInfoWindow({Key? key}) : super(key: key);
@@ -108,34 +109,37 @@ class _CustomMarkerInfoWindowState extends State<CustomMarkerInfoWindow> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Custom Info Window'),
-        backgroundColor: Colors.red,
-      ),
-      body: Stack(
-        children: [
-          GoogleMap(
-            initialCameraPosition:
-                CameraPosition(target: LatLng(27.6714, 85.3387), zoom: 14),
-            markers: Set<Marker>.of(_markers),
-            onTap: (LatLng position) {
-              _customInfoWindowController.hideInfoWindow!();
-            },
-            onCameraMove: (position) {
-              _customInfoWindowController.onCameraMove!();
-            },
-            onMapCreated: (GoogleMapController controller) {
-              _customInfoWindowController.googleMapController = controller;
-            },
-          ),
-          CustomInfoWindow(
-            controller: _customInfoWindowController,
-            height: 200,
-            width: 300,
-            offset: 35,
-          )
-        ],
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Find parking'),
+          backgroundColor: Color.fromARGB(255, 38, 220, 74),
+        ),
+        drawer: ProfileScreen(),
+        body: Stack(
+          children: [
+            GoogleMap(
+              initialCameraPosition:
+                  CameraPosition(target: LatLng(27.6714, 85.3387), zoom: 14),
+              markers: Set<Marker>.of(_markers),
+              onTap: (LatLng position) {
+                _customInfoWindowController.hideInfoWindow!();
+              },
+              onCameraMove: (position) {
+                _customInfoWindowController.onCameraMove!();
+              },
+              onMapCreated: (GoogleMapController controller) {
+                _customInfoWindowController.googleMapController = controller;
+              },
+            ),
+            CustomInfoWindow(
+              controller: _customInfoWindowController,
+              height: 200,
+              width: 300,
+              offset: 35,
+            )
+          ],
+        ),
       ),
     );
   }
