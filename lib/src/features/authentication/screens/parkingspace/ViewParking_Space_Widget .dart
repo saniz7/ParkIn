@@ -45,7 +45,13 @@ class _ViewSpaceScreenState extends State<ViewAllParkingSpaceScreen> {
             padding: const EdgeInsets.all(16),
             child: Column(
               children: [
-                const SizedBox(height: 50),
+                const SizedBox(height: 40),
+                Text(
+                  'List of Available parking spaces',
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 25),
+                ),
+                const SizedBox(height: 40),
                 StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
                   stream: FirebaseFirestore.instance
                       .collection('space')
@@ -78,12 +84,25 @@ class _ViewSpaceScreenState extends State<ViewAllParkingSpaceScreen> {
                                 Map<String, dynamic>? spaceData =
                                     documentSnapshot.data();
                                 if (spaceData != null) {
-                                  return ListTile(
-                                    title: Text(spaceData['spacename']),
-                                    subtitle: Text(spaceData['description']),
-                                    onTap: () => navigateToManageScreen(
-                                      context,
-                                      documentSnapshot,
+                                  return Card(
+                                    child: ListTile(
+                                      trailing: Icon(Icons.local_parking),
+                                      tileColor:
+                                          Color.fromARGB(255, 64, 161, 67),
+                                      title: Text(spaceData['spacename'],
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 23)),
+                                      subtitle: Text(spaceData['description'],
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w300,
+                                          )),
+                                      onTap: () => navigateToManageScreen(
+                                        context,
+                                        documentSnapshot,
+                                      ),
                                     ),
                                   );
                                 } else {
