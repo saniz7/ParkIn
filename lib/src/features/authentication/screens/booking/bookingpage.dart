@@ -38,7 +38,7 @@ class _BookingPageSpaceScreenState extends State<BookingPageSpaceScreen> {
 
   late String uid;
   bool _isLoading = false;
-  late DateTime _selectedTime;
+  late DateTime _selectedTime = DateTime.now();
 
   @override
   void dispose() {
@@ -56,82 +56,100 @@ class _BookingPageSpaceScreenState extends State<BookingPageSpaceScreen> {
   }
 
   void _showBookingPopup() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Confirm Booking'),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text('Are you sure you want to book this place?'),
-                SizedBox(height: 20),
-                Container(
-                  height: 200,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Select Time',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
+    final currentTime = DateTime.now();
+    if (_selectedTime.isAfter(currentTime)) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Confirm Booking'),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text('Are you sure you want to book this place?'),
+                  SizedBox(height: 20),
+                  Container(
+                    height: 200,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Select Time',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      SizedBox(height: 10),
-                      TimePickerSpinner(
-                        is24HourMode: false,
-                        normalTextStyle: TextStyle(fontSize: 16),
-                        highlightedTextStyle: TextStyle(fontSize: 40),
-                        spacing: 50,
-                        itemHeight: 40,
-                        isForce2Digits: true,
-                        onTimeChange: (time) {
-                          setState(() {
-                            _selectedTime = time;
-                          });
-                        },
-                      ),
-                    ],
+                        SizedBox(height: 10),
+                        TimePickerSpinner(
+                          is24HourMode: false,
+                          normalTextStyle: TextStyle(fontSize: 16),
+                          highlightedTextStyle: TextStyle(fontSize: 40),
+                          spacing: 50,
+                          itemHeight: 40,
+                          isForce2Digits: true,
+                          onTimeChange: (time) {
+                            setState(() {
+                              _selectedTime = time;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                SizedBox(height: 20),
-                TextFormField(
-                  controller: _vehicleController,
-                  decoration: const InputDecoration(
-                    labelText: 'Vehicle Number',
-                    prefixIcon: Icon(Icons.directions_car),
+                  SizedBox(height: 20),
+                  TextFormField(
+                    controller: _vehicleController,
+                    decoration: const InputDecoration(
+                      labelText: 'Vehicle Number',
+                      prefixIcon: Icon(Icons.directions_car),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your vehicle details';
+                      }
+                      return null;
+                    },
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your vehicle details';
-                    }
-                    return null;
-                  },
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                if (_formKey.currentState?.validate() ?? false) {
-                  navigateToKhaltiPaymentPage();
-                }
-              },
-              child: Text('Confirm'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('Cancel'),
-            ),
-          ],
-        );
-      },
-    );
+            actions: [
+              TextButton(
+                onPressed: () {
+                  if (_formKey.currentState?.validate() == true &&
+                      _selectedTime.isAfter(currentTime)) {
+                    navigateToKhaltiPaymentPage();
+                  } else {
+                    // Show an error message for invalid booking time
+                    Fluttertoast.showToast(
+                      msg: 'Invalid booking time',
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.BOTTOM,
+                    );
+                  }
+                },
+                child: Text('Confirm'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('Cancel'),
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      // Show an error message for invalid booking time
+      Fluttertoast.showToast(
+        msg: 'Invalid booking time',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+      );
+    }
   }
 
   void initState() {
