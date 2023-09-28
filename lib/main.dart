@@ -59,11 +59,11 @@ class KhaltiPaymentApp extends StatelessWidget {
           theme: TAppTheme.lightTheme,
           darkTheme: TAppTheme.darkTheme,
           themeMode: ThemeMode.system,
-          home: CustomMarkerInfoWindow(),
+          home: WelcomeScreen(),
         );
       },
     );
   }
 }
 
-/// benjil shrestha
+/// benjil shresthad

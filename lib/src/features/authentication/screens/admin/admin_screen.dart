@@ -1,5 +1,6 @@
 // import 'package:cloud_firestore/cloud_firestore.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:firebase_messaging/firebase_messaging.dart';
 // import 'package:flutter/material.dart';
 // import 'package:learn01/src/features/authentication/screens/login/login_screen.dart';
 // import '../admin/parking_data.dart';
@@ -7,11 +8,67 @@
 // import '../admin/user_data.dart';
 // import '../admin/user_manage.dart';
 
-// class AdminScreen extends StatelessWidget {
-//   // Add a TextEditingController for the notification message
+// class AdminScreen extends StatefulWidget {
+//   @override
+//   _AdminScreenState createState() => _AdminScreenState();
+// }
+
+// class _AdminScreenState extends State<AdminScreen> {
+//   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 //   final TextEditingController _notificationController = TextEditingController();
 
-//   // Function to send the notification to all users
+//   @override
+//   void initState() {
+//     super.initState();
+//     _setupFirebaseMessaging();
+//   }
+
+//   void _setupFirebaseMessaging() {
+//     _firebaseMessaging.requestPermission();
+//     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+//       print('Got a message whilst in the foreground!');
+//       print('Message data: ${message.data}');
+//       if (message.notification != null) {
+//         print('Message also contained a notification: ${message.notification}');
+//         // Show a notification in the foreground when receiving a message with a notification payload (optional)
+//         _showForegroundNotification(message.notification);
+//       }
+//     });
+
+//     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+//       // Handle when the user taps on a notification while the app is in the background or terminated
+//       print('Message opened app: ${message.messageId}');
+//     });
+//   }
+
+//   void _showForegroundNotification(RemoteNotification? notification) {
+//     // Show the notification content in a dialog (you can customize the UI as needed)
+//     showDialog(
+//       context: context,
+//       builder: (context) {
+//         return AlertDialog(
+//           title: Text('New Notification'),
+//           content: Column(
+//             crossAxisAlignment: CrossAxisAlignment.start,
+//             mainAxisSize: MainAxisSize.min,
+//             children: [
+//               if (notification?.title != null) Text(notification!.title!),
+//               if (notification?.body != null) Text(notification!.body!),
+//             ],
+//           ),
+//           actions: [
+//             ElevatedButton(
+//               onPressed: () {
+//                 Navigator.of(context).pop();
+//               },
+//               child: Text('Close'),
+//             ),
+//           ],
+//         );
+//       },
+//     );
+//   }
+
 //   void _sendNotification(BuildContext context, String message) {
 //     // Here you can implement the logic to send the notification to all users
 //     // For simplicity, let's just show a snackbar message with the notification content
@@ -24,6 +81,7 @@
 
 //   @override
 //   Widget build(BuildContext context) {
+//     // The rest of your AdminScreen build method remains unchanged...
 //     return Scaffold(
 //       appBar: AppBar(
 //         title: Text('Admin Screen'),
@@ -394,7 +452,33 @@ class _AdminScreenState extends State<AdminScreen> {
                                       ),
                                     );
                                   },
-                                  child: Text('Places'),
+                                  child: Column(
+                                    children: [
+                                      Text('Places'),
+                                      StreamBuilder<
+                                          QuerySnapshot<Map<String, dynamic>>>(
+                                        stream: FirebaseFirestore.instance
+                                            .collection('space')
+                                            .snapshots(),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.hasError) {
+                                            return Text(
+                                                'Error: ${snapshot.error}');
+                                          }
+
+                                          if (snapshot.connectionState ==
+                                              ConnectionState.waiting) {
+                                            return Text('Loading...');
+                                          }
+
+                                          int spaceCount =
+                                              snapshot.data!.docs.length;
+
+                                          return Text('Total: $spaceCount');
+                                        },
+                                      ),
+                                    ],
+                                  ),
                                 ),
                                 ElevatedButton(
                                   onPressed: () {
