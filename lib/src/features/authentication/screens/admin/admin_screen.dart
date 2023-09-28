@@ -535,7 +535,7 @@ class _AdminScreenState extends State<AdminScreen> {
                                               fontWeight: FontWeight.bold),
                                         ),
                                         Text(
-                                          'Manage',
+                                          '(Manage)',
                                           style: TextStyle(
                                               fontSize: 20,
                                               fontWeight: FontWeight.bold),
@@ -567,7 +567,7 @@ class _AdminScreenState extends State<AdminScreen> {
                                               fontWeight: FontWeight.bold),
                                         ),
                                         Text(
-                                          'Manage',
+                                          '(Manage)',
                                           style: TextStyle(
                                               fontSize: 20,
                                               fontWeight: FontWeight.bold),
