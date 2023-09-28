@@ -273,7 +273,7 @@ class _RentSpaceState extends State<RentSpaceWidget> {
                                 child: Text(
                                   locationSelected
                                       ? 'Location selected'
-                                      : 'Change location',
+                                      : 'Choose a location',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
@@ -390,9 +390,18 @@ class _RentSpaceState extends State<RentSpaceWidget> {
                 padding: const EdgeInsets.all(10.0),
                 child: GestureDetector(
                   onTap: () {
-                    if (_formKey.currentState?.validate() == true) {
+                    if (_formKey.currentState?.validate() == true &&
+                        selectedLatLng != null) {
                       showProgressDialog(context);
                       _storeFormData();
+                    }
+                    if (selectedLatLng == null) {
+                      // Location is not selected, show an error message
+                      Fluttertoast.showToast(
+                        msg: 'Location is required',
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.BOTTOM,
+                      );
                     }
                   },
                   child: Container(
