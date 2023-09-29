@@ -190,7 +190,7 @@ class _ViewSpaceScreenState extends State<ViewSpaceScreen> {
                                                 CrossAxisAlignment.center,
                                             children: [
                                               Text(
-                                                spaceData['location'],
+                                                spaceData['spacename'],
                                                 style: TextStyle(
                                                   fontWeight: FontWeight
                                                       .bold, // Make text bold

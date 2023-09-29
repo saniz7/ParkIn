@@ -306,7 +306,7 @@ class _RentSpaceState extends State<RentSpaceWidget> {
                                   child: Text(
                                     locationSelected
                                         ? 'Location selected'
-                                        : 'Change location',
+                                        : 'Choose location',
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       color: Colors.white,
@@ -366,6 +366,9 @@ class _RentSpaceState extends State<RentSpaceWidget> {
                     labelText: tRate, // Changed label to labelText
                     prefixIcon: Icon(Icons.currency_exchange_sharp),
                   ),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                  ],
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter a rate';
@@ -412,18 +415,21 @@ class _RentSpaceState extends State<RentSpaceWidget> {
                   height: tFormHeight - 15,
                 ),
 
-                SizedBox(
-                  width: 150,
-                  child: ElevatedButton(
-                    onPressed: _pickImage,
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: tPrimaryColor,
-                        side: BorderSide.none,
-                        shape: const StadiumBorder()),
-                    child: const Text('Pick Image',
-                        style: TextStyle(color: tDarkColor)),
-                  ),
-                ),
+                // SizedBox(
+                //   width: 150,
+                //   child: ElevatedButton(
+                //     onPressed: _pickImage,
+                //     style: ElevatedButton.styleFrom(
+                //       backgroundColor: tPrimaryColor,
+                //       side: BorderSide.none,
+                //       shape: const StadiumBorder(),
+                //     ),
+                //     child: Text(
+                //       imageUrl.isEmpty ? 'Pick Image' : 'Image Picked',
+                //       style: TextStyle(color: tDarkColor),
+                //     ),
+                //   ),
+                // ),
 
                 SizedBox(
                   height: tFormHeight - 30,

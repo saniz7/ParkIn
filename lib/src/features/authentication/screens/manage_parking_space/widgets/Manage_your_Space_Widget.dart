@@ -136,11 +136,14 @@ class _ManageSpaceScreenState extends State<ManageScreen> {
                                   key: _formKey,
                                   child: Column(
                                     children: [
-                                      Image.network(
-                                        spaceData['imageUrl'],
-                                        height: 300,
-                                        width: 600,
-                                      ),
+                                      // Image.network(
+                                      //   spaceData['imageUrl'],
+                                      //   height: 300,
+                                      //   width: 600,
+                                      //   fit: BoxFit
+                                      //       .cover, // Adjust the fit property as needed
+                                      // ),
+
                                       TextFormField(
                                         controller: _nameController,
                                         decoration: InputDecoration(
