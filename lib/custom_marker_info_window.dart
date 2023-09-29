@@ -233,15 +233,45 @@ class _CustomMarkerInfoWindowState extends State<CustomMarkerInfoWindow> {
                               itemBuilder: (context, index) {
                                 Map<String, dynamic>? spaceData =
                                     documents[index].data();
-                                if (spaceData != null) {
-                                  return ListTile(
-                                    title: Text(spaceData['spacename']),
-                                    subtitle: Text(spaceData['description']),
-                                    onTap: () => navigateToManageScreen(
-                                      context,
-                                      documents[index],
+                                if (index == 0) {
+                                  return Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Column(
+                                      children: [
+                                        SizedBox(
+                                          width: 50,
+                                          child: Divider(
+                                            thickness: 5,
+                                            color:
+                                                Color.fromRGBO(29, 133, 51, 1),
+                                          ),
+                                        ),
+                                        Text(
+                                            "Select a Place or swipe up for more",
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.w500))
+                                      ],
                                     ),
-                                    // You can customize the list item as needed
+                                  );
+                                }
+                                ;
+                                if (spaceData != null) {
+                                  return Card(
+                                    elevation: 0,
+                                    margin: EdgeInsets.zero,
+                                    child: ListTile(
+                                      contentPadding: EdgeInsets.all(5),
+                                      leading: const Icon(
+                                          Icons.local_parking_outlined),
+                                      iconColor: Color.fromRGBO(29, 133, 51, 1),
+                                      title: Text(spaceData['spacename']),
+                                      subtitle: Text(spaceData['description']),
+                                      onTap: () => navigateToManageScreen(
+                                        context,
+                                        documents[index],
+                                      ),
+                                      // You can customize the list item as needed
+                                    ),
                                   );
                                 }
                                 return const SizedBox.shrink();
