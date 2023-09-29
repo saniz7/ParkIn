@@ -218,6 +218,9 @@ class _CustomMarkerInfoWindowState extends State<CustomMarkerInfoWindow> {
                     child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
                       stream: FirebaseFirestore.instance
                           .collection('space')
+                          .where('view',
+                              isEqualTo:
+                                  'yes') // Filter documents with view = 'yes'
                           .snapshots(),
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
@@ -229,10 +232,9 @@ class _CustomMarkerInfoWindowState extends State<CustomMarkerInfoWindow> {
                           if (documents.isNotEmpty) {
                             return ListView.builder(
                               controller: controller,
-                              itemCount: documents.length,
+                              itemCount: documents.length +
+                                  1, // Add 1 for the "Select a Place" item
                               itemBuilder: (context, index) {
-                                Map<String, dynamic>? spaceData =
-                                    documents[index].data();
                                 if (index == 0) {
                                   return Padding(
                                     padding: EdgeInsets.all(8.0),
@@ -247,14 +249,18 @@ class _CustomMarkerInfoWindowState extends State<CustomMarkerInfoWindow> {
                                           ),
                                         ),
                                         Text(
-                                            "Select a Place or swipe up for more",
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.w500))
+                                          "Select a Place or swipe up for more",
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.w500),
+                                        ),
                                       ],
                                     ),
                                   );
                                 }
-                                ;
+
+                                Map<String, dynamic>? spaceData = documents[
+                                        index - 1]
+                                    .data(); // Subtract 1 to account for the header
                                 if (spaceData != null) {
                                   return Card(
                                     elevation: 0,
@@ -268,7 +274,8 @@ class _CustomMarkerInfoWindowState extends State<CustomMarkerInfoWindow> {
                                       subtitle: Text(spaceData['description']),
                                       onTap: () => navigateToManageScreen(
                                         context,
-                                        documents[index],
+                                        documents[index -
+                                            1], // Subtract 1 to account for the header
                                       ),
                                       // You can customize the list item as needed
                                     ),

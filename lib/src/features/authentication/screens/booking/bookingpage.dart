@@ -12,6 +12,7 @@ import '../../../../constants/image_strings.dart';
 import '../../../../constants/sizes.dart';
 import '../Khalti/khalti-widget.dart';
 import '../profile/profile_screen.dart';
+import 'package:flutter/services.dart'; // Add this import
 
 class BookingPageSpaceScreen extends StatefulWidget {
   final Map<String, dynamic> spaceData;
@@ -105,13 +106,17 @@ class _BookingPageSpaceScreenState extends State<BookingPageSpaceScreen> {
                       labelText: 'Vehicle Number',
                       prefixIcon: Icon(Icons.directions_car),
                     ),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(
+                          r'^$|^\d{1,4}$')), // Allow up to 4 digits or an empty string
+                    ],
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter your vehicle details';
                       }
                       return null;
                     },
-                  ),
+                  )
                 ],
               ),
             ),
