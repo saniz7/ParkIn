@@ -69,7 +69,8 @@ class _CustomMarkerInfoWindowState extends State<CustomMarkerInfoWindow> {
                   height: 300,
                   width: 200,
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Color.fromARGB(255, 104, 211,
+                        117), // Change background color to light green
                     border: Border.all(color: Colors.grey),
                     borderRadius: BorderRadius.circular(10.0),
                   ),
@@ -81,75 +82,51 @@ class _CustomMarkerInfoWindowState extends State<CustomMarkerInfoWindow> {
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
                           'Place Info',
+                          maxLines: 1,
+                          overflow: TextOverflow.fade,
+                          softWrap: false,
                           style: TextStyle(
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.bold, // Make the text bold
+                            fontSize:
+                                18, // You can adjust the font size as needed
                           ),
                         ),
                       ),
-                      Divider(),
-                      Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              'Name: ',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          'Name: ${document['spacename']}',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold, // Make the text bold
                           ),
-                          Text(
-                            '${document['spacename']}',
-                          ),
-                        ],
+                        ),
                       ),
-                      Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              'Description: ',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          'Description: ${document['description']}',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold, // Make the text bold
                           ),
-                          Text(
-                            '${document['description']}',
-                          ),
-                        ],
+                        ),
                       ),
-                      Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              'Available Space: ',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          'Available Space: ${document['availablespace'].toString()}',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold, // Make the text bold
                           ),
-                          Text(
-                            '${document['availablespace'].toString()}',
-                          ),
-                        ],
+                        ),
                       ),
-                      Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              'Rate: ',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          'Rate: ${document['rate'].toString()}',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold, // Make the text bold
                           ),
-                          Text(
-                            '${document['rate'].toString()}',
-                          ),
-                        ],
+                        ),
                       ),
                     ],
                   ),
